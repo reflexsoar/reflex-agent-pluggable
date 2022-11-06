@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "reflexsoar-agent"
+version = "0.1.0"
+description = ""
+authors = ["Brian Carroll <bcarroll@zeroonesecurity.com>"]
+readme = "README.md"
+repoistory = "https://github.com/reflexsoar/reflex-agent-pluggable"
+packages = [
+    {include = "reflexsoar_agent", from="src"}
+]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+loguru = "^0.6.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
