@@ -1,3 +1,4 @@
+"""Defines """
 import sys
 import inspect
 import socket
@@ -38,7 +39,7 @@ class AgentConfig:
         self.organization = policy.get('organization', '')
         self.health_check_interval = policy.get(
             'health_check_interval', 30)  # Default to 30 seconds
-            
+
 
 class Agent:
 
@@ -58,7 +59,6 @@ class Agent:
         self.load_inputs()
         self.load_roles()
         self.health = {}
-
 
     @property
     def roles(self):
@@ -139,7 +139,7 @@ class Agent:
             _class.shortname
             role_config = self.config.role_configs.get(
                 f"{_class.shortname}_role_config", {})
-            role_config={'test': 'test'}
+            role_config = {'test': 'test'}
             self.loaded_roles[_class.shortname] = _class(config=role_config)
 
         for name in self.config.roles:
@@ -165,3 +165,13 @@ class Agent:
 
         # Start the role.
         pass
+
+
+def cli():
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--pair', action='store_true',
+                        help='Pair the agent with the management server')
+    args = parser.parse_args()
+    if args.pair:
+        print("PAIRING")

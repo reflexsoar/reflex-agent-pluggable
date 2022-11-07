@@ -8,6 +8,8 @@ repository = "https://github.com/reflexsoar/reflex-agent-pluggable"
 packages = [
     {include = "reflexsoar_agent", from="src"}
 ]
+[tool.poetry.scripts]
+reflexsoar-agent = "reflexsoar_agent.agent:cli"
 
 [tool.poetry.dependencies]
 python = "^3.11"
