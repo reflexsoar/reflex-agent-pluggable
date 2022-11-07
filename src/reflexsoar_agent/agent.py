@@ -1,10 +1,14 @@
 """Defines """
+import os
 import sys
+import json
 import inspect
 import socket
+from platformdirs import user_data_dir
 from loguru import logger
 from .role import *
 from .input import *
+from .core.errors import ConsoleAlreadyPaired
 
 
 class AgentConfig:
@@ -39,32 +43,64 @@ class AgentConfig:
         self.organization = policy.get('organization', '')
         self.health_check_interval = policy.get(
             'health_check_interval', 30)  # Default to 30 seconds
+        self.paired_consoles = policy.get('paired_consoles', {})
+
+    def add_paired_console(self, url: str, access_token: str):
+        """Adds a paired console to the agent configuration.
+
+        This method adds a paired console to the agent configuration.
+        """
+        if url not in self.config.paired_consoles:
+            self.config.paired_consoles[url] = {'access_token': access_token}
+        else:
+            raise ConsoleAlreadyPaired(
+                f"Console {url} is already paired with this agent.")
 
 
 class Agent:
 
-    def __init__(self, config):
+    def __init__(self, config: dict = {}, peristent_config_path: str = None):
 
+        
+        # If the agent is told to load the persistent configuration from a 
+        # different path, load it, otherwise load the default persistent from
+        # the users home directory.
+        if peristent_config_path:
+            self.peristent_config_path = peristent_config_path
+        else:
+            self.peristent_config_path = user_data_dir('reflexsoar-agent', 'reflexsoar')
+
+        # Load the provided configuration or the persistent configuration.
         if config:
             self.config = AgentConfig(**config)
         else:
-            self.config = AgentConfig(name='default', roles=[], policy={})
+            if not self.load_persistent_config():
+                self.config = AgentConfig(name='default', roles=[], policy={})
 
-        self.event_cache = {}
-        self.event_cache_key = 'signature'
-        self.event_cache_ttl = 30  # Number of minutes an item should be in the event cache
         self.loaded_roles = {}
         self.loaded_inputs = {}
+        self.health = {}
         self.warnings = []
+
+        # Load all available inputs and roles
         self.load_inputs()
         self.load_roles()
-        self.health = {}
+
+    def set_config(self, config: dict) -> None:
+        """Sets the agent configuration.
+
+        This method sets the agent configuration.
+
+        Args:
+            config (dict): The agent configuration.
+        """
+        self.config = AgentConfig(**config)
 
     @property
-    def roles(self):
+    def roles(self) -> list:
         return self.config.roles
 
-    def host_ip(self):
+    def host_ip(self) -> str:
         """Returns the host IP address.
 
         This method returns the host IP address.
@@ -79,6 +115,50 @@ class Agent:
         finally:
             s.close()
         return IP
+
+    def load_persistent_config(self) -> bool:
+        """Loads the persistent configuration.
+
+        This method loads the persistent configuration.
+
+        Returns:
+            bool: True if the persistent configuration was loaded, False otherwise.
+        """
+        try:
+            name = 'perisistent-config.json'
+            _file = os.path.join(self.peristent_config_path, name)
+            if os.path.exists(_file):
+                with open(_file, 'r', encoding="utf-8") as f:
+                    self.set_config(json.load(f))
+                    return True
+        except Exception as e:
+            logger.error(f'Failed to load persistent config: {e}')
+            return False
+
+    def save_persistent_config(self) -> bool:
+        """Saves the persistent configuration.
+
+        This method saves the persistent configuration.
+
+        Returns:
+            bool: True if the persistent configuration was saved, False otherwise.
+        """
+        # Set the name of the persistent configuration file.
+        name = 'perisistent-config.json'
+
+        try:
+            # Create the directory if it doesn't exist.
+            if not os.path.exists(self.peristent_config_path):
+                os.makedirs(self.peristent_config_path)
+
+            # Write the persistent configuration file.
+            _file = os.path.join(self.peristent_config_path, name)
+            with open(_file, 'w', encoding="utf-8") as f:
+                json.dump(self.config.__dict__, f)
+            return True
+        except Exception as e:
+            logger.error(f'Failed to save persistent config: {e}')
+            return False
 
     def clear_event_cache(self):
         """Clears the event cache."""
@@ -96,12 +176,13 @@ class Agent:
                 if issubclass(r[1], base_class) and r[1] != base_class
                 ]
 
-    def pair_agent(self):
+    def pair_agent(self, console_url: str, access_token: str) -> bool:
         """Pairs the agent with the management server.
 
         This method pairs the agent with the management server.
         """
         # TODO: Implement pairing
+        self.config.add_paired_console(console_url, access_token)
         pass
 
     def heartbeat(self):
