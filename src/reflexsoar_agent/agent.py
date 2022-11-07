@@ -13,8 +13,7 @@ from .core.errors import ConsoleAlreadyPaired, ConsoleNotPaired
 
 class AgentConfig:
 
-    def __init__(self, name: str = "", roles: list = [], policy: dict = {}, *args, **kwargs):
-        self.name = name
+    def __init__(self, roles: list = [], policy: dict = {}, *args, **kwargs):
         self.roles = roles
         self.role_configs = {}
 
@@ -43,10 +42,10 @@ class AgentConfig:
             'event_cache_ttl', 30)  # Default to 30 minutes
         self.disable_event_cache_check = policy.get(
             'disable_event_cache_check', False)
-        self.organization = policy.get('organization', '')
         self.health_check_interval = policy.get(
             'health_check_interval', 30)  # Default to 30 seconds
         self.paired_consoles = policy.get('paired_consoles', {})
+        self.name = policy.get('name', socket.gethostname())
 
     def add_paired_console(self, url: str, access_token: str):
         """Adds a paired console to the agent configuration.
@@ -72,7 +71,31 @@ class AgentConfig:
         else:
             raise ConsoleNotPaired(
                 f"Console {url} is not paired with this agent.")
-        
+
+    def set_value(self, key: str, value: str) -> None:
+        """Sets a configuration value.
+
+        This method sets a configuration value.
+
+        Args:
+            key (str): The key to set.
+            value (str): The value to set.
+        """
+        UPDATEABLE_CONFIG_KEYS = ["roles", "event_cache_key", "event_cache_ttl","health_check_interval"]
+        if key in UPDATEABLE_CONFIG_KEYS:
+            if hasattr(self, key):
+                if isinstance(getattr(self, key), list):
+                    setattr(self, key, value.split(",") if value not in [""] else [])
+                if isinstance(getattr(self, key), int):
+                    setattr(self, key, int(value))
+                if isinstance(getattr(self, key), bool):
+                    setattr(self, key, bool(value) if value else False)
+                if isinstance(getattr(self, key), str):
+                    setattr(self, key, value)
+            else:
+                raise KeyError(f"Key {key} does not exist in AgentConfig.")
+        else:
+            raise KeyError(f"Key {key} is not updateable.")        
 
 class Agent:
 
@@ -96,14 +119,13 @@ class Agent:
             logger.info('Loading persistent configuration.')
             if not self.load_persistent_config():
                 logger.warning(f"Failed to load persistent configuration. Using default configuration.")
-                self.set_config({'name': 'default', 'roles': [], 'policy': {}})
+                self.set_config({})
 
 
         self.loaded_roles = {}
         self.loaded_inputs = {}
         self.health = {}
         self.warnings = []
-        self.hostname = socket.gethostname()
 
         # Load all available inputs and roles
         self.load_inputs()
@@ -159,7 +181,9 @@ class Agent:
                     config = json.load(f)
                     self.set_config(config)
                     return True
-        except Exception as e:
+            else:
+                raise FileNotFoundError(f"Persistent configuration file {name} not found.")
+        except (Exception,FileNotFoundError) as e:
             logger.error(f'Failed to load persistent config: {e}')
             return False
 
@@ -242,7 +266,7 @@ class Agent:
             raise ValueError("Access token is required.")
 
         agent_data = {
-            "name": self.hostname,
+            "name": self.config.name,
             "ip_address": self.ip,
             "groups": kwargs.get('groups', []),
         }
@@ -328,12 +352,19 @@ def cli():
     parser.add_argument('--clear-persistent-config', action='store_true')
     parser.add_argument('--reset-console-pairing', type=str, help="Will reset the pairing for the agent with the supplied console address")
     parser.add_argument('--view-config', action='store_true', help="View the agent configuration")
+    parser.add_argument('--set-config-value', type=str, help="Set a configuration value.  Format: <key>:<value>.  If the target setting is a list provide each value separated by a comma")
     args = parser.parse_args()
 
     agent = Agent()
 
+    if args.set_config_value:
+        key, value = args.set_config_value.split(':')
+        agent.config.set_value(key, value)
+        agent.save_persistent_config()
+
     if args.view_config:
-        logger.info(f"Configuration Preview: {agent.config.json()}")
+        logger.info("Configuration Preview:")
+        print(json.dumps(agent.config.__dict__, indent=4))
         exit    
 
     if args.clear_persistent_config:
