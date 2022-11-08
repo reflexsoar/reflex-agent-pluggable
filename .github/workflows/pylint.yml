@@ -18,9 +18,6 @@ jobs:
       run: |
         pip install --upgrade pip
         pip install pylint
-    - name: Install dependencies
-      run: |
-        poetry install
     - name: Analysing the code with pylint
       run: |
         pylint $(git ls-files '*.py')
