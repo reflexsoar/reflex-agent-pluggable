@@ -1,1 +1,1 @@
-VERSION_NUMBER = "2022.12.00"
+version_number = "2022.12.00"

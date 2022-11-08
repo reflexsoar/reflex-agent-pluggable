@@ -4,19 +4,27 @@ import sys
 import json
 import inspect
 import socket
-import base64
+import argparse
+from dotenv import load_dotenv
 from platformdirs import user_data_dir
 from loguru import logger
-from .role import *
-from .input import *
+from .role import * # pylint: disable=wildcard-import,unused-wildcard-import
+from .input import * # pylint: disable=wildcard-import,unused-wildcard-import
 from .core.errors import ConsoleAlreadyPaired, ConsoleNotPaired
-from .core.management import ManagementConnection, get_management_connection, add_management_connection
-from .core.version import VERSION_NUMBER
+from .core.management import (
+    ManagementConnection,
+    get_management_connection
+)
+from .core.version import version_number
 
 
-class AgentConfig:
+class AgentConfig: # pylint: disable=too-many-instance-attributes
+    """Defines an AgentConfig object that stores configuration information for
+    the Reflex Agent
+    """
 
-    def __init__(self, uuid: str = None, roles: list = [], policy: dict = {}, *args, **kwargs):
+    def __init__(self, uuid: str = None, roles: list = None, policy: dict = None, **kwargs):
+        """Initializes the AgentConfig object."""
         self.uuid = uuid
         self.roles = roles
         self.role_configs = {}
@@ -29,6 +37,7 @@ class AgentConfig:
             self.from_policy(kwargs)
 
     def json(self):
+        """Returns the agent configuration as a JSON string."""
         return json.dumps(self.__dict__)
 
     def from_policy(self, policy):
@@ -52,7 +61,7 @@ class AgentConfig:
         self.console_info = policy.get('console_info', self.console_info)
         self.name = policy.get('name', socket.gethostname())
 
-    def add_paired_console(self, url: str, access_token: str, organization: str, agent_uuid: str):
+    def add_paired_console(self, url: str, access_token: str):
         """Adds a paired console to the agent configuration.
 
         This method adds a paired console to the agent configuration.
@@ -87,9 +96,9 @@ class AgentConfig:
             key (str): The key to set.
             value (str): The value to set.
         """
-        UPDATEABLE_CONFIG_KEYS = [
+        updateable_config_keys = [
             "roles", "event_cache_key", "event_cache_ttl", "health_check_interval"]
-        if key in UPDATEABLE_CONFIG_KEYS:
+        if key in updateable_config_keys:
             if hasattr(self, key):
                 if isinstance(getattr(self, key), list):
                     setattr(self, key, value.split(",")
@@ -106,9 +115,12 @@ class AgentConfig:
             raise KeyError(f"Key {key} is not updateable.")
 
 
-class Agent:
+class Agent: # pylint: disable=too-many-instance-attributes
+    """The Reflex Agent class. This class is the main entry point for the
+    Reflex Agent. It is responsible for loading the configuration, loading
+    roles and inputs, and starting the management connection."""
 
-    def __init__(self, config: dict = {}, persistent_config_path: str = None):
+    def __init__(self, config: dict = None, persistent_config_path: str = None):
         """Initializes the agent."""
 
         # If the agent is told to load the persistent configuration from a
@@ -129,15 +141,16 @@ class Agent:
             logger.info('Loading persistent configuration.')
             if not self.load_persistent_config():
                 logger.warning(
-                    f"Failed to load persistent configuration. Using default configuration.")
+                    "Failed to load persistent configuration. Using default configuration.")
                 self.set_config({})
 
         self.loaded_roles = {}
         self.loaded_inputs = {}
+        self.event_cache = {}
         self.health = {}
         self.healthy = True
         self.warnings = []
-        self.VERSION_NUMBER = VERSION_NUMBER
+        self.version_number = version_number
 
         # Load all available inputs and roles
         self.load_inputs()
@@ -160,21 +173,21 @@ class Agent:
         return self.config.roles
 
     @property
-    def ip(self) -> str:
-        """Returns the host IP address.
+    def ip_address(self) -> str:
+        """Returns the host ip_address address.
 
-        This method returns the host IP address.
+        This method returns the host ip_address address.
         """
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
             # doesn't even have to be reachable
-            s.connect(('10.255.255.255', 1))
-            IP = s.getsockname()[0]
-        except Exception:
-            IP = '127.0.0.1'
+            sock.connect(('10.255.255.255', 1))
+            ip_address = sock.getsockname()[0]
+        except socket.error:
+            ip_address = '127.0.0.1'
         finally:
-            s.close()
-        return IP
+            sock.close()
+        return ip_address
 
     def load_persistent_config(self) -> bool:
         """Loads the persistent configuration.
@@ -188,15 +201,15 @@ class Agent:
             name = 'persistent-config.json'
             _file = os.path.join(self.persistent_config_path, name)
             if os.path.exists(_file):
-                with open(_file, 'r', encoding="utf-8") as f:
-                    config = json.load(f)
+                with open(_file, 'r', encoding="utf-8") as file_handle:
+                    config = json.load(file_handle)
                     self.set_config(config)
                     return True
             else:
                 raise FileNotFoundError(
                     f"Persistent configuration file {name} not found.")
-        except (Exception, FileNotFoundError) as e:
-            logger.error(f'Failed to load persistent config: {e}')
+        except (FileNotFoundError) as error:
+            logger.error(f'Failed to load persistent config: {error}')
             return False
 
     def save_persistent_config(self) -> bool:
@@ -217,11 +230,11 @@ class Agent:
 
             # Write the persistent configuration file.
             _file = os.path.join(self.persistent_config_path, name)
-            with open(_file, 'w', encoding="utf-8") as f:
-                json.dump(self.config.__dict__, f)
+            with open(_file, 'w', encoding="utf-8") as file_handle:
+                json.dump(self.config.__dict__, file_handle)
             return True
-        except Exception as e:
-            logger.error(f'Failed to save persistent config: {e}')
+        except (FileNotFoundError) as error:
+            logger.error(f'Failed to save persistent config: {error}')
             return False
 
     def clear_persistent_config(self) -> bool:
@@ -233,8 +246,7 @@ class Agent:
         if os.path.exists(_file):
             os.remove(_file)
             return True
-        else:
-            return False
+        return False
 
     def fetch_config_from_console(self):
         """Fetches the agent configuration from the management server.
@@ -279,7 +291,7 @@ class Agent:
 
         agent_data = {
             "name": self.config.name,
-            "ip_address": self.ip,
+            "ip_address_address": self.ip_address,
             "groups": kwargs.get('groups', []),
         }
 
@@ -312,8 +324,6 @@ class Agent:
             raise ConsoleAlreadyPaired(
                 f"Failed to pair agent: {response.text}")
 
-        
-
     def heartbeat(self):
         """Sends a heartbeat to the management server.
 
@@ -323,7 +333,7 @@ class Agent:
         recoved = False
 
         data = {'healthy': self.healthy, 'health_issues': self.warnings,
-                'recovered': recoved, 'version': self.VERSION_NUMBER}
+                'recovered': recoved, 'version': self.version_number}
 
         # Check to see if a management connection has been established
         mgmt_connection = get_management_connection()
@@ -336,7 +346,6 @@ class Agent:
                 'POST', f'agent/heartbeat/{self.config.uuid}', data)
             if response.status_code == 200:
                 print("HEARTBEAT!")
-        pass
 
     def load_inputs(self):
         """Automatically loads all the inputs installed in to the agent library
@@ -362,7 +371,6 @@ class Agent:
 
         # Instantiate each role and add it to the agent roles list.
         for name, _class in roles:
-            _class.shortname
             role_config = self.config.role_configs.get(
                 f"{_class.shortname}_role_config", {})
             role_config = {'test': 'test'}
@@ -378,25 +386,18 @@ class Agent:
 
         This method starts all roles.
         """
-
-        # Start all roles.
-        for role in self.config.roles:
-            pass
+        raise NotImplementedError
 
     def start_role(self, role):
         """Starts the specified role.
 
         This method starts the specified role.
         """
+        raise NotImplementedError
 
-        # Start the role.
-        pass
-
-
+# pylint disable=too-many-statements
 def cli():
-
-    import argparse
-    from dotenv import load_dotenv
+    """Defines a command line entry point for the agent script"""
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--pair', action='store_true',
@@ -410,11 +411,15 @@ def cli():
         '--groups', type=str, help='Groups this agent should be automatically added to when paired')
     parser.add_argument('--clear-persistent-config', action='store_true')
     parser.add_argument('--reset-console-pairing', type=str,
-                        help="Will reset the pairing for the agent with the supplied console address")
+                        help="""Will reset the pairing for the agent with the
+                                supplied  console address""")
     parser.add_argument('--view-config', action='store_true',
                         help="View the agent configuration")
     parser.add_argument('--set-config-value', type=str,
-                        help="Set a configuration value.  Format: <key>:<value>.  If the target setting is a list provide each value separated by a comma")
+                        help="""Set a configuration value.
+                                Format: <key>:<value>.  If the target setting is
+                                 a list provide each value separated
+                                 by a comma""")
     parser.add_argument('--env-file', type=str,
                         help="The path to the .env file to load", default=None)
     parser.add_argument('--heartbeat', action="store_true",
@@ -425,7 +430,7 @@ def cli():
     load_dotenv(args.env_file)
 
     # Environmental variables can override command line arguments
-    args.pair = args.pair or os.getenv('REFLEX_AGENT_PAIR_MODE', False)
+    args.pair = args.pair or os.getenv('REFLEX_AGENT_PAIR_MODE')
     args.console = args.console or os.getenv('REFLEX_API_HOST')
     args.token = args.token or os.getenv('REFLEX_AGENT_PAIR_TOKEN')
 
@@ -439,11 +444,11 @@ def cli():
     if args.view_config:
         logger.info("Configuration Preview:")
         print(json.dumps(agent.config.__dict__, indent=4))
-        exit
+        sys.exit()
 
     if args.clear_persistent_config:
         agent.clear_persistent_config()
-        exit()
+        sys.exit()
 
     if args.reset_console_pairing:
         try:
@@ -451,23 +456,23 @@ def cli():
                 f"Resetting console pairing for {args.reset_console_pairing}")
             agent.config.remove_paired_console(args.reset_console_pairing)
             agent.save_persistent_config()
-        except (ConsoleNotPaired) as e:
+        except (ConsoleNotPaired) as error:
             logger.error(
-                f"Failed to reset console pairing for {args.reset_console_pairing}. {e}")
-        exit()
+                f"Failed to reset console pairing for {args.reset_console_pairing}. {error}")
+        sys.exit()
 
     if args.heartbeat:
 
         agent.heartbeat()
-        exit(1)
+        sys.exit(1)
 
     if args.pair:
 
-        # try:
-        agent.pair(args.console, args.token, groups=args.groups)
-        # except Exception as e:
-        #    logger.error(f"Error during pairing process. {e}")
-        #    exit(1)
+        try:
+            agent.pair(args.console, args.token, groups=args.groups)
+        except (ConsoleAlreadyPaired, ConsoleNotPaired) as error:
+            logger.error(f"Error during pairing process. {error}")
+            sys.exit(1)
 
     if args.start:
         logger.info(f"On-Start Config: {agent.config.json()}")
