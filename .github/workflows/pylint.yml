@@ -14,13 +14,13 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install Poetry
+    - name: Install Pip
       run: |
         pip install --upgrade pip
-        curl -sSL https://install.python-poetry.org | python3 -
+        pip install pylint
     - name: Install dependencies
       run: |
         poetry install
     - name: Analysing the code with pylint
       run: |
-        poetry run pylint $(git ls-files '*.py')
+        pylint $(git ls-files '*.py')
