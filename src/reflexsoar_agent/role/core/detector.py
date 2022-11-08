@@ -14,4 +14,3 @@ class Detector(BaseRole):
 
     def main(self):
         self.logger.info('DO SOMETHING DIFFERENT!')
-        self.logger.info(self.connections)

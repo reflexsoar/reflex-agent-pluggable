@@ -326,30 +326,21 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         # Check to see if the local config says this agent is already paired with the console
         # if it is throw an error
         if 'url' in self.config.console_info and self.config.console_info['url'] == console_url:
-            raise ConsoleAlreadyPaired(
-                f"Agent is already paired with {console_url}.")
+            raise ConsoleAlreadyPaired(f"Agent is already paired with {console_url}.")
 
         # Build a management connection to the pair the agent with
         mgmt_connection = ManagementConnection(
             console_url, access_token, ignore_tls=ignore_tls, register_globally=True)
 
         # Call the pairing endpoint
-        response = mgmt_connection.call_api('POST', '/api/v2.0/agent', agent_data)
-        if response.status_code == 200:
-
-            # Parse the json respone data into a dictionary
-            response_data = response.json()
-
-            # Update the authorization header on the management connection
-            mgmt_connection.update_header(
-                'Authorization', f"Bearer {response_data['token']}")
-            self.config.uuid = response_data['uuid']
-            mgmt_connection.api_key = response_data['token']
+        response = mgmt_connection.agent_pair(agent_data)
+        #response = mgmt_connection.call_api('POST', '/api/v2.0/agent', agent_data)
+        if response:
+            self.config.uuid = response['uuid']
+            self._managed_connections[mgmt_connection.name] = mgmt_connection
             self.config.console_info = mgmt_connection.config
             self.save_persistent_config()
-        else:
-            raise ConsoleAlreadyPaired(
-                f"Failed to pair agent: {response.text}")
+            
 
     def heartbeat(self) -> bool:
         """Sends a heartbeat to the management server.
@@ -365,25 +356,13 @@ class Agent:  # pylint: disable=too-many-instance-attributes
 
         data = {'healthy': self.healthy, 'health_issues': self.warnings,
                 'recovered': recoved, 'version': self.version_number}
-
-        # Check to see if a management connection has been established
-        mgmt_connection = get_management_connection()
         
-        if mgmt_connection is None:
-            mgmt_connection = ManagementConnection(**self.config.console_info, register_globally=True)
-
-        if mgmt_connection:
-            self.add_managed_connection(mgmt_connection)
-            response = mgmt_connection.call_api(
-                'POST', f'/api/v2.0/agent/heartbeat/{self.config.uuid}', data)
-            if response:
-                if response.status_code == 200:
-                    logger.success(
-                        f"Sent heartbeat to {mgmt_connection.config['url']}")
+        if (mgmt_connection := get_management_connection()) is None:
+            if (mgmt_connection := ManagementConnection(**self.config.console_info, register_globally=True)):
+                if(mgmt_connection.agent_heartbeat(self.config.uuid, data)):
+                    logger.success(f"Heartbeat sent to {mgmt_connection.config['url']}")
                     return True
-                else:
-                    logger.error(
-                        f"Failed to send heartbeat to {mgmt_connection.config['url']}")
+                
         logger.error("No management connection established.")
         return False
 

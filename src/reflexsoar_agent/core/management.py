@@ -4,12 +4,22 @@ the agent communicate with the ReflexSOAR management server
 
 from .version import version_number
 from requests import Session, Request
-from .errors import DuplicateConnectionName, ConnectionNotExist
+from requests.exceptions import ConnectionError, HTTPError
+from .errors import (
+    DuplicateConnectionName,
+    ConnectionNotExist,
+    ConsoleInternalServerError,
+    ConsoleAlreadyPaired,
+    AgentHeartbeatFailed
+)
+from .logging import logger
+
+_USER_AGENT = f'reflexsoar-agent/{version_number}'
 
 
-class ManagementConnection:
+class HTTPConnection:
 
-    def __init__(self, url: str, api_key: str, ignore_tls: bool = False, name: str = 'default', register_globally=False) -> None:
+    def __init__(self, url: str, api_key: str, ignore_tls: bool = False, name: str = 'default', register_globally=False, user_agent: str = None) -> None:
         """Initializes the management connection
 
         Args:
@@ -18,9 +28,8 @@ class ManagementConnection:
             name (str): The name of the connection. Defaults to 'default'.
             register_globally (bool, optional): Whether to register the connection globally. Defaults to False.
         """
-
-        self.version_number = version_number
         self.name = name
+        self.user_agent = user_agent or _USER_AGENT
         self._session = Session()
         self.api_key = api_key
         self.url = url
@@ -38,7 +47,7 @@ class ManagementConnection:
             {'Authorization': f'Bearer {self.api_key}'})
         self._session.headers.update({'Content-Type': 'application/json'})
         self._session.headers.update(
-            {'User-Agent': f'reflexsoar-agent/{self.version_number}'})
+            {'User-Agent': self.user_agent})
 
     def update_header(self, key: str, value: str) -> None:
         """Updates the header for the management connection
@@ -86,9 +95,45 @@ class ManagementConnection:
             # Send the HTTP request
             response = self._session.send(prepared_request)
             return response
-        except Exception as e:
-            print(e)
-            return None
+        except ConnectionError as e:
+            logger.error(f"Failed to connect to {self.url}. {e}")
+        except HTTPError as e:
+            logger.error(f"Failed to connect to {self.url}. {e}")
+        return None
+
+
+class ManagementConnection(HTTPConnection):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def agent_heartbeat(self, agent_id: str, data: dict) -> dict:
+        """Sends a heartbeat to the management server"""
+        if (response := self.call_api(
+            'POST', f'/api/v2.0/agent/heartbeat/{agent_id}', data)):
+            if response.status_code == 200:
+                response = response.json()
+            else:
+                raise AgentHeartbeatFailed(
+                    f"Failed to send heartbeat: {response.text}")
+        return response
+
+    def agent_pair(self, data: dict) -> dict:
+        """Pairs the agent with the management server"""
+        response = self.call_api('POST', '/api/v2.0/agent', data=data)
+        if response.status_code == 200:
+            response = response.json()
+            # Update this connection with the new access token
+            self.update_header('Authorization', f"Bearer {response['token']}")
+            self.api_key = response['token']
+        elif response.status_code == 409:
+            raise ConsoleAlreadyPaired(
+                f"Failed to pair agent: {response.text}")
+        elif response.status_code == 500:
+            raise ConsoleInternalServerError(
+                f"Failed to pair agent: {response.text}")
+
+        return response
 
 
 # Globally registered connections dictionary that can be imported
@@ -96,11 +141,13 @@ class ManagementConnection:
 # list of connections to share with Agent sub-processes
 connections = {}
 
+
 def build_connection(url: str, api_key: str, ignore_tls: bool = False, name: str = 'default'):
     """Wrapper function for creating a management connection"""
     if name not in connections:
         conn = ManagementConnection(url, api_key, ignore_tls, name)
         return conn
+
 
 def add_management_connection(conn: ManagementConnection) -> None:
     """Adds a management connection to the agent

@@ -6,6 +6,10 @@ class ConsoleNotPaired(Exception):
     """Raised when the console is not paired with an agent."""
     pass
 
+class ConsoleInternalServerError(Exception):
+    """Raised when the console returns a 500 error."""
+    pass
+
 class AgentHeartbeatFailed(Exception):
     """Raised when the agent fails to send a heartbeat to the management server."""
     pass
