@@ -1,16 +1,18 @@
 """Defines """
 import os
 import sys
+import time
 import json
 import inspect
 import socket
 import argparse
 from dotenv import load_dotenv
 from platformdirs import user_data_dir
+
 from .role import * # pylint: disable=wildcard-import,unused-wildcard-import
 from .input import * # pylint: disable=wildcard-import,unused-wildcard-import
 from .core.logging import logger, setup_logging
-from .core.errors import ConsoleAlreadyPaired, ConsoleNotPaired
+from .core.errors import ConsoleAlreadyPaired, ConsoleNotPaired, AgentHeartbeatFailed
 from .core.management import (
     ManagementConnection,
     get_management_connection
@@ -319,12 +321,11 @@ class Agent: # pylint: disable=too-many-instance-attributes
             mgmt_connection.api_key = response_data['token']
             self.config.console_info = mgmt_connection.config
             self.save_persistent_config()
-            self.heartbeat()
         else:
             raise ConsoleAlreadyPaired(
                 f"Failed to pair agent: {response.text}")
 
-    def heartbeat(self):
+    def heartbeat(self) -> bool:
         """Sends a heartbeat to the management server.
 
         This method sends a heartbeat to the management server.
@@ -344,10 +345,14 @@ class Agent: # pylint: disable=too-many-instance-attributes
         if mgmt_connection:
             response = mgmt_connection.call_api(
                 'POST', f'agent/heartbeat/{self.config.uuid}', data)
-            if response.status_code == 200:
-                logger.success(f"Sent heartbeat to {mgmt_connection.config['url']}")
-            else:
-                logger.error(f"Failed to send heartbeat to {mgmt_connection.config['url']}")
+            if response:
+                if response.status_code == 200:
+                    logger.success(f"Sent heartbeat to {mgmt_connection.config['url']}")
+                    return True
+                else:
+                    logger.error(f"Failed to send heartbeat to {mgmt_connection.config['url']}")
+        logger.error("No management connection established.")
+        return False
 
     def load_inputs(self):
         """Automatically loads all the inputs installed in to the agent library
@@ -415,6 +420,24 @@ class Agent: # pylint: disable=too-many-instance-attributes
         """
         for role in self.loaded_roles:
             self.loaded_roles[role].stop()
+
+    def run(self):
+        """Runs the agent.
+
+        This method runs the agent.
+        """
+        logger.info("Agent starting...")
+        if self.heartbeat():
+            self.start_roles()
+            while True:
+                time.sleep(self.config.health_check_interval)
+                if not self.heartbeat():
+                    self.stop_roles()
+                    exit(1)
+        else:
+            logger.error("Failed to send heartbeat.")
+            exit(1)
+
 
 # pylint disable=too-many-statements
 def cli():
@@ -491,14 +514,10 @@ def cli():
 
         try:
             agent.pair(args.console, args.token, groups=args.groups)
+            agent.run()
         except (ConsoleAlreadyPaired, ConsoleNotPaired) as error:
             logger.error(f"Error during pairing process. {error}")
             sys.exit(1)
 
     if args.start:
-        logger.info("Agent starting...")
-        agent.start_roles()
-        #agent.start_role('detector')
-        import time
-        time.sleep(10)
-        agent.stop_roles()
+        agent.run()
