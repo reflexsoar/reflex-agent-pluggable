@@ -17,8 +17,6 @@ from .core.management import (
 )
 from .core.version import version_number
 
-setup_logging()
-
 class AgentConfig: # pylint: disable=too-many-instance-attributes
     """Defines an AgentConfig object that stores configuration information for
     the Reflex Agent
@@ -30,6 +28,7 @@ class AgentConfig: # pylint: disable=too-many-instance-attributes
         self.roles = roles
         self.role_configs = {}
         self.console_info = {}
+        setup_logging(init=True)
 
         # If a policy is provided on initialization, load it
         if policy:
@@ -346,7 +345,9 @@ class Agent: # pylint: disable=too-many-instance-attributes
             response = mgmt_connection.call_api(
                 'POST', f'agent/heartbeat/{self.config.uuid}', data)
             if response.status_code == 200:
-                print("HEARTBEAT!")
+                logger.success(f"Sent heartbeat to {mgmt_connection.config['url']}")
+            else:
+                logger.error(f"Failed to send heartbeat to {mgmt_connection.config['url']}")
 
     def load_inputs(self):
         """Automatically loads all the inputs installed in to the agent library
