@@ -9,8 +9,8 @@ import argparse
 from dotenv import load_dotenv
 from platformdirs import user_data_dir
 
-from .role import * # pylint: disable=wildcard-import,unused-wildcard-import
-from .input import * # pylint: disable=wildcard-import,unused-wildcard-import
+from .role import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from .input import *  # pylint: disable=wildcard-import,unused-wildcard-import
 from .core.logging import logger, setup_logging
 from .core.errors import ConsoleAlreadyPaired, ConsoleNotPaired, AgentHeartbeatFailed
 from .core.management import (
@@ -19,7 +19,8 @@ from .core.management import (
 )
 from .core.version import version_number
 
-class AgentConfig: # pylint: disable=too-many-instance-attributes
+
+class AgentConfig:  # pylint: disable=too-many-instance-attributes
     """Defines an AgentConfig object that stores configuration information for
     the Reflex Agent
     """
@@ -117,7 +118,7 @@ class AgentConfig: # pylint: disable=too-many-instance-attributes
             raise KeyError(f"Key {key} is not updateable.")
 
 
-class Agent: # pylint: disable=too-many-instance-attributes
+class Agent:  # pylint: disable=too-many-instance-attributes
     """The Reflex Agent class. This class is the main entry point for the
     Reflex Agent. It is responsible for loading the configuration, loading
     roles and inputs, and starting the management connection."""
@@ -148,6 +149,7 @@ class Agent: # pylint: disable=too-many-instance-attributes
 
         self.loaded_roles = {}
         self.loaded_inputs = {}
+        self.running_roles = {}
         self.event_cache = {}
         self.health = {}
         self.healthy = True
@@ -347,10 +349,12 @@ class Agent: # pylint: disable=too-many-instance-attributes
                 'POST', f'agent/heartbeat/{self.config.uuid}', data)
             if response:
                 if response.status_code == 200:
-                    logger.success(f"Sent heartbeat to {mgmt_connection.config['url']}")
+                    logger.success(
+                        f"Sent heartbeat to {mgmt_connection.config['url']}")
                     return True
                 else:
-                    logger.error(f"Failed to send heartbeat to {mgmt_connection.config['url']}")
+                    logger.error(
+                        f"Failed to send heartbeat to {mgmt_connection.config['url']}")
         logger.error("No management connection established.")
         return False
 
@@ -378,48 +382,78 @@ class Agent: # pylint: disable=too-many-instance-attributes
 
         # Instantiate each role and add it to the agent roles list.
         for name, _class in roles:
-            role_config = self.config.role_configs.get(
-                f"{_class.shortname}_role_config", {})
-            role_config = {'test': 'test'}
-            self.loaded_roles[_class.shortname] = _class(config=role_config)
+            self.loaded_roles[_class.shortname] = _class
 
         for name in self.config.roles:
             if name not in self.loaded_roles:
                 self.warnings.append(
                     f"Role \"{name}\" not installed in agent library")
 
+    def get_initialized_role(self, name):
+        """Returns the role object for the given role name.
+
+        This method returns the role object for the given role name.
+
+        Args:
+            name (str): The name of the role.
+
+        Returns:
+            BaseRole: The role object.
+        """
+        _class = self.loaded_roles[name]
+        role_config = self.config.role_configs.get(
+            f"{_class.shortname}_role_config", {'wait_interval': 5})
+
+        return _class(config=role_config)
+
     def start_roles(self):
         """Starts all roles.
 
         This method starts all roles.
         """
-        for role in self.loaded_roles:
-            self.loaded_roles[role].start()
+        for name in self.loaded_roles:
+            if name in self.running_roles:
+                logger.warning(f"Role {name} already running.")
+            else:
+                self.running_roles[name] = self.get_initialized_role(name)
+                self.running_roles[name].start()
 
-    def start_role(self, role):
+    def start_role(self, name):
         """Starts the specified role.
 
         This method starts the specified role.
         """
-        if role in self.loaded_roles:
-            self.loaded_roles[role].start()
-        
+        if name in self.running_roles:
+            self.running_roles[name].start()
+        else:
+            role = self.get_initialized_role(name)
+            self.running_roles[name] = role
+            self.running_roles[name].start()
 
     def stop_role(self, role):
         """Stops the specified role.
 
         This method stops the specified role.
         """
-        if role in self.loaded_roles:
-            self.loaded_roles[role].stop()
+        if role in self.running_roles:
+            self.running_roles[role].stop()
 
     def stop_roles(self):
         """Stops all roles.
 
         This method stops all roles.
         """
-        for role in self.loaded_roles:
-            self.loaded_roles[role].stop()
+        for role in self.running_roles:
+            self.running_roles[role].stop()
+
+    def reload_role(self, name):
+        """
+        Reloads the specified role.
+        """
+        if name in self.running_roles:
+            self.stop_role(name)
+            self.running_roles[name] = self.get_initialized_role(name)
+            self.running_roles[name].start()
 
     def run(self):
         """Runs the agent.
@@ -429,11 +463,15 @@ class Agent: # pylint: disable=too-many-instance-attributes
         logger.info("Agent starting...")
         if self.heartbeat():
             self.start_roles()
-            while True:
-                time.sleep(self.config.health_check_interval)
-                if not self.heartbeat():
-                    self.stop_roles()
-                    exit(1)
+            try:
+                while True:
+                    time.sleep(self.config.health_check_interval)
+                    if not self.heartbeat():
+                        self.stop_roles()
+                        exit(1)
+            except KeyboardInterrupt:
+                self.stop_roles()
+                exit(0)
         else:
             logger.error("Failed to send heartbeat.")
             exit(1)
