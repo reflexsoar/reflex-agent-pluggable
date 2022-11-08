@@ -142,6 +142,12 @@ class ManagementConnection(HTTPConnection):
 connections = {}
 
 
+def build_http_connection(url: str, api_key: str, ignore_tls: bool = False, name: str = 'default'):
+    """Wrapper function for creating a basic HTTP connection"""
+    if name not in connections:
+        conn = HTTPConnection(url, api_key, ignore_tls, name)
+        return conn
+
 def build_connection(url: str, api_key: str, ignore_tls: bool = False, name: str = 'default'):
     """Wrapper function for creating a management connection"""
     if name not in connections:

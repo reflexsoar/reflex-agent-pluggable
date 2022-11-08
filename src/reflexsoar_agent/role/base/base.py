@@ -1,11 +1,32 @@
 import time
 from ...core.logging import logger
-from multiprocessing import Process, Event, Queue, Manager
-from ...core.errors import DuplicateConnectionName, ForbiddenConnectionName
-from ...core.management import build_connection
+from multiprocessing import Process, Event, Manager
 
 
-class BaseRole(Process):
+class RoleGuard(type):
+
+    __SENTINEL = object()
+
+    def __new__(mcs, name, bases, class_dict):
+        private = {key for base in bases for key, value in vars(base).items() if callable(value) and mcs.__is_final(value)}
+        if any(key in private for key in class_dict):
+            raise TypeError('Cannot override final method')
+        return super().__new__(mcs, name, bases, class_dict)
+
+    @classmethod
+    def __is_final(mcs, method):
+        try:
+            return method.__final is mcs.__SENTINEL
+        except AttributeError:
+            return False
+    
+    @classmethod
+    def final(mcs, method):
+        """Marks a method as final, preventing it from being overridden in subclasses"""
+        method.__final = mcs.__SENTINEL
+        return method
+
+class BaseRole(Process,metaclass=RoleGuard):
     """Base class for all roles.
 
     This class is the base class for all roles. It provides the basic
@@ -38,6 +59,7 @@ class BaseRole(Process):
         """Returns a string representation of the role"""
         return f"{self.__class__.__name__}({self.config})"
 
+    @RoleGuard.final
     def set_config(self, config):
         """
         Sets the configuration for the role. 
@@ -46,9 +68,11 @@ class BaseRole(Process):
         if 'wait_interval' not in self.config:
             self.config['wait_interval'] = 30
 
+    @RoleGuard.final
     def get_connection(self, name: str = 'default'):
         return self.connections.get(name)
 
+    @RoleGuard.final
     def share_connection(self, connection):
         """Shares a connection to the managed connections for this role and other
         roles that share this BaseRole instance.
@@ -59,6 +83,7 @@ class BaseRole(Process):
         if connection.name not in self.connections and connection.name != "default":
             self.connections[connection.name] = connection
 
+    @RoleGuard.final
     def unshare_connection(self, name):
         """Removes a connection from the managed connections for this role and other
         roles that share this BaseRole instance.
@@ -66,7 +91,7 @@ class BaseRole(Process):
         Args:
             connection (Connection): The connection to remove.
         """
-        if name in self.connections:
+        if name in self.connections and name != "default":
             del self.connections[name]
 
     def main(self):
@@ -99,6 +124,7 @@ class BaseRole(Process):
         except KeyboardInterrupt:
             pass
 
+    @RoleGuard.final
     def stop(self, from_self=False):
         self.logger.info(f"Stop of {self.shortname} requested")
         self._running.value = False

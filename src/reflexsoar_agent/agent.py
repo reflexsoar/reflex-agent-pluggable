@@ -158,8 +158,8 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         self.healthy = True
         self.warnings = []
         self.version_number = version_number
-        self._agent_manager = Manager()
-        self._managed_connections = self._agent_manager.dict(connections)
+        self._role_manager = Manager()
+        self._managed_connections = self._role_manager.dict(connections)
 
         # Load all available inputs and roles
         self.load_inputs()
@@ -356,13 +356,16 @@ class Agent:  # pylint: disable=too-many-instance-attributes
 
         data = {'healthy': self.healthy, 'health_issues': self.warnings,
                 'recovered': recoved, 'version': self.version_number}
+
+        mgmt_connection = get_management_connection()
         
-        if (mgmt_connection := get_management_connection()) is None:
-            if (mgmt_connection := ManagementConnection(**self.config.console_info, register_globally=True)):
-                if(mgmt_connection.agent_heartbeat(self.config.uuid, data)):
-                    logger.success(f"Heartbeat sent to {mgmt_connection.config['url']}")
-                    return True
-                
+        if not mgmt_connection:
+            mgmt_connection = ManagementConnection(**self.config.console_info, register_globally=True)
+        if mgmt_connection:
+            if(mgmt_connection.agent_heartbeat(self.config.uuid, data)):
+                logger.success(f"Heartbeat sent to {mgmt_connection.config['url']}")
+                return True
+            
         logger.error("No management connection established.")
         return False
 

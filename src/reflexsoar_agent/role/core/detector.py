@@ -1,4 +1,5 @@
 from reflexsoar_agent.role import BaseRole
+from reflexsoar_agent.core.management import build_http_connection
 
 class Detector(BaseRole):
     """Runner role.
@@ -14,3 +15,5 @@ class Detector(BaseRole):
 
     def main(self):
         self.logger.info('DO SOMETHING DIFFERENT!')
+        conn = build_http_connection('http://localhost:9200', 'secret', False, name='es-test')
+        self.logger.info(conn)
