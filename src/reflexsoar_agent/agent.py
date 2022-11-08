@@ -7,9 +7,9 @@ import socket
 import argparse
 from dotenv import load_dotenv
 from platformdirs import user_data_dir
-from loguru import logger
 from .role import * # pylint: disable=wildcard-import,unused-wildcard-import
 from .input import * # pylint: disable=wildcard-import,unused-wildcard-import
+from .core.logging import logger, setup_logging
 from .core.errors import ConsoleAlreadyPaired, ConsoleNotPaired
 from .core.management import (
     ManagementConnection,
@@ -17,6 +17,7 @@ from .core.management import (
 )
 from .core.version import version_number
 
+setup_logging()
 
 class AgentConfig: # pylint: disable=too-many-instance-attributes
     """Defines an AgentConfig object that stores configuration information for
@@ -386,14 +387,33 @@ class Agent: # pylint: disable=too-many-instance-attributes
 
         This method starts all roles.
         """
-        raise NotImplementedError
+        for role in self.loaded_roles:
+            self.loaded_roles[role].start()
 
     def start_role(self, role):
         """Starts the specified role.
 
         This method starts the specified role.
         """
-        raise NotImplementedError
+        if role in self.loaded_roles:
+            self.loaded_roles[role].start()
+        
+
+    def stop_role(self, role):
+        """Stops the specified role.
+
+        This method stops the specified role.
+        """
+        if role in self.loaded_roles:
+            self.loaded_roles[role].stop()
+
+    def stop_roles(self):
+        """Stops all roles.
+
+        This method stops all roles.
+        """
+        for role in self.loaded_roles:
+            self.loaded_roles[role].stop()
 
 # pylint disable=too-many-statements
 def cli():
@@ -475,4 +495,9 @@ def cli():
             sys.exit(1)
 
     if args.start:
-        logger.info(f"On-Start Config: {agent.config.json()}")
+        logger.info("Agent starting...")
+        agent.start_roles()
+        #agent.start_role('detector')
+        import time
+        time.sleep(10)
+        agent.stop_roles()

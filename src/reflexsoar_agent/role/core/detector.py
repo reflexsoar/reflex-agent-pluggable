@@ -11,3 +11,6 @@ class Detector(BaseRole):
 
     def __init__(self, config):
         super().__init__(config)
+
+    def main(self):
+        self.logger.info('DO SOMETHING DIFFERENT!')
