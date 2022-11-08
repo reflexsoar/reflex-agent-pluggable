@@ -123,7 +123,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
     Reflex Agent. It is responsible for loading the configuration, loading
     roles and inputs, and starting the management connection."""
 
-    def __init__(self, config: dict = None, persistent_config_path: str = None):
+    def __init__(self, config: dict = None, persistent_config_path: str = None, offline: bool = False):
         """Initializes the agent."""
 
         # If the agent is told to load the persistent configuration from a
@@ -147,6 +147,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
                     "Failed to load persistent configuration. Using default configuration.")
                 self.set_config({})
 
+        self.offline = offline
         self.loaded_roles = {}
         self.loaded_inputs = {}
         self.running_roles = {}
@@ -246,7 +247,6 @@ class Agent:  # pylint: disable=too-many-instance-attributes
 
         name = 'persistent-config.json'
         _file = os.path.join(self.persistent_config_path, name)
-        print(_file)
         if os.path.exists(_file):
             os.remove(_file)
             return True
@@ -333,6 +333,10 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         This method sends a heartbeat to the management server.
         """
 
+        # Skip heartbeats if running in offline mode.
+        if self.offline:
+            return True
+
         recoved = False
 
         data = {'healthy': self.healthy, 'health_issues': self.warnings,
@@ -412,11 +416,14 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         This method starts all roles.
         """
         for name in self.loaded_roles:
-            if name in self.running_roles:
-                logger.warning(f"Role {name} already running.")
+            if name in self.config.roles:
+                if name in self.running_roles:
+                    logger.warning(f"Role {name} already running.")
+                else:
+                    self.running_roles[name] = self.get_initialized_role(name)
+                    self.running_roles[name].start()
             else:
-                self.running_roles[name] = self.get_initialized_role(name)
-                self.running_roles[name].start()
+                logger.info(f"Agent not configured for role {name}")
 
     def start_role(self, name):
         """Starts the specified role.
@@ -461,6 +468,8 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         This method runs the agent.
         """
         logger.info("Agent starting...")
+        if self.offline:
+            logger.warning('Running in offline mode. Roles that require management connectivity may not work.')
         if self.heartbeat():
             self.start_roles()
             try:
@@ -506,6 +515,7 @@ def cli():
                         help="The path to the .env file to load", default=None)
     parser.add_argument('--heartbeat', action="store_true",
                         help="Send a heartbeat to the management server")
+    parser.add_argument('--offline', action="store_true", help="Run the agent in offline mode", default=False)
     args = parser.parse_args()
 
     # Load the .env file if it exists
@@ -516,7 +526,7 @@ def cli():
     args.console = args.console or os.getenv('REFLEX_API_HOST')
     args.token = args.token or os.getenv('REFLEX_AGENT_PAIR_TOKEN')
 
-    agent = Agent()
+    agent = Agent(offline=args.offline)
 
     if args.set_config_value:
         key, value = args.set_config_value.split(':')

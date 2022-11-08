@@ -2,6 +2,7 @@ import sys
 import json
 import datetime
 from loguru import logger
+import logging
 
 HANDLERS = {
     'json': None,

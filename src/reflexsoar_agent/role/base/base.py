@@ -18,24 +18,29 @@ class BaseRole(Process):
 
         manager = Manager()
         self._running = manager.Value(bool, False)
-        self.wait_interval = manager.Value(int, 5)
-        self.config = manager.Value(dict, {})
+        self.config = config
 
         super().__init__(*args, **kwargs)
 
         if config:
-            self.config = config
+            self.set_config(config)
 
         self.agent = agent
         self._should_stop = Event()
         self.logger = logger
+        self.disable_run_loop = False
 
     def __repr__(self):
         """Returns a string representation of the role"""
         return f"{self.__class__.__name__}({self.config})"
 
     def set_config(self, config):
+        """
+        Sets the configuration for the role. 
+        """
         self.config = config
+        if 'wait_interval' not in self.config:
+            self.config['wait_interval'] = 30
 
     def main(self):
         """The main method for the role. This function performs all the work
@@ -53,14 +58,17 @@ class BaseRole(Process):
         """Runs the role"""
         try:
             self.logger.info(f"Starting {self.shortname} role")
-            while self._running:
-
-                # Force the role to break out of the running loop
-                if self._should_stop.is_set():
-                    break
-
+            if self.disable_run_loop:
                 self.main()
-                time.sleep(self.config['wait_interval'])
+            else:
+                while self._running:
+
+                    # Force the role to break out of the running loop
+                    if self._should_stop.is_set():
+                        break
+
+                    self.main()
+                    time.sleep(self.config['wait_interval'])
         except KeyboardInterrupt:
             pass
 
