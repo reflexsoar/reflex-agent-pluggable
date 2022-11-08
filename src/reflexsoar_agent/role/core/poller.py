@@ -9,5 +9,5 @@ class Poller(BaseRole):
 
     shortname = 'poller'
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)

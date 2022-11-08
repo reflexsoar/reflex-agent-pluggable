@@ -13,3 +13,16 @@ class AgentHeartbeatFailed(Exception):
 class AgentNotAuthorized(Exception):
     """Raised when the agent is not authorized to connect to the management server."""
     pass
+
+class DuplicateConnectionName(Exception):
+    """Raised when a connection with the same name already exists."""
+    pass
+
+class ConnectionNotExist(Exception):
+    """Raised when a connection with the specified name does not exist."""
+    pass
+
+class ForbiddenConnectionName(Exception):
+    """Raised when a connection with the name 'default' is added by a process other than
+    the Agent process."""
+    pass

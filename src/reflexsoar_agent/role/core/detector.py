@@ -9,8 +9,9 @@ class Detector(BaseRole):
 
     shortname = 'detector'
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
     def main(self):
         self.logger.info('DO SOMETHING DIFFERENT!')
+        self.logger.info(self.connections)

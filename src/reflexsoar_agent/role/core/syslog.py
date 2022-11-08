@@ -1,6 +1,7 @@
 from socketserver import BaseRequestHandler, UDPServer
 from reflexsoar_agent.role import BaseRole
 from reflexsoar_agent.core.logging import logger
+from reflexsoar_agent.core.management import build_connection
 
 class SyslogUDPHandler(BaseRequestHandler):
 
@@ -26,8 +27,8 @@ class SyslogServer(BaseRole):
 
     shortname = 'syslog_server'
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.disable_run_loop = True
 
     def main(self):

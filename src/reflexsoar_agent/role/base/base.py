@@ -1,6 +1,8 @@
 import time
 from ...core.logging import logger
 from multiprocessing import Process, Event, Queue, Manager
+from ...core.errors import DuplicateConnectionName, ForbiddenConnectionName
+from ...core.management import build_connection
 
 
 class BaseRole(Process):
@@ -13,12 +15,14 @@ class BaseRole(Process):
 
     shortname = 'base'
 
-    def __init__(self, config, agent=None, *args, **kwargs):
+    def __init__(self, config, connections, agent=None, *args, **kwargs):
         """Initializes the role"""
 
         manager = Manager()
+        
         self._running = manager.Value(bool, False)
         self.config = config
+        self.connections = connections
 
         super().__init__(*args, **kwargs)
 
@@ -42,6 +46,29 @@ class BaseRole(Process):
         if 'wait_interval' not in self.config:
             self.config['wait_interval'] = 30
 
+    def get_connection(self, name: str = 'default'):
+        return self.connections.get(name)
+
+    def share_connection(self, connection):
+        """Shares a connection to the managed connections for this role and other
+        roles that share this BaseRole instance.
+
+        Args:
+            connection (Connection): The connection to add.
+        """
+        if connection.name not in self.connections and connection.name != "default":
+            self.connections[connection.name] = connection
+
+    def unshare_connection(self, name):
+        """Removes a connection from the managed connections for this role and other
+        roles that share this BaseRole instance.
+
+        Args:
+            connection (Connection): The connection to remove.
+        """
+        if name in self.connections:
+            del self.connections[name]
+
     def main(self):
         """The main method for the role. This function performs all the work
         of the role when triggered to do so by the run method.  It should 
@@ -50,6 +77,7 @@ class BaseRole(Process):
         """
         self.logger.info(
             f"Hello World from {self.shortname}! Sleeping for {self.config['wait_interval']}")
+        
         #self.logger.warning(f"Warning from {self.shortname}!")
         #self.logger.error(f"Error from {self.shortname}!")
         #self.logger.debug(f"Debug from {self.shortname}!")
@@ -62,7 +90,6 @@ class BaseRole(Process):
                 self.main()
             else:
                 while self._running:
-
                     # Force the role to break out of the running loop
                     if self._should_stop.is_set():
                         break

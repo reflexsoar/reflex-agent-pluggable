@@ -9,5 +9,5 @@ class Runner(BaseRole):
 
     shortname = 'runner'
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)

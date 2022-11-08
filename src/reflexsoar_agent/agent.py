@@ -8,6 +8,7 @@ import socket
 import argparse
 from dotenv import load_dotenv
 from platformdirs import user_data_dir
+from multiprocessing import Manager
 
 from .role import *  # pylint: disable=wildcard-import,unused-wildcard-import
 from .input import *  # pylint: disable=wildcard-import,unused-wildcard-import
@@ -15,7 +16,8 @@ from .core.logging import logger, setup_logging
 from .core.errors import ConsoleAlreadyPaired, ConsoleNotPaired, AgentHeartbeatFailed
 from .core.management import (
     ManagementConnection,
-    get_management_connection
+    get_management_connection,
+    connections
 )
 from .core.version import version_number
 
@@ -156,6 +158,8 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         self.healthy = True
         self.warnings = []
         self.version_number = version_number
+        self._agent_manager = Manager()
+        self._managed_connections = self._agent_manager.dict(connections)
 
         # Load all available inputs and roles
         self.load_inputs()
@@ -275,6 +279,26 @@ class Agent:  # pylint: disable=too-many-instance-attributes
                 if issubclass(r[1], base_class) and r[1] != base_class
                 ]
 
+    def add_managed_connection(self, connection):
+        """Adds a managed connection to the agent.
+
+        This method adds a managed connection to the agent and available to all roles.
+
+        Args:
+            connection (Conection): The connection to add.
+        """
+        self._managed_connections[connection.name] = connection
+
+    def remove_managed_connection(self, name):
+        """Removes a managed connection from the agent.
+
+        This method removes a managed connection from the agent making it unavailable to all roles.
+
+        Args:
+            connection (Conection): The connection to remove.
+        """
+        del self._managed_connections[name]
+
     def pair(self, console_url: str, access_token: str, ignore_tls: bool = False, **kwargs) -> bool:
         """Pairs the agent with the management server.
 
@@ -307,10 +331,10 @@ class Agent:  # pylint: disable=too-many-instance-attributes
 
         # Build a management connection to the pair the agent with
         mgmt_connection = ManagementConnection(
-            console_url, access_token, ignore_tls=ignore_tls)
+            console_url, access_token, ignore_tls=ignore_tls, register_globally=True)
 
         # Call the pairing endpoint
-        response = mgmt_connection.call_api('POST', 'agent', agent_data)
+        response = mgmt_connection.call_api('POST', '/api/v2.0/agent', agent_data)
         if response.status_code == 200:
 
             # Parse the json respone data into a dictionary
@@ -344,13 +368,14 @@ class Agent:  # pylint: disable=too-many-instance-attributes
 
         # Check to see if a management connection has been established
         mgmt_connection = get_management_connection()
-
+        
         if mgmt_connection is None:
-            mgmt_connection = ManagementConnection(**self.config.console_info)
+            mgmt_connection = ManagementConnection(**self.config.console_info, register_globally=True)
 
         if mgmt_connection:
+            self.add_managed_connection(mgmt_connection)
             response = mgmt_connection.call_api(
-                'POST', f'agent/heartbeat/{self.config.uuid}', data)
+                'POST', f'/api/v2.0/agent/heartbeat/{self.config.uuid}', data)
             if response:
                 if response.status_code == 200:
                     logger.success(
@@ -393,7 +418,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
                 self.warnings.append(
                     f"Role \"{name}\" not installed in agent library")
 
-    def get_initialized_role(self, name):
+    def initialize_role(self, name):
         """Returns the role object for the given role name.
 
         This method returns the role object for the given role name.
@@ -408,7 +433,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         role_config = self.config.role_configs.get(
             f"{_class.shortname}_role_config", {'wait_interval': 5})
 
-        return _class(config=role_config)
+        return _class(config=role_config, connections=self._managed_connections)
 
     def start_roles(self):
         """Starts all roles.
@@ -420,7 +445,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
                 if name in self.running_roles:
                     logger.warning(f"Role {name} already running.")
                 else:
-                    self.running_roles[name] = self.get_initialized_role(name)
+                    self.running_roles[name] = self.initialize_role(name)
                     self.running_roles[name].start()
             else:
                 logger.info(f"Agent not configured for role {name}")
@@ -433,7 +458,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         if name in self.running_roles:
             self.running_roles[name].start()
         else:
-            role = self.get_initialized_role(name)
+            role = self.initialize_role(name)
             self.running_roles[name] = role
             self.running_roles[name].start()
 
@@ -459,7 +484,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         """
         if name in self.running_roles:
             self.stop_role(name)
-            self.running_roles[name] = self.get_initialized_role(name)
+            self.running_roles[name] = self.initialize_role(name)
             self.running_roles[name].start()
 
     def run(self):

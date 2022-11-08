@@ -4,17 +4,19 @@ the agent communicate with the ReflexSOAR management server
 
 from .version import version_number
 from requests import Session, Request
+from .errors import DuplicateConnectionName, ConnectionNotExist
 
 
 class ManagementConnection:
 
-    def __init__(self, url: str, api_key: str, ignore_tls: bool = False, name: str = 'default') -> None:
+    def __init__(self, url: str, api_key: str, ignore_tls: bool = False, name: str = 'default', register_globally=False) -> None:
         """Initializes the management connection
 
         Args:
             url (str): The URL of the management server
             api_key (str): The API key to use for authentication
             name (str): The name of the connection. Defaults to 'default'.
+            register_globally (bool, optional): Whether to register the connection globally. Defaults to False.
         """
 
         self.version_number = version_number
@@ -24,8 +26,8 @@ class ManagementConnection:
         self.url = url
         self.ignore_tls = ignore_tls
         self.set_default_headers()
-        self._mgmt_api_version = "v2.0"
-        add_management_connection(self)
+        if register_globally:
+            add_management_connection(self)
 
     @property
     def config(self):
@@ -69,7 +71,7 @@ class ManagementConnection:
 
         try:  # Establish a base request dict
             request_data = {
-                'url': f'{self.url}/api/{self._mgmt_api_version}/{endpoint}'
+                'url': f'{self.url}/{endpoint}'
             }
 
             # If passing data, add it to the request as the json parameter
@@ -89,8 +91,16 @@ class ManagementConnection:
             return None
 
 
+# Globally registered connections dictionary that can be imported
+# not useful across multiprocess boundaries so the agent manages an additional
+# list of connections to share with Agent sub-processes
 connections = {}
 
+def build_connection(url: str, api_key: str, ignore_tls: bool = False, name: str = 'default'):
+    """Wrapper function for creating a management connection"""
+    if name not in connections:
+        conn = ManagementConnection(url, api_key, ignore_tls, name)
+        return conn
 
 def add_management_connection(conn: ManagementConnection) -> None:
     """Adds a management connection to the agent
@@ -99,7 +109,7 @@ def add_management_connection(conn: ManagementConnection) -> None:
     is used to communicate with the ReflexSOAR management server.
     """
     if conn.name in connections:
-        raise ValueError(
+        raise DuplicateConnectionName(
             f"Connection with name \"{conn.name}\" already exists")
     connections.update({conn.name: conn})
 
@@ -111,7 +121,7 @@ def remove_management_connection(conn: ManagementConnection) -> None:
     is used to communicate with the ReflexSOAR management server.
     """
     if conn.name not in connections:
-        raise ValueError(
+        raise ConnectionNotExist(
             f"Connection with name \"{conn.name}\" does not exist")
     connections.pop(conn.name)
 
