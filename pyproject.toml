@@ -16,6 +16,7 @@ python = "^3.11"
 loguru = "^0.6.0"
 requests = "^2.28.1"
 platformdirs = "^2.5.3"
+python-dotenv = "^0.21.0"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^2.15.5"

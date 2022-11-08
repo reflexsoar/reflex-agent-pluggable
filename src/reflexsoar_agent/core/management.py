@@ -2,32 +2,49 @@
 the agent communicate with the ReflexSOAR management server
 """
 
+from .version import VERSION_NUMBER
 from requests import Session, Request
 
 class ManagementConnection:
 
-    def __init__(self, mgmt_url: str, api_key: str, name: str = 'default') -> None:
+    def __init__(self, url: str, api_key: str, ignore_tls: bool = False, name: str = 'default') -> None:
         """Initializes the management connection
         
         Args:
-            mgmt_url (str): The URL of the management server
+            url (str): The URL of the management server
             api_key (str): The API key to use for authentication
             name (str): The name of the connection. Defaults to 'default'.
         """
 
+        self.VERSION_NUMBER = VERSION_NUMBER
         self.name = name
         self._session = Session()
         self.api_key = api_key
-        self._mgmt_url = mgmt_url
+        self.url = url
+        self.ignore_tls = ignore_tls
         self.set_default_headers()
         self._mgmt_api_version = "v2.0"
-        self.VERSION_NUMBER = '0.0.1'
+        add_management_connection(self)
 
+
+    @property
+    def config(self):
+        return {k:self.__dict__[k] for k in self.__dict__ if k in ['name', 'url', 'api_key', 'ignore_tls']}
     
     def set_default_headers(self):
         self._session.headers.update({'Authorization': f'Bearer {self.api_key}'})
         self._session.headers.update({'Content-Type': 'application/json'})
-        self._session.headers.update({'User-Agent': 'reflexsoar-agent/{self.VERSION_NUMBER}'})
+        self._session.headers.update({'User-Agent': f'reflexsoar-agent/{self.VERSION_NUMBER}'})
+
+    def update_header(self, key: str, value: str) -> None:
+        """Updates the header for the management connection
+        
+        Args:
+            key (str): The key to update
+            value (str): The value to set
+        """
+
+        self._session.headers[key] = value
 
 
     def call_api(self, method: str, endpoint: str, data: dict, **kwargs) -> dict:
@@ -43,17 +60,23 @@ class ManagementConnection:
             dict: The response from the server
         """
 
+        # Fix up the endpoint it shouldn't start or end with a /
+        if endpoint.startswith('/'):
+            endpoint = endpoint[1:]
+        if endpoint.endswith('/'):
+            endpoint = endpoint[:-1]
+
         try:# Establish a base request dict
             request_data = {
-                'url': f'{self._mgmt_url}/api/{self._mgmt_api_version}/{endpoint}'
-            }
+                'url': f'{self.url}/api/{self._mgmt_api_version}/{endpoint}'
+            }            
 
             # If passing data, add it to the request as the json parameter
             if data:
                 request_data['json'] = data
 
             # Prepare the HTTP request
-            request = Request(method, **request_data)
+            request = Request(method, **request_data, headers=self._session.headers)
             prepared_request = request.prepare()
 
             # Send the HTTP request
@@ -91,7 +114,7 @@ def get_management_connection(name: str = 'default') -> ManagementConnection:
     This method returns a management connection from the agent. The connection
     is used to communicate with the ReflexSOAR management server.
     """
-    if name not in connections:
-        raise ValueError(f"Connection with name \"{name}\" does not exist")
-    return connections.get(name)
+    if name in connections:
+        return connections[name]
+    return None
 
