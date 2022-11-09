@@ -13,4 +13,8 @@ class Poller(BaseRole):
         super().__init__(*args, **kwargs)
 
     def main(self):
-        print(self.connections)
+        conn = self.get_connection()
+        if conn:
+            inputs = conn.agent_get_inputs()
+            if inputs:
+                self.logger.info(f"Starting pollers for {len(inputs)} inputs.  Max Concurrent Inputs: {self.config['concurrent_inputs']}")

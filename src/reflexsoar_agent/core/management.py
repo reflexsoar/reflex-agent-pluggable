@@ -121,15 +121,15 @@ class ManagementConnection(HTTPConnection):
     def agent_pair(self, data: dict) -> dict:
         """Pairs the agent with the management server"""
         response = self.call_api('POST', '/api/v2.0/agent', data=data)
-        if response.status_code == 200:
+        if response and response.status_code == 200:
             response = response.json()
             # Update this connection with the new access token
             self.update_header('Authorization', f"Bearer {response['token']}")
             self.api_key = response['token']
-        elif response.status_code == 409:
+        elif response and response.status_code == 409:
             raise ConsoleAlreadyPaired(
                 f"Failed to pair agent: {response.text}")
-        elif response.status_code == 500:
+        elif response and response.status_code == 500:
             raise ConsoleInternalServerError(
                 f"Failed to pair agent: {response.text}")
 
@@ -139,8 +139,16 @@ class ManagementConnection(HTTPConnection):
         """Gets the policy for the agent"""
         response = self.call_api(
             'GET', f'/api/v2.0/agent/{agent_id}', None)
-        if response.status_code == 200:
+        if response and response.status_code == 200:
             response = response.json()['policy']
+        return response
+
+    def agent_get_inputs(self) -> dict:
+        """Gets the inputs for the agent"""
+        response = self.call_api(
+            'GET', f'/api/v2.0/agent/inputs', None)
+        if response and response.status_code == 200:
+            response = response.json()['inputs']
         return response
 
 
@@ -157,10 +165,10 @@ def build_http_connection(url: str, api_key: str, ignore_tls: bool = False, name
         conn = HTTPConnection(url, api_key, ignore_tls, name)
         return conn
 
-def build_connection(url: str, api_key: str, ignore_tls: bool = False, name: str = 'default'):
+def build_connection(url: str, api_key: str, ignore_tls: bool = False, name: str = 'default', register_globally=False):
     """Wrapper function for creating a management connection"""
     if name not in connections:
-        conn = ManagementConnection(url, api_key, ignore_tls, name)
+        conn = ManagementConnection(url, api_key, ignore_tls, name, register_globally=register_globally)
         return conn
 
 

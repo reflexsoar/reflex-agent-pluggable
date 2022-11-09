@@ -30,7 +30,7 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
     def __init__(self, uuid: str = None, roles: list = None, policy: dict = None, **kwargs):
         """Initializes the AgentConfig object."""
         self.uuid = uuid
-        self.roles = roles
+        self.roles = roles if roles else []
         self.role_configs = {}
         self.console_info = {}
         self.name = socket.gethostname()
@@ -104,7 +104,7 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
             value (str): The value to set.
         """
         updateable_config_keys = [
-            "roles", "event_cache_key", "event_cache_ttl", "health_check_interval"]
+            "roles", "event_cache_key", "event_cache_ttl", "health_check_interval", "role_configs"]
         if key in updateable_config_keys:
             if hasattr(self, key):
                 if isinstance(getattr(self, key), list):
@@ -115,6 +115,8 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
                 if isinstance(getattr(self, key), bool):
                     setattr(self, key, bool(value) if value else False)
                 if isinstance(getattr(self, key), str):
+                    setattr(self, key, value)
+                if isinstance(getattr(self, key), dict):
                     setattr(self, key, value)
             else:
                 raise KeyError(f"Key {key} does not exist in AgentConfig.")
@@ -162,6 +164,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         self.version_number = version_number
         self._role_manager = Manager()
         self._managed_connections = self._role_manager.dict(connections)
+        self._managed_configs = {}
 
         # Load all available inputs and roles
         self.load_inputs()
@@ -280,11 +283,28 @@ class Agent:  # pylint: disable=too-many-instance-attributes
                     policy['uuid'] != self.config.policy_uuid
                   ):
                     self.config.from_policy(policy)
+
+                    # Update the configuration of all the running roles
+                    role_configs = {}
+                    for role in self.loaded_roles:
+                        config_name = f"{role}_config"
+                        role_config = policy.get(config_name, None)
+                        if role_config:                            
+                            role_configs[config_name] = role_config
+                            if role in self.running_roles:
+                                config = self._managed_configs[config_name]
+                                for key, value in role_config.items():
+                                    config[key] = value
+
+                    if role_configs:
+                        self.config.set_value('role_configs', role_configs)
+
                     if self.config.roles:
                         self.stop_roles(self.config.roles)
                         self.start_roles()
                     else:
                         self.stop_roles()
+                    self.save_persistent_config()
 
     def clear_event_cache(self):
         """Clears the event cache."""
@@ -394,7 +414,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
                 return True
 
         logger.error("No management connection established.")
-        return False
+        return True
 
     def load_inputs(self):
         """Automatically loads all the inputs installed in to the agent library
@@ -439,10 +459,13 @@ class Agent:  # pylint: disable=too-many-instance-attributes
             BaseRole: The role object.
         """
         _class = self.loaded_roles[name]
-        role_config = self.config.role_configs.get(
-            f"{_class.shortname}_role_config", {'wait_interval': 5})
+        config_name = f"{_class.shortname}_config"
+        role_config = self.config.role_configs.get(config_name, {'wait_interval': 5})
+        self._managed_configs[config_name] = self._role_manager.dict(role_config)
 
-        return _class(config=role_config, connections=self._managed_connections)
+        config = self._managed_configs[config_name]
+
+        return _class(config=config, connections=self._managed_connections)
 
     def start_roles(self):
         """Starts all roles.
@@ -451,9 +474,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         """
         for name in self.loaded_roles:
             if name in self.config.roles:
-                if name in self.running_roles:
-                    logger.warning(f"Role {name} already running.")
-                else:
+                if name not in self.running_roles:
                     self.running_roles[name] = self.initialize_role(name)
                     self.running_roles[name].start()
             else:

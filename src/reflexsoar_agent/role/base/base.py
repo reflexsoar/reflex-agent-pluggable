@@ -26,6 +26,7 @@ class RoleGuard(type):
         method.__final = mcs.__SENTINEL
         return method
 
+
 class BaseRole(Process,metaclass=RoleGuard):
     """Base class for all roles.
 
@@ -66,7 +67,7 @@ class BaseRole(Process,metaclass=RoleGuard):
         """
         self.config = config
         if 'wait_interval' not in self.config:
-            self.config['wait_interval'] = 30
+            self.config['wait_interval'] = 5
 
     @RoleGuard.final
     def get_connection(self, name: str = 'default'):
