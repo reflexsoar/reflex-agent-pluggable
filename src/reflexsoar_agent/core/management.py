@@ -135,6 +135,15 @@ class ManagementConnection(HTTPConnection):
 
         return response
 
+    def agent_get_policy(self, agent_id: str) -> dict:
+        """Gets the policy for the agent"""
+        response = self.call_api(
+            'GET', f'/api/v2.0/agent/{agent_id}', None)
+        if response.status_code == 200:
+            response = response.json()['policy']
+        return response
+
+
 
 # Globally registered connections dictionary that can be imported
 # not useful across multiprocess boundaries so the agent manages an additional

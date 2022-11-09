@@ -13,5 +13,4 @@ class Poller(BaseRole):
         super().__init__(*args, **kwargs)
 
     def main(self):
-        if (conn := self.connections.get('default')):
-            print(conn)
+        print(self.connections)

@@ -33,6 +33,7 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
         self.roles = roles
         self.role_configs = {}
         self.console_info = {}
+        self.name = socket.gethostname()
         setup_logging(init=True)
 
         # If a policy is provided on initialization, load it
@@ -63,8 +64,9 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
             'disable_event_cache_check', False)
         self.health_check_interval = policy.get(
             'health_check_interval', 30)  # Default to 30 seconds
-        self.console_info = policy.get('console_info', self.console_info)
-        self.name = policy.get('name', socket.gethostname())
+        if 'console_info' in policy:
+            self.console_info = policy['console_info']
+        self.roles = policy.get('roles', self.roles)
 
     def add_paired_console(self, url: str, access_token: str):
         """Adds a paired console to the agent configuration.
@@ -263,6 +265,27 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         """
         raise NotImplementedError
 
+    def check_policy(self):
+        """Checks the agent policy.
+
+        This method checks the agent policy.
+        """
+        conn = get_management_connection()
+        if conn:
+            policy = conn.agent_get_policy(self.config.uuid)
+            if policy:
+                if (
+                    policy['revision'] > self.config.policy_revision and policy['uuid'] == self.config.policy_uuid
+                   ) or (
+                    policy['uuid'] != self.config.policy_uuid
+                  ):
+                    self.config.from_policy(policy)
+                    if self.config.roles:
+                        self.stop_roles(self.config.roles)
+                        self.start_roles()
+                    else:
+                        self.stop_roles()
+
     def clear_event_cache(self):
         """Clears the event cache."""
         self.event_cache = {}
@@ -326,21 +349,21 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         # Check to see if the local config says this agent is already paired with the console
         # if it is throw an error
         if 'url' in self.config.console_info and self.config.console_info['url'] == console_url:
-            raise ConsoleAlreadyPaired(f"Agent is already paired with {console_url}.")
+            raise ConsoleAlreadyPaired(
+                f"Agent is already paired with {console_url}.")
 
         # Build a management connection to the pair the agent with
-        mgmt_connection = ManagementConnection(
+        conn = ManagementConnection(
             console_url, access_token, ignore_tls=ignore_tls, register_globally=True)
 
         # Call the pairing endpoint
-        response = mgmt_connection.agent_pair(agent_data)
-        #response = mgmt_connection.call_api('POST', '/api/v2.0/agent', agent_data)
+        response = conn.agent_pair(agent_data)
+        #response = conn.call_api('POST', '/api/v2.0/agent', agent_data)
         if response:
             self.config.uuid = response['uuid']
-            self._managed_connections[mgmt_connection.name] = mgmt_connection
-            self.config.console_info = mgmt_connection.config
+            self._managed_connections[conn.name] = conn
+            self.config.console_info = conn.config
             self.save_persistent_config()
-            
 
     def heartbeat(self) -> bool:
         """Sends a heartbeat to the management server.
@@ -357,15 +380,19 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         data = {'healthy': self.healthy, 'health_issues': self.warnings,
                 'recovered': recoved, 'version': self.version_number}
 
-        mgmt_connection = get_management_connection()
-        
-        if not mgmt_connection:
-            mgmt_connection = ManagementConnection(**self.config.console_info, register_globally=True)
-        if mgmt_connection:
-            if(mgmt_connection.agent_heartbeat(self.config.uuid, data)):
-                logger.success(f"Heartbeat sent to {mgmt_connection.config['url']}")
+        conn = get_management_connection()
+
+        if not conn:
+            if self.config.console_info:
+                conn = ManagementConnection(
+                    **self.config.console_info, register_globally=True)
+        if conn:
+            self.add_managed_connection(conn)
+            if (conn.agent_heartbeat(self.config.uuid, data)):
+                logger.success(f"Heartbeat sent to {conn.config['url']}")
+                self.check_policy()
                 return True
-            
+
         logger.error("No management connection established.")
         return False
 
@@ -451,14 +478,25 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         """
         if role in self.running_roles:
             self.running_roles[role].stop()
+            self.running_roles[role] = None
 
-    def stop_roles(self):
+    def stop_roles(self, roles: list = None):
         """Stops all roles.
 
         This method stops all roles.
         """
-        for role in self.running_roles:
-            self.running_roles[role].stop()
+
+        # If a list of assigned roles is passed in, stop the roles that are
+        # not in the list
+        if roles:
+            for role in self.running_roles:
+                if role not in roles:
+                    self.running_roles[role].stop()
+                    self.running_roles[role] = None
+        else:
+            for role in self.running_roles:
+                self.running_roles[role].stop()
+                self.running_roles[role] = None
 
     def reload_role(self, name):
         """
@@ -476,11 +514,14 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         """
         logger.info("Agent starting...")
         if self.offline:
-            logger.warning('Running in offline mode. Roles that require management connectivity may not work.')
+            logger.warning(
+                'Running in offline mode. Roles that require management connectivity may not work.')
         if self.heartbeat():
             self.start_roles()
             try:
                 while True:
+                    logger.info(
+                        f"Agent sleeping for {self.config.health_check_interval} seconds.")
                     time.sleep(self.config.health_check_interval)
                     if not self.heartbeat():
                         self.stop_roles()
@@ -522,7 +563,8 @@ def cli():
                         help="The path to the .env file to load", default=None)
     parser.add_argument('--heartbeat', action="store_true",
                         help="Send a heartbeat to the management server")
-    parser.add_argument('--offline', action="store_true", help="Run the agent in offline mode", default=False)
+    parser.add_argument('--offline', action="store_true",
+                        help="Run the agent in offline mode", default=False)
     args = parser.parse_args()
 
     # Load the .env file if it exists
