@@ -1,7 +1,10 @@
 import os
+
 import pytest
 from platformdirs import user_data_dir
+
 from reflexsoar_agent.role.core.event import EventQueue
+
 
 @pytest.fixture(autouse=True)
 def db_path():

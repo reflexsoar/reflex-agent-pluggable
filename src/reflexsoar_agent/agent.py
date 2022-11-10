@@ -11,8 +11,7 @@ from multiprocessing import Manager
 from dotenv import load_dotenv
 from platformdirs import user_data_dir
 
-from .core.errors import (ConsoleAlreadyPaired,
-                          ConsoleNotPaired)
+from .core.errors import ConsoleAlreadyPaired, ConsoleNotPaired
 from .core.logging import logger, setup_logging
 from .core.management import (ManagementConnection, connections,
                               get_management_connection)
