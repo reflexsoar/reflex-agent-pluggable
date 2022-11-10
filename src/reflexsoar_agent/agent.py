@@ -622,15 +622,16 @@ def cli():
         '--groups', type=str, help='Groups this agent should be added to')
     parser.add_argument('--clear-persistent-config', action='store_true')
     parser.add_argument('--reset-console-pairing', type=str,
+                        metavar='CONSOLE_URL',
                         help="""Will reset the pairing for the agent with the
                                 supplied  console address""")
     parser.add_argument('--view-config', action='store_true',
                         help="View the agent configuration")
     parser.add_argument('--set-config-value', type=str,
+                        metavar="KEY:VALUE1,VALUE2",
                         help="""Set a configuration value.
-                                Format: <key>:<value>.  If the target setting is
-                                 a list provide each value separated
-                                 by a comma""")
+                                If the target setting is a list provide each value
+                                separated by a comma""")
     parser.add_argument('--env-file', type=str,
                         help="The path to the .env file to load", default=None)
     parser.add_argument('--heartbeat', action="store_true",
