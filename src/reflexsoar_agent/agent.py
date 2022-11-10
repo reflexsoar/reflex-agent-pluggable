@@ -359,7 +359,8 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         """
         del self._managed_connections[name]
 
-    def pair(self, console_url: str, access_token: str, ignore_tls: bool = False, **kwargs) -> bool:
+    def pair(self, console_url: str, access_token: str,
+             ignore_tls: bool = False, **kwargs) -> bool:
         """Pairs the agent with the management server.
 
         This method pairs the agent with the management server.
@@ -528,7 +529,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         # If a list of assigned roles is passed in, stop the roles that are
         # not in the list
         if roles:
-            for role_name, role_class  in self.running_roles.items():
+            for role_name, role_class in self.running_roles.items():
                 if role_name not in roles:
                     role_class.stop()
                     self.running_roles[role_name] = None
@@ -582,6 +583,7 @@ def cli_start(agent, console, token, groups):
         logger.error(f"Error during pairing process. {error}")
         sys.exit(1)
 
+
 def cli_reset_console_pairing(agent, console):
     """Resets the pairing with the console. It does not delete the agent on
     the Management Console."""
@@ -595,6 +597,7 @@ def cli_reset_console_pairing(agent, console):
             f"Failed to reset console pairing for {console}. {error}")
     sys.exit()
 
+
 def cli_view_config(agent):
     """Displays the agent configuration."""
     logger.info("Configuration Preview:")
@@ -602,6 +605,8 @@ def cli_view_config(agent):
     sys.exit()
 
 # pylint disable=too-many-statements
+
+
 def cli():
     """Defines a command line entry point for the agent script"""
 
@@ -645,7 +650,7 @@ def cli():
     agent = Agent(offline=args.offline)
 
     if args.set_config_value:
-        key, value = args._set_config_value.split(':')
+        key, value = args.set_config_value.split(':')
         agent.config.set_value(key, value)
         agent.save_persistent_config()
 

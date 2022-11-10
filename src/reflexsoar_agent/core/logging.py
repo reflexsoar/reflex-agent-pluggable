@@ -30,7 +30,7 @@ def formatter(message):
 def setup_logging(log_path="reflexsoar_agent.log",
                   rotation=1,
                   retention=10,
-                  handlers=['stdout', 'file'], level="INFO", init=False):
+                  handlers: list = None, level="INFO", init=False):
     """Sets up the logging for the agent and all of its components and modules
 
     Args:
@@ -41,6 +41,9 @@ def setup_logging(log_path="reflexsoar_agent.log",
         level (str, optional): The logging level. Defaults to "INFO".
         init (bool, optional): Whether or not to initialize the logger. Defaults to False.
     """
+
+    if handlers is None:
+        handlers = ['stdout', 'file']
 
     # Remove all existing handlers
     if init:
