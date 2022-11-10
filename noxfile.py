@@ -17,9 +17,10 @@ def lint(session):
     session.install("poetry")
     session.run("poetry", "install")
     session.run("poetry", "shell")
-    session.run("pylint", "src/")
+    session.run("pylint", "src/", "--exit-zero")
     #session.run("black", "--check", ".")
-    session.run("flake8", ".")
+    session.run("flake8", ".", "--exit-zero", "--statistics", "--output-file=reports/flake8/flake8stats.txt")
+    session.run("genbadge", "flake8", "-o", ".badges/flake8-badge.svg")
 
 @nox.session
 def typing(session):
