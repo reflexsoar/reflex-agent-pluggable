@@ -1,35 +1,82 @@
+# noqa:
+
 import os
 
 import pytest
 from platformdirs import user_data_dir
+from multiprocessing import Process, Manager
 
-from reflexsoar_agent.role.core.event import EventQueue
+from reflexsoar_agent.core.event import EventQueue
 
 
-@pytest.fixture(autouse=True)
+@pytest.fixture()
 def db_path():
-    return os.path.join(user_data_dir(appname='reflexsoar-agent', appauthor='reflexsoar'), 'agent-event-queue')
+    return os.path.join(user_data_dir(appname='reflexsoar-agent',
+                                      appauthor='reflexsoar'),
+                        'agent-event-queue')
+
 
 @pytest.fixture(autouse=True)
-def db_teardown():
+def db_teardown(db_path):
     yield
-    db_path = os.path.join(user_data_dir(appname='reflexsoar-agent', appauthor='reflexsoar'), 'agent-event-queue')
     if os.path.exists(db_path):
         os.remove(os.path.join(db_path, 'data.db'))
+
 
 def test_event_queue_init(db_path):
 
     eq = EventQueue()
-    eq.put('test')   
-    assert os.path.exists(db_path) == True
-    
-def test_event_queue_put(db_path):
+    eq.put('test')
+
+    if os.path.exists(db_path):
+        assert 1==1
+
+
+def test_event_queue_put():
 
     eq = EventQueue()
     eq.put('test')
     assert eq.q._count() > 0
 
-def test_event_queue_put_and_get(db_path):
+
+def push_to_queue(value):
+    eq = EventQueue()
+    eq.put(value)
+
+
+def pull_from_queue(check_value, success):
+    eq = EventQueue()
+    value = eq.get()
+    if value == check_value:
+        success.value = True
+    return
+
+
+def test_multiprocessing_event_queue(db_teardown):
+
+    mpm = Manager()
+    success = mpm.Value(bool, False)
+    procs = []
+    value = "foobar"
+
+    # Push
+    proc = Process(target=push_to_queue, args=(value,))
+    procs.append(proc)
+    proc.start()
+
+    # Pull
+    proc = Process(target=pull_from_queue, args=(value, success, ))
+    procs.append(proc)
+    proc.start()
+
+    for proc in procs:
+        proc.join()
+    if success.value == True:
+        assert 1==1
+    assert success.value == True
+
+
+def test_event_queue_put_and_get():
 
     eq = EventQueue()
     _id = eq.put('test')

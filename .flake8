@@ -8,4 +8,5 @@ exclude = .git,
     *.egg-info,
     .nox,
     .pytest_cache,
-    .mypy_cache
+    .mypy_cache,
+    tests/test_*.py

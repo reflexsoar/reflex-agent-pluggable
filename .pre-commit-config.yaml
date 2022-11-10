@@ -5,6 +5,7 @@ repos:
   - id: trailing-whitespace
   - id: detect-private-key
   - id: name-tests-test
+    args: ['--pytest-test-first']
 - repo: https://gitlab.com/pycqa/flake8
   rev: 3.8.1
   hooks:
