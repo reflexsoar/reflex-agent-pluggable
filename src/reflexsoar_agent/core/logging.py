@@ -1,8 +1,6 @@
 import sys
-import json
-import datetime
+
 from loguru import logger
-import logging
 
 HANDLERS = {
     'json': None,
@@ -52,10 +50,14 @@ def setup_logging(log_path="reflexsoar_agent.log",
     # Establishes a logger for stdout and writing to a file
     for handler in handlers:
         if handler == 'file':
-            HANDLERS['file'] = logger.add(log_path, rotation=f"{rotation} MB",
-               retention=retention, compression="zip", enqueue=True, encoding='utf-8')
+            HANDLERS['file'] = logger.add(log_path,
+                                          rotation=f"{rotation} MB",
+                                          retention=retention,
+                                          compression="zip",
+                                          enqueue=True,
+                                          encoding='utf-8'
+                                          )
         if handler == 'stdout':
             HANDLERS['stdout'] = logger.add(sys.stdout, enqueue=True)
-        if handler == 'json': 
+        if handler == 'json':
             HANDLERS['json'] = logger.add(sys.stdout, format=formatter, enqueue=True)
-    

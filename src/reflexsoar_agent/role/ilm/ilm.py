@@ -1,5 +1,6 @@
 from reflexsoar_agent.role import BaseRole
 
+
 class ILM(BaseRole):
     """ILM role.
 

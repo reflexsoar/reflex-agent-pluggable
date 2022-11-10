@@ -1,32 +1,33 @@
-"""Defines all the functions that are used to manage the agent and have 
+"""Defines all the functions that are used to manage the agent and have
 the agent communicate with the ReflexSOAR management server
 """
 
-from .version import version_number
-from requests import Session, Request
+from typing import Any
+
+from requests import Request, Session
 from requests.exceptions import ConnectionError, HTTPError
-from .errors import (
-    DuplicateConnectionName,
-    ConnectionNotExist,
-    ConsoleInternalServerError,
-    ConsoleAlreadyPaired,
-    AgentHeartbeatFailed
-)
+
+from .errors import (AgentHeartbeatFailed, ConnectionNotExist,
+                     ConsoleAlreadyPaired, ConsoleInternalServerError,
+                     DuplicateConnectionName)
 from .logging import logger
+from .version import version_number
 
 _USER_AGENT = f'reflexsoar-agent/{version_number}'
 
 
 class HTTPConnection:
 
-    def __init__(self, url: str, api_key: str, ignore_tls: bool = False, name: str = 'default', register_globally=False, user_agent: str = None) -> None:
+    def __init__(self, url: str, api_key: str, ignore_tls: bool = False,
+                 name: str = 'default', register_globally=False,
+                 user_agent: str = None) -> None:
         """Initializes the management connection
 
         Args:
             url (str): The URL of the management server
             api_key (str): The API key to use for authentication
             name (str): The name of the connection. Defaults to 'default'.
-            register_globally (bool, optional): Whether to register the connection globally. Defaults to False.
+            register_globally (bool, optional): Share with all roles.
         """
         self.name = name
         self.user_agent = user_agent or _USER_AGENT
@@ -40,7 +41,10 @@ class HTTPConnection:
 
     @property
     def config(self):
-        return {k: self.__dict__[k] for k in self.__dict__ if k in ['name', 'url', 'api_key', 'ignore_tls']}
+        return {
+            k: self.__dict__[k] for k in self.__dict__
+            if k in ['name', 'url', 'api_key', 'ignore_tls']
+        }
 
     def set_default_headers(self):
         self._session.headers.update(
@@ -59,7 +63,7 @@ class HTTPConnection:
 
         self._session.headers[key] = value
 
-    def call_api(self, method: str, endpoint: str, data: dict, **kwargs) -> dict:
+    def call_api(self, method: str, endpoint: str, data: dict, **kwargs) -> Any:
         """Calls the management API
 
         Args:
@@ -69,7 +73,7 @@ class HTTPConnection:
             **kwargs: Additional arguments to pass to the request
 
         Returns:
-            dict: The response from the server
+            Response: The response from the server
         """
 
         # Fix up the endpoint it shouldn't start or end with a /
@@ -110,7 +114,7 @@ class ManagementConnection(HTTPConnection):
     def agent_heartbeat(self, agent_id: str, data: dict) -> dict:
         """Sends a heartbeat to the management server"""
         if (response := self.call_api(
-            'POST', f'/api/v2.0/agent/heartbeat/{agent_id}', data)):
+                'POST', f'/api/v2.0/agent/heartbeat/{agent_id}', data)):
             if response.status_code == 200:
                 response = response.json()
             else:
@@ -146,11 +150,10 @@ class ManagementConnection(HTTPConnection):
     def agent_get_inputs(self) -> dict:
         """Gets the inputs for the agent"""
         response = self.call_api(
-            'GET', f'/api/v2.0/agent/inputs', None)
+            'GET', '/api/v2.0/agent/inputs', None)
         if response and response.status_code == 200:
             response = response.json()['inputs']
         return response
-
 
 
 # Globally registered connections dictionary that can be imported
@@ -159,16 +162,20 @@ class ManagementConnection(HTTPConnection):
 connections = {}
 
 
-def build_http_connection(url: str, api_key: str, ignore_tls: bool = False, name: str = 'default'):
+def build_http_connection(url: str, api_key: str, ignore_tls: bool = False,
+                          name: str = 'default'):
     """Wrapper function for creating a basic HTTP connection"""
     if name not in connections:
         conn = HTTPConnection(url, api_key, ignore_tls, name)
         return conn
 
-def build_connection(url: str, api_key: str, ignore_tls: bool = False, name: str = 'default', register_globally=False):
+
+def build_connection(url: str, api_key: str, ignore_tls: bool = False,
+                     name: str = 'default', register_globally=False):
     """Wrapper function for creating a management connection"""
     if name not in connections:
-        conn = ManagementConnection(url, api_key, ignore_tls, name, register_globally=register_globally)
+        conn = ManagementConnection(url, api_key, ignore_tls,
+                                    name, register_globally=register_globally)
         return conn
 
 

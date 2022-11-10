@@ -1,7 +1,8 @@
 from socketserver import BaseRequestHandler, UDPServer
-from reflexsoar_agent.role import BaseRole
+
 from reflexsoar_agent.core.logging import logger
-from reflexsoar_agent.core.management import build_connection
+from reflexsoar_agent.role import BaseRole
+
 
 class SyslogUDPHandler(BaseRequestHandler):
 
@@ -11,7 +12,7 @@ class SyslogUDPHandler(BaseRequestHandler):
 
     def handle(self):
         data = bytes.decode(self.request[0].strip(), encoding="utf-8")
-        socket = self.request[1]
+        socket = self.request[1]  # noqa: F841
         if data:
             with open('syslog.log', 'a', encoding="utf-8") as f:
                 f.write(data + '\n')
@@ -40,4 +41,3 @@ class SyslogServer(BaseRole):
             raise
         except KeyboardInterrupt:
             pass
-

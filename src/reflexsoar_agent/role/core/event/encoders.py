@@ -13,17 +13,15 @@ class JSONSerializable(object):
 
     def jsonify(self):
         ''' Returns a json string of the object '''
-        
+
         return json.dumps(self, sort_keys=True, indent=4, cls=CustomJsonEncoder)
 
     def attr(self, attributes, name, default, error=None):
         ''' Fetches an attribute from the passed dictionary '''
-        
+
         is_required = error is not None
 
         if is_required and name not in attributes:
             raise ValueError(error)
         else:
             return attributes.get(name, default)
-
-

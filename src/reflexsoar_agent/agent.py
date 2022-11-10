@@ -1,25 +1,24 @@
 """Defines """
+import argparse
+import inspect
+import json
 import os
+import socket
 import sys
 import time
-import json
-import inspect
-import socket
-import argparse
-from dotenv import load_dotenv
-from platformdirs import user_data_dir
 from multiprocessing import Manager
 
-from .role import *  # pylint: disable=wildcard-import,unused-wildcard-import
-from .input import *  # pylint: disable=wildcard-import,unused-wildcard-import
+from dotenv import load_dotenv
+from platformdirs import user_data_dir
+
+from .core.errors import (ConsoleAlreadyPaired,
+                          ConsoleNotPaired)
 from .core.logging import logger, setup_logging
-from .core.errors import ConsoleAlreadyPaired, ConsoleNotPaired, AgentHeartbeatFailed
-from .core.management import (
-    ManagementConnection,
-    get_management_connection,
-    connections
-)
+from .core.management import (ManagementConnection, connections,
+                              get_management_connection)
 from .core.version import version_number
+from .input import *  # pylint: disable=wildcard-import,unused-wildcard-import # noqa: F403
+from .role import *  # pylint: disable=wildcard-import,unused-wildcard-import # noqa: F403
 
 
 class AgentConfig:  # pylint: disable=too-many-instance-attributes
@@ -29,6 +28,9 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
 
     def __init__(self, uuid: str = None, roles: list = None, policy: dict = None, **kwargs):
         """Initializes the AgentConfig object."""
+        if roles is None:
+            roles = []
+
         self.uuid = uuid
         self.roles = roles if roles else []
         self.role_configs = {}
@@ -104,7 +106,9 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
             value (str): The value to set.
         """
         updateable_config_keys = [
-            "roles", "event_cache_key", "event_cache_ttl", "health_check_interval", "role_configs"]
+            "roles", "event_cache_key", "event_cache_ttl",
+            "health_check_interval", "role_configs"
+        ]
         if key in updateable_config_keys:
             if hasattr(self, key):
                 if isinstance(getattr(self, key), list):
@@ -129,7 +133,8 @@ class Agent:  # pylint: disable=too-many-instance-attributes
     Reflex Agent. It is responsible for loading the configuration, loading
     roles and inputs, and starting the management connection."""
 
-    def __init__(self, config: dict = None, persistent_config_path: str = None, offline: bool = False):
+    def __init__(self, config: dict = None, persistent_config_path: str = None,
+                 offline: bool = False):
         """Initializes the agent."""
 
         # If the agent is told to load the persistent configuration from a
@@ -144,14 +149,14 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         # Load the provided configuration or the persistent configuration.
         if config:
             logger.info('Loading provided configuration.')
-            self.set_config(config)
+            self._set_config(config)
             self.save_persistent_config()
         else:
             logger.info('Loading persistent configuration.')
             if not self.load_persistent_config():
                 logger.warning(
                     "Failed to load persistent configuration. Using default configuration.")
-                self.set_config({})
+                self._set_config({})
 
         self.offline = offline
         self.loaded_roles = {}
@@ -170,7 +175,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         self.load_inputs()
         self.load_roles()
 
-    def set_config(self, config: dict) -> None:
+    def _set_config(self, config: dict) -> None:
         """Sets the agent configuration.
 
         This method sets the agent configuration.
@@ -187,7 +192,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         return self.config.roles
 
     @property
-    def ip_address(self) -> str:
+    def _ip_address(self) -> str:
         """Returns the host ip_address address.
 
         This method returns the host ip_address address.
@@ -217,7 +222,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
             if os.path.exists(_file):
                 with open(_file, 'r', encoding="utf-8") as file_handle:
                     config = json.load(file_handle)
-                    self.set_config(config)
+                    self._set_config(config)
                     return True
             else:
                 raise FileNotFoundError(
@@ -268,43 +273,55 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         """
         raise NotImplementedError
 
+    def _get_role_configs(self, policy: dict) -> dict:
+        """Gets the role configurations from a passed policy
+
+        This method gets the role configurations.
+        """
+        role_configs = {}
+        for role in self.loaded_roles:
+            config_name = f"{role}_config"
+            role_config = policy.get(config_name, None)
+            if role_config:
+                role_configs[config_name] = role_config
+                if role in self.running_roles:
+                    config = self._managed_configs[config_name]
+                    for key, value in role_config.items():
+                        config[key] = value
+        return role_configs
+
     def check_policy(self):
         """Checks the agent policy.
 
         This method checks the agent policy.
         """
         conn = get_management_connection()
+
+        policy = None
         if conn:
             policy = conn.agent_get_policy(self.config.uuid)
-            if policy:
-                if (
-                    policy['revision'] > self.config.policy_revision and policy['uuid'] == self.config.policy_uuid
-                   ) or (
-                    policy['uuid'] != self.config.policy_uuid
-                  ):
-                    self.config.from_policy(policy)
 
-                    # Update the configuration of all the running roles
-                    role_configs = {}
-                    for role in self.loaded_roles:
-                        config_name = f"{role}_config"
-                        role_config = policy.get(config_name, None)
-                        if role_config:                            
-                            role_configs[config_name] = role_config
-                            if role in self.running_roles:
-                                config = self._managed_configs[config_name]
-                                for key, value in role_config.items():
-                                    config[key] = value
+        if policy:
+            policy_revision = self.config.policy_revision
+            if (
+                policy['revision'] > policy_revision and policy['uuid'] == policy_revision
+            ) or (
+                policy['uuid'] != self.config.policy_uuid
+            ):
+                self.config.from_policy(policy)
 
-                    if role_configs:
-                        self.config.set_value('role_configs', role_configs)
+                # Update the configuration of all the running roles
+                role_configs = self._get_role_configs(policy)
 
-                    if self.config.roles:
-                        self.stop_roles(self.config.roles)
-                        self.start_roles()
-                    else:
-                        self.stop_roles()
-                    self.save_persistent_config()
+                if role_configs:
+                    self.config.set_value('role_configs', role_configs)
+
+                if self.config.roles:
+                    self.stop_roles(self.config.roles)
+                    self.start_roles()
+                else:
+                    self.stop_roles()
+                self.save_persistent_config()
 
     def clear_event_cache(self):
         """Clears the event cache."""
@@ -335,7 +352,8 @@ class Agent:  # pylint: disable=too-many-instance-attributes
     def remove_managed_connection(self, name):
         """Removes a managed connection from the agent.
 
-        This method removes a managed connection from the agent making it unavailable to all roles.
+        This method removes a managed connection from the agent making it
+        unavailable to all roles.
 
         Args:
             connection (Conection): The connection to remove.
@@ -362,7 +380,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
 
         agent_data = {
             "name": self.config.name,
-            "ip_address_address": self.ip_address,
+            "ip_address_address": self._ip_address,
             "groups": kwargs.get('groups', []),
         }
 
@@ -378,14 +396,14 @@ class Agent:  # pylint: disable=too-many-instance-attributes
 
         # Call the pairing endpoint
         response = conn.agent_pair(agent_data)
-        #response = conn.call_api('POST', '/api/v2.0/agent', agent_data)
+        # response = conn.call_api('POST', '/api/v2.0/agent', agent_data)
         if response:
             self.config.uuid = response['uuid']
             self._managed_connections[conn.name] = conn
             self.config.console_info = conn.config
             self.save_persistent_config()
 
-    def heartbeat(self) -> bool:
+    def heartbeat(self, skip_run=False) -> bool:
         """Sends a heartbeat to the management server.
 
         This method sends a heartbeat to the management server.
@@ -408,9 +426,10 @@ class Agent:  # pylint: disable=too-many-instance-attributes
                     **self.config.console_info, register_globally=True)
         if conn:
             self.add_managed_connection(conn)
-            if (conn.agent_heartbeat(self.config.uuid, data)):
+            if conn.agent_heartbeat(self.config.uuid, data):
                 logger.success(f"Heartbeat sent to {conn.config['url']}")
-                self.check_policy()
+                if not skip_run:
+                    self.check_policy()
                 return True
 
         logger.error("No management connection established.")
@@ -422,7 +441,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         the agent configuration file.
         """
         # Find all the inputs in the agent input library that have been subclassed
-        inputs = self._load_classes(BaseInput)
+        inputs = self._load_classes(BaseInput)  # noqa: F405
 
         for name, _class in inputs:
             _shortname = name.lower()
@@ -436,10 +455,10 @@ class Agent:  # pylint: disable=too-many-instance-attributes
 
         # Find all the roles in the agent role library that have been subclassed
         # from the BaseRole class.
-        roles = self._load_classes(BaseRole)
+        roles = self._load_classes(BaseRole)  # noqa: F405
 
         # Instantiate each role and add it to the agent roles list.
-        for name, _class in roles:
+        for _name, _class in roles:
             self.loaded_roles[_class.shortname] = _class
 
         for name in self.config.roles:
@@ -510,14 +529,14 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         # If a list of assigned roles is passed in, stop the roles that are
         # not in the list
         if roles:
-            for role in self.running_roles:
-                if role not in roles:
-                    self.running_roles[role].stop()
-                    self.running_roles[role] = None
+            for role_name, role_class  in self.running_roles.items():
+                if role_name not in roles:
+                    role_class.stop()
+                    self.running_roles[role_name] = None
         else:
-            for role in self.running_roles:
-                self.running_roles[role].stop()
-                self.running_roles[role] = None
+            for role_name, role_class in self.running_roles.items():
+                role_class.stop()
+                self.running_roles[role_name] = None
 
     def reload_role(self, name):
         """
@@ -533,11 +552,11 @@ class Agent:  # pylint: disable=too-many-instance-attributes
 
         This method runs the agent.
         """
-        logger.info("Agent starting...")
+        logger.info(f"Agent starting. Version {self.version_number}.")
         if self.offline:
             logger.warning(
-                'Running in offline mode. Roles that require management connectivity may not work.')
-        if self.heartbeat():
+                'Running in offline mode. Some roles may not work.')
+        if self.heartbeat(skip_run=True):
             self.start_roles()
             try:
                 while True:
@@ -546,14 +565,42 @@ class Agent:  # pylint: disable=too-many-instance-attributes
                     time.sleep(self.config.health_check_interval)
                     if not self.heartbeat():
                         self.stop_roles()
-                        exit(1)
+                        sys.exit(1)
             except KeyboardInterrupt:
                 self.stop_roles()
-                exit(0)
+                sys.exit(0)
         else:
             logger.error("Failed to send heartbeat.")
-            exit(1)
+            sys.exit(1)
 
+
+def cli_start(agent, console, token, groups):
+    """Starts the agent."""
+    try:
+        agent.pair(console, token, groups=groups)
+        agent.run()
+    except (ConsoleAlreadyPaired, ConsoleNotPaired) as error:
+        logger.error(f"Error during pairing process. {error}")
+        sys.exit(1)
+
+def cli_reset_console_pairing(agent, console):
+    """Resets the pairing with the console. It does not delete the agent on
+    the Management Console."""
+    try:
+        logger.info(
+            f"Resetting console pairing for {console}")
+        agent.config.remove_paired_console(console)
+        agent.save_persistent_config()
+    except (ConsoleNotPaired) as error:
+        logger.error(
+            f"Failed to reset console pairing for {console}. {error}")
+    sys.exit()
+
+def cli_view_config(agent):
+    """Displays the agent configuration."""
+    logger.info("Configuration Preview:")
+    print(json.dumps(agent.config.__dict__, indent=4))
+    sys.exit()
 
 # pylint disable=too-many-statements
 def cli():
@@ -568,7 +615,7 @@ def cli():
     parser.add_argument('--token', type=str,
                         help='The management server access token')
     parser.add_argument(
-        '--groups', type=str, help='Groups this agent should be automatically added to when paired')
+        '--groups', type=str, help='Groups this agent should be added to')
     parser.add_argument('--clear-persistent-config', action='store_true')
     parser.add_argument('--reset-console-pairing', type=str,
                         help="""Will reset the pairing for the agent with the
@@ -599,43 +646,26 @@ def cli():
     agent = Agent(offline=args.offline)
 
     if args.set_config_value:
-        key, value = args.set_config_value.split(':')
+        key, value = args._set_config_value.split(':')
         agent.config.set_value(key, value)
         agent.save_persistent_config()
 
     if args.view_config:
-        logger.info("Configuration Preview:")
-        print(json.dumps(agent.config.__dict__, indent=4))
-        sys.exit()
+        cli_view_config(agent)
 
     if args.clear_persistent_config:
         agent.clear_persistent_config()
         sys.exit()
 
     if args.reset_console_pairing:
-        try:
-            logger.info(
-                f"Resetting console pairing for {args.reset_console_pairing}")
-            agent.config.remove_paired_console(args.reset_console_pairing)
-            agent.save_persistent_config()
-        except (ConsoleNotPaired) as error:
-            logger.error(
-                f"Failed to reset console pairing for {args.reset_console_pairing}. {error}")
-        sys.exit()
+        cli_reset_console_pairing(agent, args.reset_console_pairing)
 
     if args.heartbeat:
-
-        agent.heartbeat()
+        agent.heartbeat(skip_run=True)
         sys.exit(1)
 
     if args.pair:
-
-        try:
-            agent.pair(args.console, args.token, groups=args.groups)
-            agent.run()
-        except (ConsoleAlreadyPaired, ConsoleNotPaired) as error:
-            logger.error(f"Error during pairing process. {error}")
-            sys.exit(1)
+        cli_start(agent, args.console, args.token, groups=args.groups)
 
     if args.start:
         agent.run()

@@ -21,6 +21,7 @@ def lint(session):
     #session.run("black", "--check", ".")
     session.run("flake8", ".", "--exit-zero", "--statistics", "--output-file=reports/flake8/flake8stats.txt")
     session.run("genbadge", "flake8", "-o", ".badges/flake8-badge.svg")
+    session.run("flynt", "src/")
 
 @nox.session
 def typing(session):

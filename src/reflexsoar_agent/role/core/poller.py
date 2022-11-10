@@ -1,5 +1,6 @@
 from reflexsoar_agent.role import BaseRole
 
+
 class Poller(BaseRole):
     """Poller role.
 
@@ -17,4 +18,6 @@ class Poller(BaseRole):
         if conn:
             inputs = conn.agent_get_inputs()
             if inputs:
-                self.logger.info(f"Starting pollers for {len(inputs)} inputs.  Max Concurrent Inputs: {self.config['concurrent_inputs']}")
+                self.logger.info(
+                    f"Starting pollers for {len(inputs)} inputs. "
+                    f"Max Concurrent Inputs: {self.config['concurrent_inputs']}")

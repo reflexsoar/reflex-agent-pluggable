@@ -6,7 +6,9 @@ class InputTypes:
     LISTENER = "listener"
     INTEL = "intel"
 
+
 input_types = InputTypes()
+
 
 class BaseInput:
 
@@ -23,5 +25,3 @@ class BaseInput:
         This method starts the input.
         """
         pass
-
-    

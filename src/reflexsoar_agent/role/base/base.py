@@ -1,6 +1,7 @@
 import time
+from multiprocessing import Event, Manager, Process
+
 from ...core.logging import logger
-from multiprocessing import Process, Event, Manager
 
 
 class RoleGuard(type):
@@ -8,7 +9,8 @@ class RoleGuard(type):
     __SENTINEL = object()
 
     def __new__(mcs, name, bases, class_dict):
-        private = {key for base in bases for key, value in vars(base).items() if callable(value) and mcs.__is_final(value)}
+        private = {key for base in bases for key, value in vars(
+            base).items() if callable(value) and mcs.__is_final(value)}
         if any(key in private for key in class_dict):
             raise TypeError('Cannot override final method')
         return super().__new__(mcs, name, bases, class_dict)
@@ -19,7 +21,7 @@ class RoleGuard(type):
             return method.__final is mcs.__SENTINEL
         except AttributeError:
             return False
-    
+
     @classmethod
     def final(mcs, method):
         """Marks a method as final, preventing it from being overridden in subclasses"""
@@ -27,7 +29,7 @@ class RoleGuard(type):
         return method
 
 
-class BaseRole(Process,metaclass=RoleGuard):
+class BaseRole(Process, metaclass=RoleGuard):
     """Base class for all roles.
 
     This class is the base class for all roles. It provides the basic
@@ -41,7 +43,7 @@ class BaseRole(Process,metaclass=RoleGuard):
         """Initializes the role"""
 
         manager = Manager()
-        
+
         self._running = manager.Value(bool, False)
         self.config = config
         self.connections = connections
@@ -63,7 +65,7 @@ class BaseRole(Process,metaclass=RoleGuard):
     @RoleGuard.final
     def set_config(self, config):
         """
-        Sets the configuration for the role. 
+        Sets the configuration for the role.
         """
         self.config = config
         if 'wait_interval' not in self.config:
@@ -97,16 +99,13 @@ class BaseRole(Process,metaclass=RoleGuard):
 
     def main(self):
         """The main method for the role. This function performs all the work
-        of the role when triggered to do so by the run method.  It should 
+        of the role when triggered to do so by the run method.  It should
         periodically check the should_exit event to determine if it should
         exit if running in a forever loop.
         """
         self.logger.info(
-            f"Hello World from {self.shortname}! Sleeping for {self.config['wait_interval']}")
-        
-        #self.logger.warning(f"Warning from {self.shortname}!")
-        #self.logger.error(f"Error from {self.shortname}!")
-        #self.logger.debug(f"Debug from {self.shortname}!")
+            f"Hello World from {self.shortname}!"
+            f"Sleeping for {self.config['wait_interval']}")
 
     def run(self):
         """Runs the role"""

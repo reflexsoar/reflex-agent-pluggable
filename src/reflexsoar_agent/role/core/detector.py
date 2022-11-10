@@ -1,5 +1,5 @@
 from reflexsoar_agent.role import BaseRole
-from reflexsoar_agent.core.management import build_http_connection
+
 
 class Detector(BaseRole):
     """Runner role.
