@@ -17,11 +17,28 @@ loguru = "^0.6.0"
 requests = "^2.28.1"
 platformdirs = "^2.5.3"
 python-dotenv = "^0.21.0"
+persist-queue = "^0.8.0"
 
 [tool.poetry.group.dev.dependencies]
 pylint = "^2.15.5"
 autopep8 = "^2.0.0"
+pytest = "^7.2.0"
+pre-commit = "^2.20.0"
+coverage = {extras = ["toml"], version = "^6.5.0"}
+flake8 = "^5.0.4"
+flake8-bugbear = "^22.10.27"
+mypy = "^0.990"
+nox = "^2022.8.7"
+coverage-badge = "^1.1.0"
+genbadge = {extras = ["all"], version = "^1.1.0"}
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.coverage.run]
+omit = [".*", "*/site-packages/*"]
+
+#[tool.coverage.report]
+#fail_under = 100
+
