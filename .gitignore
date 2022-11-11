@@ -18,6 +18,7 @@ __pycache__/
 
 # All Dev Reports
 reports/
+tests/test-db-path/
 
 # Distribution / packaging
 .Python

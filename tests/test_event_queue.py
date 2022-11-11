@@ -1,10 +1,10 @@
 # noqa:
 
 import os
+from multiprocessing import Manager, Process
 
 import pytest
 from platformdirs import user_data_dir
-from multiprocessing import Process, Manager
 
 from reflexsoar_agent.core.event import EventQueue
 
@@ -36,7 +36,7 @@ def test_event_queue_put():
 
     eq = EventQueue()
     eq.put('test')
-    assert eq.q._count() > 0
+    assert eq.queue._count() > 0
 
 
 def push_to_queue(value):
