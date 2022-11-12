@@ -1,24 +1,65 @@
-import os
+import time
+from itertools import islice
+from multiprocessing import Process, Queue
 
-import persistqueue
-from platformdirs import user_data_dir
-
+from reflexsoar_agent.core.event.base import Event
+from reflexsoar_agent.core.event.errors import EventManagedInitializedError
+from reflexsoar_agent.core.logging import logger
 from reflexsoar_agent.core.management import ManagementConnection
 
-from .encoders import JSONSerializable
 
+class EventSpooler(Process):
 
-class Observable(JSONSerializable):
-    """Observable class for handling individual observables. Observables are
-    attached to Events for shipping to the Management Console.
-    """
+    def __init__(self, conn, event_queue):
 
+        super().__init__()
 
-class Event(JSONSerializable):
-    """Creates a Event class for working with individual events"""
+        self._max_spooled_events = 10000
+        self._bulk_size = 100
+        self._running = False
+        self._awaiting_ack = {}
+        self._event_queue = event_queue
+        self._event_queue_poll_period = 1
+        self.conn = conn
 
-    def __init__(self):
+    def _listen_for_acks(self):
+        """Listens to a pub/sub channel with the API and waits for ACKs
+        that a collection of events has been processed
+        """
         pass
+
+    def _send_events(self, events):
+        """Sends the events to the API and receives a job ID
+        The job ID is stored in an awaiting_ack dict with the events that
+        need to be removed from the shelve when done
+        """
+
+        response = self.conn.bulk_events(events)
+        if response:
+            logger.info(f"Sent {len(events)} to {self.conn.url}")
+        else:
+            logger.info(f"Failed to send {len(events)} to {self.conn.url}")
+
+    def _process_events(self):
+        """Grabs events from the processing queue and pushes them to the API
+        """
+
+        while True:
+            while not self._event_queue.empty():
+                events = []
+                while len(events) < self._bulk_size and not self._event_queue.empty():
+                    events.append(self._event_queue.get())
+                self._send_events(events)
+            time.sleep(1)
+
+    def _take(self, size, iterable):
+        return list(islice(iterable, size))
+
+    def run(self):
+        self._running = True
+        logger.info("EventSpooler started")
+        while self._running:
+            self._process_events()
 
 
 class EventManager:
@@ -27,7 +68,7 @@ class EventManager:
     list of fields to extract, fields to map to observables, signature fields, etc.
     """
 
-    def __init__(self, conn: ManagementConnection, signature_fields: list = None,
+    def __init__(self, conn: ManagementConnection = None, signature_fields: list = None,
                  observable_mapping: dict = None, *args, **kwargs) -> None:
         """Initializes the EventManager class.
         Args:
@@ -37,10 +78,15 @@ class EventManager:
             observable_mapping (dict): Dictionary of fields to map to observables
         """
 
+        self._initialized = False
+        self.back_pressure = 1
+
         # A ManagementConnection is required
         if conn is None:
-            raise ValueError(
-                "EventManager requires a ManagementConnection, conn cannot be None")
+            self.management_conn = None
+        else:
+            self.management_conn = conn
+            self._initialized = True
 
         # Set defaults for signature_fields
         if signature_fields is None:
@@ -54,37 +100,27 @@ class EventManager:
         else:
             self.observable_mapping = observable_mapping
 
-        self._no_persistence = kwargs.get('no_persistence', False)
-        if self._no_persistence is False:
+        self.event_queue = Queue()
 
-            # If set the EventManager will use its own EventQueue for storing
-            # persistent Events, this setting requires a name be provided for
-            # the EventQueue
-            self._dedicated_persistent_queue = kwargs.get(
-                'dedicated_persistent_queue', False)
-            self._dedicated_queue_name = kwargs.get('dedicated_queue_name', None)
-            self._persistence_queue_file_path = kwargs.get(
-                'persistence_queue_file_path', None)
-            if self._dedicated_persistent_queue and self._dedicated_queue_name is None:
-                raise ValueError("dedicated_queue_name cannot be None"
-                                 " if dedicated_persistent_queue is True")
+        if self._initialized:
+            self._init_spooler(start=True)
 
-            # Create the persistence queue
-            self.persistent_queue = self._init_persistence_queue()
+    def _init_spooler(self):
+        """Initializes the EventSpooler"""
+        if self.management_conn:
+            logger.info("Initializing EventSpooler")
+            self.spooler = EventSpooler(self.management_conn, self.event_queue)
+            self.spooler.start()
 
-        # Store all the _ids of the Events currently in the queue and what
-        # time they were stored there
-        self._prepared_event_ids = {}
-
-        # The maximum number of prepared events that can reside in
-        # _prepared_event_ids.  Raise an exception if this limit is reached and
-        # do not except new Events
-        self.max_queue_size = kwargs.get('max_queue_size', 10000)
-
-        # The maximum number of seconds that the EventManager should wait
-        # for new Events to be prepared before sending them to the Management
-        # Console
-        self.send_after_seconds = kwargs.get('send_after_seconds', 60)
+    def init_event_manager(self, conn):
+        """Initializes the EventManager"""
+        if self._initialized is False:
+            self.management_conn = conn
+            self._init_spooler()
+            self._initialized = True
+        else:
+            raise EventManagedInitializedError(
+                "The EventManager has already been initialized")
 
     @property
     def signature_fields(self):
@@ -108,54 +144,66 @@ class EventManager:
         else:
             raise ValueError("observable_mapping must be a dict")
 
-    def _init_persistence_queue(self) -> "EventQueue":
-        """Initializes a persistqueue for storing Events"""
-        return EventQueue(db_name=self._dedicated_queue_name,
-                          file_path=self._persistence_queue_file_path)
+    def parse_event(self, event: dict) -> Event:
+        """Parses a dictionary into an Event object"""
 
-    def send_events(self):
-        """Sends events to the Management Console"""
-        pass
+        # TODO: Add all the Event parsing logic here
+        return event
+
+    def _check_spooler_health(self):
+        if self.spooler.is_alive() is False:
+            logger.error("EventSpooler is not alive.  Restarting...")
+            try:
+                self._init_spooler()
+            except Exception as e:
+                logger.error(f"Unable to restart EventSpooler: {e}")
 
     def prepare_events(self, *events):
+
+        # Makes sure the EventManager is fully initialized
+        if self._initialized is False:
+            raise EventManagedInitializedError(
+                "The EventManager has not been initialized")
+
+        # Check the spooler health before preparing any events
+        self._check_spooler_health()
+
         """Prepares an Event for sending to the Management Console"""
-        return len(events)
+        while self.event_queue.qsize() > self.spooler._max_spooled_events:
+            self.back_pressure += 1
+            logger.warning("Event queue is full."
+                           "Holding events for until queue is free")
+            time.sleep(self.back_pressure)
+
+        self.back_pressure = 1
+
+        for event in events:
+            if isinstance(event, Event):
+                self.event_queue.put(event)
+            else:
+                parsed_event = self.parse_event(event)
+                self.event_queue.put(parsed_event)
+        return None
 
 
-class EventQueue:
-    """Defines the EventQueue class.  The EventQueue class is utilized by
-    every EventManager to store and process Events before sending them to the
-    connection defined in the EventManager
-    """
+if __name__ == "__main__":
 
-    def __init__(self, *args, **kwargs):
-        """Initializes the EventQueue class"""
+    from threading import Thread
 
-        self.file_path = kwargs.get('file_path', user_data_dir(
-            appname='reflexsoar-agent', appauthor='reflexsoar'))
-        self.db_name = kwargs.get('db_name', 'agent-event-queue')
+    conn = ManagementConnection(url='http://localhost:5000',
+                                api_key='1234', ignore_tls=False, name='test-conn')
+    em = EventManager(signature_fields=[
+                      'timestamp', 'source', 'source_ip', 'destination', 'destination_ip'])
+    em.init_event_manager(conn=conn)
 
-        if self.file_path and self.db_name:
-            database_path = os.path.join(self.file_path, self.db_name)
-            self._queue = persistqueue.SQLiteQueue(database_path, auto_commit=True)
-        else:
-            self._queue = None
+    def send_fake_events(em, thread_id):
+        for i in range(0, 500):
+            e = {f"test-{i}": "test", "thread_id": thread_id}
+            em.prepare_events(e)
 
-    @property
-    def queue(self):
-        return self._queue
+    threads = []
+    for _ in range(0, 5):
+        t = Thread(target=send_fake_events, args=(em, _, ))
+        threads.append(t)
 
-    @queue.setter
-    def queue(self, value):
-        raise AttributeError("Cannot set the queue attribute")
-
-    def get(self):
-        """Retrieves an item from the queue"""
-        return self._queue.get()
-
-    def put(self, item):
-        """Places an item into the queue"""
-        self._queue.put(item)
-
-    def close(self):
-        self._queue.__del__()
+    [t.start() for t in threads]

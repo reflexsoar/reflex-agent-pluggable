@@ -155,6 +155,17 @@ class ManagementConnection(HTTPConnection):
             response = response.json()['inputs']
         return response
 
+    def bulk_events(self, events) -> dict:
+        """Sends Events in bulk to the management server"""
+        data = {
+            "events": events
+        }
+        response = self.call_api(
+            'POST', '/api/v2.0/agent/bulk_events', data=data)
+        if response and response.status_code == 200:
+            response = response.json()
+        return response
+
 
 # Globally registered connections dictionary that can be imported
 # not useful across multiprocess boundaries so the agent manages an additional
