@@ -68,8 +68,7 @@ class EventManager:
     list of fields to extract, fields to map to observables, signature fields, etc.
     """
 
-    def __init__(self, conn: ManagementConnection = None, signature_fields: list = None,
-                 observable_mapping: dict = None, *args, **kwargs) -> None:
+    def __init__(self, conn: ManagementConnection = None, *args, **kwargs) -> None:
         """Initializes the EventManager class.
         Args:
             conn (ManagementConnection): ManagementConnection object for
@@ -88,18 +87,6 @@ class EventManager:
             self.management_conn = conn
             self._initialized = True
 
-        # Set defaults for signature_fields
-        if signature_fields is None:
-            self.signature_fields = []
-        else:
-            self.signature_fields = signature_fields
-
-        # Set defaults for observable_mapping
-        if observable_mapping is None:
-            self.observable_mapping = {}
-        else:
-            self.observable_mapping = observable_mapping
-
         self.event_queue = Queue()
 
         if self._initialized:
@@ -108,19 +95,28 @@ class EventManager:
     def _init_spooler(self):
         """Initializes the EventSpooler"""
         if self.management_conn:
-            logger.info("Initializing EventSpooler")
             self.spooler = EventSpooler(self.management_conn, self.event_queue)
             self.spooler.start()
+            logger.info("EventSpooler initialized")
 
-    def init_event_manager(self, conn):
+    def initialize(self, conn):
         """Initializes the EventManager"""
         if self._initialized is False:
             self.management_conn = conn
             self._init_spooler()
+            logger.info("EventManager initialized")
             self._initialized = True
         else:
             raise EventManagedInitializedError(
                 "The EventManager has already been initialized")
+
+    @property
+    def is_initialized(self):
+        return self._initialized
+
+    @is_initialized.setter
+    def is_initialized(self, value):
+        raise ValueError("Cannot set the is_initialized property")
 
     @property
     def signature_fields(self):
@@ -158,7 +154,14 @@ class EventManager:
             except Exception as e:
                 logger.error(f"Unable to restart EventSpooler: {e}")
 
-    def prepare_events(self, *events):
+    def prepare_events(self, *events, signature_fields: list = None,
+                       observable_mappping: dict = None):
+
+        if signature_fields is None:
+            signature_fields = []
+
+        if observable_mappping is None:
+            observable_mappping = {}
 
         # Makes sure the EventManager is fully initialized
         if self._initialized is False:
@@ -184,26 +187,3 @@ class EventManager:
                 parsed_event = self.parse_event(event)
                 self.event_queue.put(parsed_event)
         return None
-
-
-if __name__ == "__main__":
-
-    from threading import Thread
-
-    conn = ManagementConnection(url='http://localhost:5000',
-                                api_key='1234', ignore_tls=False, name='test-conn')
-    em = EventManager(signature_fields=[
-                      'timestamp', 'source', 'source_ip', 'destination', 'destination_ip'])
-    em.init_event_manager(conn=conn)
-
-    def send_fake_events(em, thread_id):
-        for i in range(0, 500):
-            e = {f"test-{i}": "test", "thread_id": thread_id}
-            em.prepare_events(e)
-
-    threads = []
-    for _ in range(0, 5):
-        t = Thread(target=send_fake_events, args=(em, _, ))
-        threads.append(t)
-
-    [t.start() for t in threads]

@@ -11,7 +11,7 @@ from multiprocessing import Manager
 from dotenv import load_dotenv
 from platformdirs import user_data_dir
 
-from .core.errors import ConsoleAlreadyPaired, ConsoleNotPaired
+from .core.errors import AgentHeartbeatFailed, ConsoleAlreadyPaired, ConsoleNotPaired
 from .core.logging import logger, setup_logging
 from .core.management import (ManagementConnection, connections,
                               get_management_connection)
@@ -426,13 +426,18 @@ class Agent:  # pylint: disable=too-many-instance-attributes
                     **self.config.console_info, register_globally=True)
         if conn:
             self.add_managed_connection(conn)
-            if conn.agent_heartbeat(self.config.uuid, data):
-                logger.success(f"Heartbeat sent to {conn.config['url']}")
-                if not skip_run:
-                    self.check_policy()
-                return True
+            try:
+                if conn.agent_heartbeat(self.config.uuid, data):
+                    logger.success(f"Heartbeat sent to {conn.config['url']}")
+                    if not skip_run:
+                        self.check_policy()
+                    return True
+                else:
+                    logger.error("No management connection established.")
+            except AgentHeartbeatFailed as e:
+                logger.error(e)
+                return False
 
-        logger.error("No management connection established.")
         return True
 
     def load_inputs(self):

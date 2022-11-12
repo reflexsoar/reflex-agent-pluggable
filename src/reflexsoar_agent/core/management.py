@@ -113,14 +113,15 @@ class ManagementConnection(HTTPConnection):
 
     def agent_heartbeat(self, agent_id: str, data: dict) -> dict:
         """Sends a heartbeat to the management server"""
-        if (response := self.call_api(
-                'POST', f'/api/v2.0/agent/heartbeat/{agent_id}', data)):
-            if response.status_code == 200:
-                response = response.json()
-            else:
-                raise AgentHeartbeatFailed(
-                    f"Failed to send heartbeat: {response.text}")
-        return response
+        response = self.call_api('POST',
+                                 f'/api/v2.0/agent/heartbeat/{agent_id}',
+                                 data)
+        if response and response.status_code == 200:
+            response = response.json()
+            return response
+        else:
+            raise AgentHeartbeatFailed(
+                f"Failed to send heartbeat: {response.text}")
 
     def agent_pair(self, data: dict) -> dict:
         """Pairs the agent with the management server"""
