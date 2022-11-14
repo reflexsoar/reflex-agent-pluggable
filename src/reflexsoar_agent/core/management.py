@@ -17,11 +17,12 @@ _USER_AGENT = f'reflexsoar-agent/{version_number}'
 
 
 class HTTPConnection:
+    """A simple HTTP client for connecting to HTTP services"""
 
     def __init__(self, url: str, api_key: str, ignore_tls: bool = False,
                  name: str = 'default', register_globally=False,
                  user_agent: str = None) -> None:
-        """Initializes the management connection
+        """Initializes the HTTP connection
 
         Args:
             url (str): The URL of the management server
@@ -63,7 +64,7 @@ class HTTPConnection:
 
         self._session.headers[key] = value
 
-    def call_api(self, method: str, endpoint: str, data: dict, **kwargs) -> Any:
+    def call_api(self, method: str, endpoint: str, data: dict = None, **kwargs) -> Any:
         """Calls the management API
 
         Args:

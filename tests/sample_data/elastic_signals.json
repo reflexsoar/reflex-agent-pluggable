@@ -1,0 +1,3333 @@
+{
+    "hits" : [
+        {
+          "_index" : ".internal.alerts-security.alerts-default-000001",
+          "_id" : "949ff1b57c6f8f86b24cd26e566ae1c71cb208e5176fd31c51cf84bb0467afe6",
+          "_score" : 1.0,
+          "_source" : {
+            "kibana.alert.severity" : "low",
+            "agent" : {
+              "hostname" : "BRIAN-PC",
+              "name" : "BRIAN-PC",
+              "id" : "21aa23a8-6f3f-4365-b3ce-55855b75dd51",
+              "ephemeral_id" : "6c3529f9-c218-4928-91af-6761eb3b82d4",
+              "type" : "winlogbeat",
+              "version" : "7.15.1"
+            },
+            "kibana.alert.rule.updated_by" : "elastic",
+            "kibana.alert.rule.references" : [ ],
+            "event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.threat" : [
+              {
+                "framework" : "MITRE ATT&CK",
+                "technique" : [
+                  {
+                    "reference" : "https://attack.mitre.org/techniques/T1033/",
+                    "name" : "System Owner/User Discovery",
+                    "subtechnique" : [ ],
+                    "id" : "T1033"
+                  }
+                ],
+                "tactic" : {
+                  "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                  "name" : "Discovery",
+                  "id" : "TA0007"
+                }
+              }
+            ],
+            "kibana.alert.original_event.code" : "1",
+            "kibana.alert.rule.description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+            "kibana.alert.rule.tags" : [
+              "Discovery",
+              "Elastic",
+              "Host",
+              "Linux",
+              "Threat Detection",
+              "auto_disabled_8.0"
+            ],
+            "kibana.alert.rule.producer" : "siem",
+            "kibana.alert.rule.to" : "now",
+            "kibana.alert.rule.created_by" : "elastic",
+            "kibana.alert.rule.timestamp_override" : "event.ingested",
+            "ecs" : {
+              "version" : "1.11.0"
+            },
+            "kibana.alert.risk_score" : 21,
+            "host" : {
+              "hostname" : "BRIAN-PC",
+              "os" : {
+                "build" : "19043.1586",
+                "kernel" : "10.0.19041.1586 (WinBuild.160101.0800)",
+                "name" : "Windows 10 Pro",
+                "family" : "windows",
+                "type" : "windows",
+                "version" : "10.0",
+                "platform" : "windows"
+              },
+              "ip" : [
+                "fe80::c8a4:dc53:fc0e:9397",
+                "169.254.147.151",
+                "fe80::ccba:d63e:19e:4eed",
+                "169.254.78.237",
+                "fe80::2907:26a0:83d9:94d0",
+                "172.31.57.1",
+                "fe80::803c:5a27:a82f:ceea",
+                "192.168.1.218",
+                "fe80::a1b6:f82f:32e8:cdca",
+                "169.254.205.202",
+                "fe80::602f:fe9a:a624:2328",
+                "169.254.35.40",
+                "fe80::cd9f:2a9c:6f46:8af3",
+                "169.254.138.243",
+                "fe80::6d34:cc68:395b:44c2",
+                "172.29.176.1",
+                "fe80::e554:66d6:7d6c:6e8e",
+                "172.26.176.1",
+                "fe80::3ded:1d20:ac33:db13",
+                "172.30.160.1",
+                "fe80::c109:c7c2:c75f:9075",
+                "172.21.112.1",
+                "fe80::1942:7d8:2686:7bfd",
+                "192.168.160.1",
+                "fe80::9994:c065:c16f:67c3",
+                "172.29.208.1",
+                "fe80::891:fa92:b512:e465",
+                "172.29.80.1"
+              ],
+              "name" : "BRIAN-PC",
+              "id" : "f0ea5239-c22b-4596-bf23-1a94c654eabb",
+              "mac" : [
+                "00:ff:a3:9b:ea:65",
+                "00:15:5d:38:01:02",
+                "00:15:5d:38:01:10",
+                "38:94:ed:2e:cf:0d",
+                "3a:94:ed:2e:cf:0d",
+                "38:94:ed:2e:cf:0d",
+                "00:ff:54:a4:e6:78",
+                "00:15:5d:9b:44:9d",
+                "00:15:5d:28:d1:82",
+                "00:15:5d:c4:85:25",
+                "00:15:5d:ea:59:ee",
+                "00:15:5d:62:40:b4",
+                "00:15:5d:a0:c8:a0",
+                "00:15:5d:49:4c:ae"
+              ],
+              "architecture" : "x86_64"
+            },
+            "kibana.alert.rule.name" : "User Discovery via Whoami [Duplicate]",
+            "event.kind" : "signal",
+            "kibana.alert.workflow_status" : "open",
+            "kibana.alert.rule.uuid" : "dd13a810-3696-11ec-a7c8-b9d14d243cd3",
+            "kibana.alert.original_event.created" : "2022-04-05T22:24:43.007Z",
+            "kibana.alert.original_event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.risk_score_mapping" : [ ],
+            "kibana.alert.original_event.module" : "sysmon",
+            "kibana.alert.rule.interval" : "5m",
+            "kibana.alert.reason" : "process event with process whoami.exe, parent process powershell.exe, by Brian on BRIAN-PC created low alert User Discovery via Whoami [Duplicate].",
+            "kibana.alert.rule.type" : "query",
+            "event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.immutable" : false,
+            "event.code" : "1",
+            "kibana.alert.original_event.type" : [
+              "start",
+              "process_start"
+            ],
+            "event.created" : "2022-04-05T22:24:43.007Z",
+            "kibana.alert.depth" : 1,
+            "kibana.alert.rule.enabled" : true,
+            "kibana.alert.rule.version" : 8,
+            "kibana.alert.rule.from" : "now-540s",
+            "hash" : {
+              "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+              "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+              "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+            },
+            "kibana.alert.rule.parameters" : {
+              "severity" : "low",
+              "max_signals" : 100,
+              "severity_mapping" : [ ],
+              "references" : [ ],
+              "risk_score" : 21,
+              "risk_score_mapping" : [ ],
+              "author" : [
+                "Elastic"
+              ],
+              "query" : "event.category:process and event.type:(start or process_started) and process.name:\"whoami.exe\" ",
+              "description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+              "index" : [
+                "winlogbeat-*"
+              ],
+              "language" : "kuery",
+              "filters" : [ ],
+              "type" : "query",
+              "version" : 8,
+              "rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+              "license" : "Elastic License v2",
+              "immutable" : false,
+              "exceptions_list" : [ ],
+              "timestamp_override" : "event.ingested",
+              "meta" : {
+                "from" : "4m",
+                "kibana_siem_app_url" : "https://localhost:5601/app/security"
+              },
+              "from" : "now-540s",
+              "false_positives" : [
+                "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+              ],
+              "threat" : [
+                {
+                  "framework" : "MITRE ATT&CK",
+                  "technique" : [
+                    {
+                      "reference" : "https://attack.mitre.org/techniques/T1033/",
+                      "name" : "System Owner/User Discovery",
+                      "subtechnique" : [ ],
+                      "id" : "T1033"
+                    }
+                  ],
+                  "tactic" : {
+                    "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                    "name" : "Discovery",
+                    "id" : "TA0007"
+                  }
+                }
+              ],
+              "to" : "now"
+            },
+            "log" : {
+              "level" : "information"
+            },
+            "kibana.alert.status" : "active",
+            "kibana.alert.ancestors" : [
+              {
+                "depth" : 0,
+                "index" : "winlogbeat-7.15.1-2022.03.25-000006",
+                "id" : "OtfU-38BBH9ED-7iiB0N",
+                "type" : "event"
+              }
+            ],
+            "kibana.alert.rule.exceptions_list" : [ ],
+            "kibana.alert.rule.actions" : [ ],
+            "kibana.alert.rule.rule_type_id" : "siem.queryRule",
+            "related" : {
+              "user" : "Brian",
+              "hash" : [
+                "a4a6924f3eaf97981323703d38fd99c4",
+                "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "7ff0758b766f747ce57dfac70743fb88"
+              ]
+            },
+            "event.module" : "sysmon",
+            "kibana.alert.original_event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.license" : "Elastic License v2",
+            "kibana.alert.original_event.kind" : "event",
+            "kibana.alert.rule.severity_mapping" : [ ],
+            "process" : {
+              "args" : [
+                "C:\\Windows\\system32\\whoami.exe",
+                "/admin"
+              ],
+              "parent" : {
+                "args" : [
+                  "powershell.exe"
+                ],
+                "name" : "powershell.exe",
+                "pid" : 10204,
+                "entity_id" : "{f0ea5239-2500-624b-3c04-000000007a00}",
+                "executable" : "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "command_line" : "powershell.exe"
+              },
+              "pe" : {
+                "file_version" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "product" : "Microsoft® Windows® Operating System",
+                "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+                "description" : "whoami - displays logged on user information",
+                "company" : "Microsoft Corporation",
+                "original_file_name" : "whoami.exe"
+              },
+              "name" : "whoami.exe",
+              "working_directory" : "D:\\Repositories\\elastic-stack\\",
+              "pid" : 32804,
+              "entity_id" : "{f0ea5239-c1a9-624c-b625-000000007a00}",
+              "executable" : "C:\\Windows\\System32\\whoami.exe",
+              "hash" : {
+                "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+              },
+              "command_line" : "\"C:\\Windows\\system32\\whoami.exe\" /admin"
+            },
+            "winlog" : {
+              "computer_name" : "BRIAN-PC",
+              "process" : {
+                "pid" : 5524,
+                "thread" : {
+                  "id" : 6632
+                }
+              },
+              "channel" : "Microsoft-Windows-Sysmon/Operational",
+              "event_data" : {
+                "Company" : "Microsoft Corporation",
+                "LogonGuid" : "{f0ea5239-2409-624b-f8bf-020000000000}",
+                "Description" : "whoami - displays logged on user information",
+                "IntegrityLevel" : "Medium",
+                "TerminalSessionId" : "1",
+                "FileVersion" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "Product" : "Microsoft® Windows® Operating System",
+                "ParentUser" : "BRIAN-PC\\Brian",
+                "LogonId" : "0x2bff8"
+              },
+              "opcode" : "Info",
+              "version" : 5,
+              "record_id" : 81087352,
+              "task" : "Process Create (rule: ProcessCreate)",
+              "event_id" : "1",
+              "provider_guid" : "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}",
+              "api" : "wineventlog",
+              "provider_name" : "Microsoft-Windows-Sysmon",
+              "user" : {
+                "identifier" : "S-1-5-18",
+                "domain" : "NT AUTHORITY",
+                "name" : "SYSTEM",
+                "type" : "User"
+              }
+            },
+            "kibana.alert.rule.max_signals" : 100,
+            "kibana.alert.rule.updated_at" : "2022-04-05T20:19:58.607Z",
+            "kibana.alert.rule.risk_score" : 21,
+            "kibana.alert.rule.author" : [
+              "Elastic"
+            ],
+            "kibana.alert.rule.false_positives" : [
+              "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+            ],
+            "message" : "Process Create:\nRuleName: -\nUtcTime: 2022-04-05 22:24:41.912\nProcessGuid: {f0ea5239-c1a9-624c-b625-000000007a00}\nProcessId: 32804\nImage: C:\\Windows\\System32\\whoami.exe\nFileVersion: 10.0.19041.1 (WinBuild.160101.0800)\nDescription: whoami - displays logged on user information\nProduct: Microsoft® Windows® Operating System\nCompany: Microsoft Corporation\nOriginalFileName: whoami.exe\nCommandLine: \"C:\\Windows\\system32\\whoami.exe\" /admin\nCurrentDirectory: D:\\Repositories\\elastic-stack\\\nUser: BRIAN-PC\\Brian\nLogonGuid: {f0ea5239-2409-624b-f8bf-020000000000}\nLogonId: 0x2BFF8\nTerminalSessionId: 1\nIntegrityLevel: Medium\nHashes: MD5=A4A6924F3EAF97981323703D38FD99C4,SHA256=1D4902A04D99E8CCBFE7085E63155955FEE397449D386453F6C452AE407B8743,IMPHASH=7FF0758B766F747CE57DFAC70743FB88\nParentProcessGuid: {f0ea5239-2500-624b-3c04-000000007a00}\nParentProcessId: 10204\nParentImage: C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\nParentCommandLine: powershell.exe\nParentUser: BRIAN-PC\\Brian",
+            "kibana.alert.rule.consumer" : "siem",
+            "kibana.alert.rule.category" : "Custom Query Rule",
+            "event.action" : "Process Create (rule: ProcessCreate)",
+            "@timestamp" : "2022-04-05T22:26:16.137Z",
+            "kibana.alert.rule.created_at" : "2021-10-26T19:56:52.377Z",
+            "kibana.alert.original_event.action" : "Process Create (rule: ProcessCreate)",
+            "kibana.alert.rule.severity" : "low",
+            "event.type" : [
+              "start",
+              "process_start"
+            ],
+            "kibana.alert.rule.execution.uuid" : "4a68d6d7-fb8d-4c70-bb0d-a0e7e0822ebb",
+            "kibana.space_ids" : [
+              "default"
+            ],
+            "kibana.alert.rule.meta.kibana_siem_app_url" : "https://localhost:5601/app/security",
+            "kibana.alert.uuid" : "949ff1b57c6f8f86b24cd26e566ae1c71cb208e5176fd31c51cf84bb0467afe6",
+            "kibana.version" : "8.1.0",
+            "kibana.alert.rule.meta.from" : "4m",
+            "user" : {
+              "domain" : "BRIAN-PC",
+              "name" : "Brian",
+              "id" : "S-1-5-18"
+            },
+            "kibana.alert.rule.rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+            "kibana.alert.original_time" : "2022-04-05T22:24:41.912Z"
+          }
+        },
+        {
+          "_index" : ".internal.alerts-security.alerts-default-000001",
+          "_id" : "622397ad97af411d3d3d854b14e90467923cfbbfbdaaa54b170299eb390dab33",
+          "_score" : 1.0,
+          "_source" : {
+            "kibana.alert.severity" : "low",
+            "agent" : {
+              "hostname" : "BRIAN-PC",
+              "name" : "BRIAN-PC",
+              "id" : "21aa23a8-6f3f-4365-b3ce-55855b75dd51",
+              "type" : "winlogbeat",
+              "ephemeral_id" : "6c3529f9-c218-4928-91af-6761eb3b82d4",
+              "version" : "7.15.1"
+            },
+            "kibana.alert.rule.updated_by" : "elastic",
+            "kibana.alert.rule.references" : [ ],
+            "event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.threat" : [
+              {
+                "framework" : "MITRE ATT&CK",
+                "technique" : [
+                  {
+                    "reference" : "https://attack.mitre.org/techniques/T1033/",
+                    "name" : "System Owner/User Discovery",
+                    "subtechnique" : [ ],
+                    "id" : "T1033"
+                  }
+                ],
+                "tactic" : {
+                  "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                  "name" : "Discovery",
+                  "id" : "TA0007"
+                }
+              }
+            ],
+            "kibana.alert.original_event.code" : "1",
+            "kibana.alert.rule.description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+            "kibana.alert.rule.tags" : [
+              "Discovery",
+              "Elastic",
+              "Host",
+              "Linux",
+              "Threat Detection",
+              "auto_disabled_8.0"
+            ],
+            "kibana.alert.rule.producer" : "siem",
+            "kibana.alert.rule.to" : "now",
+            "kibana.alert.rule.created_by" : "elastic",
+            "kibana.alert.rule.timestamp_override" : "event.ingested",
+            "ecs" : {
+              "version" : "1.11.0"
+            },
+            "kibana.alert.risk_score" : 21,
+            "host" : {
+              "hostname" : "BRIAN-PC",
+              "os" : {
+                "build" : "19043.1586",
+                "kernel" : "10.0.19041.1586 (WinBuild.160101.0800)",
+                "name" : "Windows 10 Pro",
+                "family" : "windows",
+                "type" : "windows",
+                "version" : "10.0",
+                "platform" : "windows"
+              },
+              "ip" : [
+                "fe80::c8a4:dc53:fc0e:9397",
+                "169.254.147.151",
+                "fe80::ccba:d63e:19e:4eed",
+                "169.254.78.237",
+                "fe80::2907:26a0:83d9:94d0",
+                "172.31.57.1",
+                "fe80::803c:5a27:a82f:ceea",
+                "192.168.1.218",
+                "fe80::a1b6:f82f:32e8:cdca",
+                "169.254.205.202",
+                "fe80::602f:fe9a:a624:2328",
+                "169.254.35.40",
+                "fe80::cd9f:2a9c:6f46:8af3",
+                "169.254.138.243",
+                "fe80::6d34:cc68:395b:44c2",
+                "172.29.176.1",
+                "fe80::e554:66d6:7d6c:6e8e",
+                "172.26.176.1",
+                "fe80::3ded:1d20:ac33:db13",
+                "172.30.160.1",
+                "fe80::c109:c7c2:c75f:9075",
+                "172.21.112.1",
+                "fe80::1942:7d8:2686:7bfd",
+                "192.168.160.1",
+                "fe80::9994:c065:c16f:67c3",
+                "172.29.208.1",
+                "fe80::891:fa92:b512:e465",
+                "172.29.80.1"
+              ],
+              "name" : "BRIAN-PC",
+              "id" : "f0ea5239-c22b-4596-bf23-1a94c654eabb",
+              "mac" : [
+                "00:ff:a3:9b:ea:65",
+                "00:15:5d:38:01:02",
+                "00:15:5d:38:01:10",
+                "38:94:ed:2e:cf:0d",
+                "3a:94:ed:2e:cf:0d",
+                "38:94:ed:2e:cf:0d",
+                "00:ff:54:a4:e6:78",
+                "00:15:5d:9b:44:9d",
+                "00:15:5d:28:d1:82",
+                "00:15:5d:c4:85:25",
+                "00:15:5d:ea:59:ee",
+                "00:15:5d:62:40:b4",
+                "00:15:5d:a0:c8:a0",
+                "00:15:5d:49:4c:ae"
+              ],
+              "architecture" : "x86_64"
+            },
+            "kibana.alert.rule.name" : "User Discovery via Whoami [Duplicate]",
+            "event.kind" : "signal",
+            "kibana.alert.workflow_status" : "open",
+            "kibana.alert.rule.uuid" : "dd13a810-3696-11ec-a7c8-b9d14d243cd3",
+            "kibana.alert.original_event.created" : "2022-04-05T22:24:46.035Z",
+            "kibana.alert.original_event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.risk_score_mapping" : [ ],
+            "kibana.alert.original_event.module" : "sysmon",
+            "kibana.alert.rule.interval" : "5m",
+            "kibana.alert.reason" : "process event with process whoami.exe, parent process powershell.exe, by Brian on BRIAN-PC created low alert User Discovery via Whoami [Duplicate].",
+            "kibana.alert.rule.type" : "query",
+            "event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.immutable" : false,
+            "event.code" : "1",
+            "kibana.alert.original_event.type" : [
+              "start",
+              "process_start"
+            ],
+            "event.created" : "2022-04-05T22:24:46.035Z",
+            "kibana.alert.depth" : 1,
+            "kibana.alert.rule.enabled" : true,
+            "kibana.alert.rule.version" : 8,
+            "kibana.alert.rule.from" : "now-540s",
+            "hash" : {
+              "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+              "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+              "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+            },
+            "kibana.alert.rule.parameters" : {
+              "severity" : "low",
+              "max_signals" : 100,
+              "severity_mapping" : [ ],
+              "references" : [ ],
+              "risk_score" : 21,
+              "risk_score_mapping" : [ ],
+              "author" : [
+                "Elastic"
+              ],
+              "query" : "event.category:process and event.type:(start or process_started) and process.name:\"whoami.exe\" ",
+              "description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+              "index" : [
+                "winlogbeat-*"
+              ],
+              "language" : "kuery",
+              "filters" : [ ],
+              "type" : "query",
+              "version" : 8,
+              "rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+              "license" : "Elastic License v2",
+              "immutable" : false,
+              "exceptions_list" : [ ],
+              "timestamp_override" : "event.ingested",
+              "meta" : {
+                "from" : "4m",
+                "kibana_siem_app_url" : "https://localhost:5601/app/security"
+              },
+              "from" : "now-540s",
+              "false_positives" : [
+                "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+              ],
+              "threat" : [
+                {
+                  "framework" : "MITRE ATT&CK",
+                  "technique" : [
+                    {
+                      "reference" : "https://attack.mitre.org/techniques/T1033/",
+                      "name" : "System Owner/User Discovery",
+                      "subtechnique" : [ ],
+                      "id" : "T1033"
+                    }
+                  ],
+                  "tactic" : {
+                    "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                    "name" : "Discovery",
+                    "id" : "TA0007"
+                  }
+                }
+              ],
+              "to" : "now"
+            },
+            "log" : {
+              "level" : "information"
+            },
+            "kibana.alert.status" : "active",
+            "kibana.alert.ancestors" : [
+              {
+                "depth" : 0,
+                "index" : "winlogbeat-7.15.1-2022.03.25-000006",
+                "id" : "QNfU-38BBH9ED-7ikx3g",
+                "type" : "event"
+              }
+            ],
+            "kibana.alert.rule.exceptions_list" : [ ],
+            "kibana.alert.rule.actions" : [ ],
+            "kibana.alert.rule.rule_type_id" : "siem.queryRule",
+            "related" : {
+              "user" : "Brian",
+              "hash" : [
+                "a4a6924f3eaf97981323703d38fd99c4",
+                "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "7ff0758b766f747ce57dfac70743fb88"
+              ]
+            },
+            "event.module" : "sysmon",
+            "kibana.alert.original_event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.license" : "Elastic License v2",
+            "kibana.alert.original_event.kind" : "event",
+            "kibana.alert.rule.severity_mapping" : [ ],
+            "process" : {
+              "args" : [
+                "C:\\Windows\\system32\\whoami.exe",
+                "/groups"
+              ],
+              "parent" : {
+                "args" : [
+                  "powershell.exe"
+                ],
+                "name" : "powershell.exe",
+                "pid" : 10204,
+                "entity_id" : "{f0ea5239-2500-624b-3c04-000000007a00}",
+                "executable" : "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "command_line" : "powershell.exe"
+              },
+              "pe" : {
+                "file_version" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "product" : "Microsoft® Windows® Operating System",
+                "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+                "description" : "whoami - displays logged on user information",
+                "original_file_name" : "whoami.exe",
+                "company" : "Microsoft Corporation"
+              },
+              "name" : "whoami.exe",
+              "working_directory" : "D:\\Repositories\\elastic-stack\\",
+              "pid" : 29536,
+              "entity_id" : "{f0ea5239-c1ac-624c-b925-000000007a00}",
+              "command_line" : "\"C:\\Windows\\system32\\whoami.exe\" /groups",
+              "hash" : {
+                "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+              },
+              "executable" : "C:\\Windows\\System32\\whoami.exe"
+            },
+            "winlog" : {
+              "computer_name" : "BRIAN-PC",
+              "process" : {
+                "pid" : 5524,
+                "thread" : {
+                  "id" : 6632
+                }
+              },
+              "channel" : "Microsoft-Windows-Sysmon/Operational",
+              "event_data" : {
+                "Company" : "Microsoft Corporation",
+                "LogonGuid" : "{f0ea5239-2409-624b-f8bf-020000000000}",
+                "Description" : "whoami - displays logged on user information",
+                "IntegrityLevel" : "Medium",
+                "TerminalSessionId" : "1",
+                "FileVersion" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "Product" : "Microsoft® Windows® Operating System",
+                "ParentUser" : "BRIAN-PC\\Brian",
+                "LogonId" : "0x2bff8"
+              },
+              "opcode" : "Info",
+              "version" : 5,
+              "record_id" : 81087355,
+              "event_id" : "1",
+              "task" : "Process Create (rule: ProcessCreate)",
+              "provider_guid" : "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}",
+              "api" : "wineventlog",
+              "provider_name" : "Microsoft-Windows-Sysmon",
+              "user" : {
+                "identifier" : "S-1-5-18",
+                "domain" : "NT AUTHORITY",
+                "name" : "SYSTEM",
+                "type" : "User"
+              }
+            },
+            "kibana.alert.rule.max_signals" : 100,
+            "kibana.alert.rule.updated_at" : "2022-04-05T20:19:58.607Z",
+            "kibana.alert.rule.risk_score" : 21,
+            "kibana.alert.rule.author" : [
+              "Elastic"
+            ],
+            "kibana.alert.rule.false_positives" : [
+              "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+            ],
+            "message" : "Process Create:\nRuleName: -\nUtcTime: 2022-04-05 22:24:44.155\nProcessGuid: {f0ea5239-c1ac-624c-b925-000000007a00}\nProcessId: 29536\nImage: C:\\Windows\\System32\\whoami.exe\nFileVersion: 10.0.19041.1 (WinBuild.160101.0800)\nDescription: whoami - displays logged on user information\nProduct: Microsoft® Windows® Operating System\nCompany: Microsoft Corporation\nOriginalFileName: whoami.exe\nCommandLine: \"C:\\Windows\\system32\\whoami.exe\" /groups\nCurrentDirectory: D:\\Repositories\\elastic-stack\\\nUser: BRIAN-PC\\Brian\nLogonGuid: {f0ea5239-2409-624b-f8bf-020000000000}\nLogonId: 0x2BFF8\nTerminalSessionId: 1\nIntegrityLevel: Medium\nHashes: MD5=A4A6924F3EAF97981323703D38FD99C4,SHA256=1D4902A04D99E8CCBFE7085E63155955FEE397449D386453F6C452AE407B8743,IMPHASH=7FF0758B766F747CE57DFAC70743FB88\nParentProcessGuid: {f0ea5239-2500-624b-3c04-000000007a00}\nParentProcessId: 10204\nParentImage: C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe\nParentCommandLine: powershell.exe\nParentUser: BRIAN-PC\\Brian",
+            "kibana.alert.rule.consumer" : "siem",
+            "kibana.alert.rule.category" : "Custom Query Rule",
+            "event.action" : "Process Create (rule: ProcessCreate)",
+            "@timestamp" : "2022-04-05T22:26:16.167Z",
+            "kibana.alert.rule.created_at" : "2021-10-26T19:56:52.377Z",
+            "kibana.alert.original_event.action" : "Process Create (rule: ProcessCreate)",
+            "kibana.alert.rule.severity" : "low",
+            "event.type" : [
+              "start",
+              "process_start"
+            ],
+            "kibana.alert.rule.execution.uuid" : "4a68d6d7-fb8d-4c70-bb0d-a0e7e0822ebb",
+            "kibana.space_ids" : [
+              "default"
+            ],
+            "kibana.alert.rule.meta.kibana_siem_app_url" : "https://localhost:5601/app/security",
+            "kibana.alert.uuid" : "622397ad97af411d3d3d854b14e90467923cfbbfbdaaa54b170299eb390dab33",
+            "kibana.version" : "8.1.0",
+            "kibana.alert.rule.meta.from" : "4m",
+            "user" : {
+              "domain" : "BRIAN-PC",
+              "name" : "Brian",
+              "id" : "S-1-5-18"
+            },
+            "kibana.alert.rule.rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+            "kibana.alert.original_time" : "2022-04-05T22:24:44.155Z"
+          }
+        },
+        {
+          "_index" : ".internal.alerts-security.alerts-default-000001",
+          "_id" : "4ca22e3566218e99b1bea77077e6c96641f1b8aab46b37154adcb794a6763710",
+          "_score" : 1.0,
+          "_source" : {
+            "kibana.alert.severity" : "low",
+            "agent" : {
+              "hostname" : "BRIAN-PC",
+              "name" : "BRIAN-PC",
+              "id" : "21aa23a8-6f3f-4365-b3ce-55855b75dd51",
+              "ephemeral_id" : "6c3529f9-c218-4928-91af-6761eb3b82d4",
+              "type" : "winlogbeat",
+              "version" : "7.15.1"
+            },
+            "kibana.alert.rule.updated_by" : "elastic",
+            "kibana.alert.rule.references" : [ ],
+            "event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.threat" : [
+              {
+                "framework" : "MITRE ATT&CK",
+                "technique" : [
+                  {
+                    "reference" : "https://attack.mitre.org/techniques/T1033/",
+                    "name" : "System Owner/User Discovery",
+                    "subtechnique" : [ ],
+                    "id" : "T1033"
+                  }
+                ],
+                "tactic" : {
+                  "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                  "name" : "Discovery",
+                  "id" : "TA0007"
+                }
+              }
+            ],
+            "kibana.alert.original_event.code" : "1",
+            "kibana.alert.rule.description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+            "kibana.alert.rule.tags" : [
+              "Discovery",
+              "Elastic",
+              "Host",
+              "Linux",
+              "Threat Detection",
+              "auto_disabled_8.0"
+            ],
+            "kibana.alert.rule.producer" : "siem",
+            "kibana.alert.rule.to" : "now",
+            "kibana.alert.rule.created_by" : "elastic",
+            "kibana.alert.rule.timestamp_override" : "event.ingested",
+            "ecs" : {
+              "version" : "1.11.0"
+            },
+            "kibana.alert.risk_score" : 21,
+            "host" : {
+              "hostname" : "BRIAN-PC",
+              "os" : {
+                "build" : "19043.1586",
+                "kernel" : "10.0.19041.1586 (WinBuild.160101.0800)",
+                "name" : "Windows 10 Pro",
+                "type" : "windows",
+                "family" : "windows",
+                "version" : "10.0",
+                "platform" : "windows"
+              },
+              "ip" : [
+                "fe80::c8a4:dc53:fc0e:9397",
+                "169.254.147.151",
+                "fe80::ccba:d63e:19e:4eed",
+                "169.254.78.237",
+                "fe80::2907:26a0:83d9:94d0",
+                "172.31.57.1",
+                "fe80::803c:5a27:a82f:ceea",
+                "192.168.1.218",
+                "fe80::a1b6:f82f:32e8:cdca",
+                "169.254.205.202",
+                "fe80::602f:fe9a:a624:2328",
+                "169.254.35.40",
+                "fe80::cd9f:2a9c:6f46:8af3",
+                "169.254.138.243",
+                "fe80::6d34:cc68:395b:44c2",
+                "172.29.176.1",
+                "fe80::e554:66d6:7d6c:6e8e",
+                "172.26.176.1",
+                "fe80::3ded:1d20:ac33:db13",
+                "172.30.160.1",
+                "fe80::c109:c7c2:c75f:9075",
+                "172.21.112.1",
+                "fe80::1942:7d8:2686:7bfd",
+                "192.168.160.1",
+                "fe80::9994:c065:c16f:67c3",
+                "172.29.208.1",
+                "fe80::891:fa92:b512:e465",
+                "172.29.80.1"
+              ],
+              "name" : "BRIAN-PC",
+              "id" : "f0ea5239-c22b-4596-bf23-1a94c654eabb",
+              "mac" : [
+                "00:ff:a3:9b:ea:65",
+                "00:15:5d:38:01:02",
+                "00:15:5d:38:01:10",
+                "38:94:ed:2e:cf:0d",
+                "3a:94:ed:2e:cf:0d",
+                "38:94:ed:2e:cf:0d",
+                "00:ff:54:a4:e6:78",
+                "00:15:5d:9b:44:9d",
+                "00:15:5d:28:d1:82",
+                "00:15:5d:c4:85:25",
+                "00:15:5d:ea:59:ee",
+                "00:15:5d:62:40:b4",
+                "00:15:5d:a0:c8:a0",
+                "00:15:5d:49:4c:ae"
+              ],
+              "architecture" : "x86_64"
+            },
+            "kibana.alert.rule.name" : "User Discovery via Whoami [Duplicate]",
+            "event.kind" : "signal",
+            "kibana.alert.workflow_status" : "open",
+            "kibana.alert.rule.uuid" : "dd13a810-3696-11ec-a7c8-b9d14d243cd3",
+            "kibana.alert.original_event.created" : "2022-04-05T22:16:18.616Z",
+            "kibana.alert.original_event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.risk_score_mapping" : [ ],
+            "kibana.alert.original_event.module" : "sysmon",
+            "kibana.alert.rule.interval" : "5m",
+            "kibana.alert.reason" : "process event with process whoami.exe, parent process cmd.exe, by Brian on BRIAN-PC created low alert User Discovery via Whoami [Duplicate].",
+            "kibana.alert.rule.type" : "query",
+            "event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.immutable" : false,
+            "event.code" : "1",
+            "kibana.alert.original_event.type" : [
+              "start",
+              "process_start"
+            ],
+            "event.created" : "2022-04-05T22:16:18.616Z",
+            "kibana.alert.depth" : 1,
+            "kibana.alert.rule.enabled" : true,
+            "kibana.alert.rule.version" : 8,
+            "kibana.alert.rule.from" : "now-540s",
+            "hash" : {
+              "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+              "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+              "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+            },
+            "kibana.alert.rule.parameters" : {
+              "severity" : "low",
+              "max_signals" : 100,
+              "severity_mapping" : [ ],
+              "references" : [ ],
+              "risk_score" : 21,
+              "risk_score_mapping" : [ ],
+              "author" : [
+                "Elastic"
+              ],
+              "query" : "event.category:process and event.type:(start or process_started) and process.name:\"whoami.exe\" ",
+              "description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+              "index" : [
+                "winlogbeat-*"
+              ],
+              "language" : "kuery",
+              "filters" : [ ],
+              "type" : "query",
+              "version" : 8,
+              "rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+              "license" : "Elastic License v2",
+              "immutable" : false,
+              "exceptions_list" : [ ],
+              "timestamp_override" : "event.ingested",
+              "meta" : {
+                "from" : "4m",
+                "kibana_siem_app_url" : "https://localhost:5601/app/security"
+              },
+              "from" : "now-540s",
+              "false_positives" : [
+                "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+              ],
+              "threat" : [
+                {
+                  "framework" : "MITRE ATT&CK",
+                  "technique" : [
+                    {
+                      "reference" : "https://attack.mitre.org/techniques/T1033/",
+                      "name" : "System Owner/User Discovery",
+                      "subtechnique" : [ ],
+                      "id" : "T1033"
+                    }
+                  ],
+                  "tactic" : {
+                    "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                    "name" : "Discovery",
+                    "id" : "TA0007"
+                  }
+                }
+              ],
+              "to" : "now"
+            },
+            "log" : {
+              "level" : "information"
+            },
+            "kibana.alert.status" : "active",
+            "kibana.alert.ancestors" : [
+              {
+                "depth" : 0,
+                "index" : "winlogbeat-7.15.1-2022.03.25-000006",
+                "id" : "3tfM-38BBH9ED-7i1RfP",
+                "type" : "event"
+              }
+            ],
+            "kibana.alert.rule.exceptions_list" : [ ],
+            "kibana.alert.rule.actions" : [ ],
+            "kibana.alert.rule.rule_type_id" : "siem.queryRule",
+            "related" : {
+              "user" : "Brian",
+              "hash" : [
+                "a4a6924f3eaf97981323703d38fd99c4",
+                "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "7ff0758b766f747ce57dfac70743fb88"
+              ]
+            },
+            "event.module" : "sysmon",
+            "kibana.alert.original_event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.license" : "Elastic License v2",
+            "kibana.alert.original_event.kind" : "event",
+            "kibana.alert.rule.severity_mapping" : [ ],
+            "process" : {
+              "args" : [
+                "whoami",
+                "/priv"
+              ],
+              "parent" : {
+                "args" : [
+                  "C:\\WINDOWS\\system32\\cmd.exe"
+                ],
+                "name" : "cmd.exe",
+                "pid" : 32492,
+                "entity_id" : "{f0ea5239-bfaf-624c-8d24-000000007a00}",
+                "executable" : "C:\\Windows\\System32\\cmd.exe",
+                "command_line" : "\"C:\\WINDOWS\\system32\\cmd.exe\" "
+              },
+              "pe" : {
+                "file_version" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "product" : "Microsoft® Windows® Operating System",
+                "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+                "description" : "whoami - displays logged on user information",
+                "company" : "Microsoft Corporation",
+                "original_file_name" : "whoami.exe"
+              },
+              "name" : "whoami.exe",
+              "pid" : 33100,
+              "working_directory" : "C:\\Users\\Brian\\",
+              "entity_id" : "{f0ea5239-bfb1-624c-9124-000000007a00}",
+              "executable" : "C:\\Windows\\System32\\whoami.exe",
+              "command_line" : "whoami  /priv",
+              "hash" : {
+                "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+              }
+            },
+            "winlog" : {
+              "computer_name" : "BRIAN-PC",
+              "process" : {
+                "pid" : 5524,
+                "thread" : {
+                  "id" : 6632
+                }
+              },
+              "channel" : "Microsoft-Windows-Sysmon/Operational",
+              "event_data" : {
+                "Company" : "Microsoft Corporation",
+                "Description" : "whoami - displays logged on user information",
+                "LogonGuid" : "{f0ea5239-2409-624b-f8bf-020000000000}",
+                "IntegrityLevel" : "Medium",
+                "TerminalSessionId" : "1",
+                "FileVersion" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "Product" : "Microsoft® Windows® Operating System",
+                "ParentUser" : "BRIAN-PC\\Brian",
+                "LogonId" : "0x2bff8"
+              },
+              "opcode" : "Info",
+              "version" : 5,
+              "record_id" : 81086638,
+              "event_id" : "1",
+              "task" : "Process Create (rule: ProcessCreate)",
+              "provider_guid" : "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}",
+              "api" : "wineventlog",
+              "provider_name" : "Microsoft-Windows-Sysmon",
+              "user" : {
+                "identifier" : "S-1-5-18",
+                "domain" : "NT AUTHORITY",
+                "name" : "SYSTEM",
+                "type" : "User"
+              }
+            },
+            "kibana.alert.rule.max_signals" : 100,
+            "kibana.alert.rule.updated_at" : "2022-04-05T20:19:58.607Z",
+            "kibana.alert.rule.risk_score" : 21,
+            "kibana.alert.rule.author" : [
+              "Elastic"
+            ],
+            "kibana.alert.rule.false_positives" : [
+              "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+            ],
+            "message" : "Process Create:\nRuleName: -\nUtcTime: 2022-04-05 22:16:17.044\nProcessGuid: {f0ea5239-bfb1-624c-9124-000000007a00}\nProcessId: 33100\nImage: C:\\Windows\\System32\\whoami.exe\nFileVersion: 10.0.19041.1 (WinBuild.160101.0800)\nDescription: whoami - displays logged on user information\nProduct: Microsoft® Windows® Operating System\nCompany: Microsoft Corporation\nOriginalFileName: whoami.exe\nCommandLine: whoami  /priv\nCurrentDirectory: C:\\Users\\Brian\\\nUser: BRIAN-PC\\Brian\nLogonGuid: {f0ea5239-2409-624b-f8bf-020000000000}\nLogonId: 0x2BFF8\nTerminalSessionId: 1\nIntegrityLevel: Medium\nHashes: MD5=A4A6924F3EAF97981323703D38FD99C4,SHA256=1D4902A04D99E8CCBFE7085E63155955FEE397449D386453F6C452AE407B8743,IMPHASH=7FF0758B766F747CE57DFAC70743FB88\nParentProcessGuid: {f0ea5239-bfaf-624c-8d24-000000007a00}\nParentProcessId: 32492\nParentImage: C:\\Windows\\System32\\cmd.exe\nParentCommandLine: \"C:\\WINDOWS\\system32\\cmd.exe\" \nParentUser: BRIAN-PC\\Brian",
+            "kibana.alert.rule.consumer" : "siem",
+            "kibana.alert.rule.category" : "Custom Query Rule",
+            "event.action" : "Process Create (rule: ProcessCreate)",
+            "@timestamp" : "2022-04-05T22:21:13.586Z",
+            "kibana.alert.rule.created_at" : "2021-10-26T19:56:52.377Z",
+            "kibana.alert.original_event.action" : "Process Create (rule: ProcessCreate)",
+            "kibana.alert.rule.severity" : "low",
+            "event.type" : [
+              "start",
+              "process_start"
+            ],
+            "kibana.alert.rule.execution.uuid" : "d9fc538e-4479-4ffa-9fb8-36bde38514a8",
+            "kibana.space_ids" : [
+              "default"
+            ],
+            "kibana.alert.rule.meta.kibana_siem_app_url" : "https://localhost:5601/app/security",
+            "kibana.alert.uuid" : "4ca22e3566218e99b1bea77077e6c96641f1b8aab46b37154adcb794a6763710",
+            "kibana.version" : "8.1.0",
+            "kibana.alert.rule.meta.from" : "4m",
+            "user" : {
+              "domain" : "BRIAN-PC",
+              "name" : "Brian",
+              "id" : "S-1-5-18"
+            },
+            "kibana.alert.rule.rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+            "kibana.alert.original_time" : "2022-04-05T22:16:17.044Z"
+          }
+        },
+        {
+          "_index" : ".internal.alerts-security.alerts-default-000001",
+          "_id" : "aa559f416e6eac90d49ba97168f91d53dd87e616bd8106b141d60424180c5d22",
+          "_score" : 1.0,
+          "_source" : {
+            "kibana.alert.severity" : "low",
+            "agent" : {
+              "hostname" : "BRIAN-PC",
+              "name" : "BRIAN-PC",
+              "id" : "21aa23a8-6f3f-4365-b3ce-55855b75dd51",
+              "ephemeral_id" : "6c3529f9-c218-4928-91af-6761eb3b82d4",
+              "type" : "winlogbeat",
+              "version" : "7.15.1"
+            },
+            "kibana.alert.rule.updated_by" : "elastic",
+            "kibana.alert.rule.references" : [ ],
+            "event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.threat" : [
+              {
+                "framework" : "MITRE ATT&CK",
+                "technique" : [
+                  {
+                    "reference" : "https://attack.mitre.org/techniques/T1033/",
+                    "name" : "System Owner/User Discovery",
+                    "subtechnique" : [ ],
+                    "id" : "T1033"
+                  }
+                ],
+                "tactic" : {
+                  "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                  "name" : "Discovery",
+                  "id" : "TA0007"
+                }
+              }
+            ],
+            "kibana.alert.original_event.code" : "1",
+            "kibana.alert.rule.description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+            "kibana.alert.rule.tags" : [
+              "Discovery",
+              "Elastic",
+              "Host",
+              "Linux",
+              "Threat Detection",
+              "auto_disabled_8.0"
+            ],
+            "kibana.alert.rule.producer" : "siem",
+            "kibana.alert.rule.to" : "now",
+            "kibana.alert.rule.created_by" : "elastic",
+            "kibana.alert.rule.timestamp_override" : "event.ingested",
+            "ecs" : {
+              "version" : "1.11.0"
+            },
+            "kibana.alert.risk_score" : 21,
+            "host" : {
+              "hostname" : "BRIAN-PC",
+              "os" : {
+                "build" : "19043.1586",
+                "kernel" : "10.0.19041.1586 (WinBuild.160101.0800)",
+                "name" : "Windows 10 Pro",
+                "type" : "windows",
+                "family" : "windows",
+                "version" : "10.0",
+                "platform" : "windows"
+              },
+              "ip" : [
+                "fe80::c8a4:dc53:fc0e:9397",
+                "169.254.147.151",
+                "fe80::ccba:d63e:19e:4eed",
+                "169.254.78.237",
+                "fe80::2907:26a0:83d9:94d0",
+                "172.31.57.1",
+                "fe80::803c:5a27:a82f:ceea",
+                "192.168.1.218",
+                "fe80::a1b6:f82f:32e8:cdca",
+                "169.254.205.202",
+                "fe80::602f:fe9a:a624:2328",
+                "169.254.35.40",
+                "fe80::cd9f:2a9c:6f46:8af3",
+                "169.254.138.243",
+                "fe80::6d34:cc68:395b:44c2",
+                "172.29.176.1",
+                "fe80::e554:66d6:7d6c:6e8e",
+                "172.26.176.1",
+                "fe80::3ded:1d20:ac33:db13",
+                "172.30.160.1",
+                "fe80::c109:c7c2:c75f:9075",
+                "172.21.112.1",
+                "fe80::1942:7d8:2686:7bfd",
+                "192.168.160.1",
+                "fe80::9994:c065:c16f:67c3",
+                "172.29.208.1",
+                "fe80::891:fa92:b512:e465",
+                "172.29.80.1"
+              ],
+              "name" : "BRIAN-PC",
+              "id" : "f0ea5239-c22b-4596-bf23-1a94c654eabb",
+              "mac" : [
+                "00:ff:a3:9b:ea:65",
+                "00:15:5d:38:01:02",
+                "00:15:5d:38:01:10",
+                "38:94:ed:2e:cf:0d",
+                "3a:94:ed:2e:cf:0d",
+                "38:94:ed:2e:cf:0d",
+                "00:ff:54:a4:e6:78",
+                "00:15:5d:9b:44:9d",
+                "00:15:5d:28:d1:82",
+                "00:15:5d:c4:85:25",
+                "00:15:5d:ea:59:ee",
+                "00:15:5d:62:40:b4",
+                "00:15:5d:a0:c8:a0",
+                "00:15:5d:49:4c:ae"
+              ],
+              "architecture" : "x86_64"
+            },
+            "kibana.alert.rule.name" : "User Discovery via Whoami [Duplicate]",
+            "event.kind" : "signal",
+            "kibana.alert.workflow_status" : "open",
+            "kibana.alert.rule.uuid" : "dd13a810-3696-11ec-a7c8-b9d14d243cd3",
+            "kibana.alert.original_event.created" : "2022-04-05T22:19:50.306Z",
+            "kibana.alert.original_event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.risk_score_mapping" : [ ],
+            "kibana.alert.original_event.module" : "sysmon",
+            "kibana.alert.rule.interval" : "5m",
+            "kibana.alert.reason" : "process event with process whoami.exe, parent process cmd.exe, by Brian on BRIAN-PC created low alert User Discovery via Whoami [Duplicate].",
+            "kibana.alert.rule.type" : "query",
+            "event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.immutable" : false,
+            "event.code" : "1",
+            "kibana.alert.original_event.type" : [
+              "start",
+              "process_start"
+            ],
+            "event.created" : "2022-04-05T22:19:50.306Z",
+            "kibana.alert.depth" : 1,
+            "kibana.alert.rule.enabled" : true,
+            "kibana.alert.rule.version" : 8,
+            "kibana.alert.rule.from" : "now-540s",
+            "hash" : {
+              "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+              "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+              "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+            },
+            "kibana.alert.rule.parameters" : {
+              "severity" : "low",
+              "max_signals" : 100,
+              "severity_mapping" : [ ],
+              "references" : [ ],
+              "risk_score" : 21,
+              "risk_score_mapping" : [ ],
+              "author" : [
+                "Elastic"
+              ],
+              "query" : "event.category:process and event.type:(start or process_started) and process.name:\"whoami.exe\" ",
+              "description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+              "index" : [
+                "winlogbeat-*"
+              ],
+              "language" : "kuery",
+              "filters" : [ ],
+              "type" : "query",
+              "version" : 8,
+              "rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+              "license" : "Elastic License v2",
+              "immutable" : false,
+              "exceptions_list" : [ ],
+              "timestamp_override" : "event.ingested",
+              "meta" : {
+                "from" : "4m",
+                "kibana_siem_app_url" : "https://localhost:5601/app/security"
+              },
+              "from" : "now-540s",
+              "false_positives" : [
+                "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+              ],
+              "threat" : [
+                {
+                  "framework" : "MITRE ATT&CK",
+                  "technique" : [
+                    {
+                      "reference" : "https://attack.mitre.org/techniques/T1033/",
+                      "name" : "System Owner/User Discovery",
+                      "subtechnique" : [ ],
+                      "id" : "T1033"
+                    }
+                  ],
+                  "tactic" : {
+                    "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                    "name" : "Discovery",
+                    "id" : "TA0007"
+                  }
+                }
+              ],
+              "to" : "now"
+            },
+            "log" : {
+              "level" : "information"
+            },
+            "kibana.alert.status" : "active",
+            "kibana.alert.ancestors" : [
+              {
+                "depth" : 0,
+                "index" : "winlogbeat-7.15.1-2022.03.25-000006",
+                "id" : "gtfQ-38BBH9ED-7iEBqz",
+                "type" : "event"
+              }
+            ],
+            "kibana.alert.rule.exceptions_list" : [ ],
+            "kibana.alert.rule.actions" : [ ],
+            "kibana.alert.rule.rule_type_id" : "siem.queryRule",
+            "related" : {
+              "user" : "Brian",
+              "hash" : [
+                "a4a6924f3eaf97981323703d38fd99c4",
+                "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "7ff0758b766f747ce57dfac70743fb88"
+              ]
+            },
+            "event.module" : "sysmon",
+            "kibana.alert.original_event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.license" : "Elastic License v2",
+            "kibana.alert.original_event.kind" : "event",
+            "kibana.alert.rule.severity_mapping" : [ ],
+            "process" : {
+              "args" : [
+                "whoami",
+                "/priv"
+              ],
+              "parent" : {
+                "args" : [
+                  "C:\\WINDOWS\\system32\\cmd.exe"
+                ],
+                "name" : "cmd.exe",
+                "pid" : 26748,
+                "entity_id" : "{f0ea5239-bc39-624c-e021-000000007a00}",
+                "command_line" : "\"C:\\WINDOWS\\system32\\cmd.exe\" ",
+                "executable" : "C:\\Windows\\System32\\cmd.exe"
+              },
+              "pe" : {
+                "file_version" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "product" : "Microsoft® Windows® Operating System",
+                "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+                "description" : "whoami - displays logged on user information",
+                "original_file_name" : "whoami.exe",
+                "company" : "Microsoft Corporation"
+              },
+              "name" : "whoami.exe",
+              "working_directory" : "C:\\Users\\Brian\\",
+              "pid" : 32940,
+              "entity_id" : "{f0ea5239-c084-624c-3925-000000007a00}",
+              "hash" : {
+                "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+              },
+              "command_line" : "whoami  /priv",
+              "executable" : "C:\\Windows\\System32\\whoami.exe"
+            },
+            "winlog" : {
+              "computer_name" : "BRIAN-PC",
+              "process" : {
+                "pid" : 5524,
+                "thread" : {
+                  "id" : 6632
+                }
+              },
+              "channel" : "Microsoft-Windows-Sysmon/Operational",
+              "event_data" : {
+                "Company" : "Microsoft Corporation",
+                "LogonGuid" : "{f0ea5239-2409-624b-f8bf-020000000000}",
+                "Description" : "whoami - displays logged on user information",
+                "TerminalSessionId" : "1",
+                "IntegrityLevel" : "Medium",
+                "FileVersion" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "ParentUser" : "BRIAN-PC\\Brian",
+                "Product" : "Microsoft® Windows® Operating System",
+                "LogonId" : "0x2bff8"
+              },
+              "opcode" : "Info",
+              "version" : 5,
+              "record_id" : 81087000,
+              "event_id" : "1",
+              "task" : "Process Create (rule: ProcessCreate)",
+              "provider_guid" : "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}",
+              "api" : "wineventlog",
+              "provider_name" : "Microsoft-Windows-Sysmon",
+              "user" : {
+                "identifier" : "S-1-5-18",
+                "domain" : "NT AUTHORITY",
+                "name" : "SYSTEM",
+                "type" : "User"
+              }
+            },
+            "kibana.alert.rule.max_signals" : 100,
+            "kibana.alert.rule.updated_at" : "2022-04-05T20:19:58.607Z",
+            "kibana.alert.rule.risk_score" : 21,
+            "kibana.alert.rule.author" : [
+              "Elastic"
+            ],
+            "kibana.alert.rule.false_positives" : [
+              "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+            ],
+            "message" : "Process Create:\nRuleName: -\nUtcTime: 2022-04-05 22:19:48.795\nProcessGuid: {f0ea5239-c084-624c-3925-000000007a00}\nProcessId: 32940\nImage: C:\\Windows\\System32\\whoami.exe\nFileVersion: 10.0.19041.1 (WinBuild.160101.0800)\nDescription: whoami - displays logged on user information\nProduct: Microsoft® Windows® Operating System\nCompany: Microsoft Corporation\nOriginalFileName: whoami.exe\nCommandLine: whoami  /priv\nCurrentDirectory: C:\\Users\\Brian\\\nUser: BRIAN-PC\\Brian\nLogonGuid: {f0ea5239-2409-624b-f8bf-020000000000}\nLogonId: 0x2BFF8\nTerminalSessionId: 1\nIntegrityLevel: Medium\nHashes: MD5=A4A6924F3EAF97981323703D38FD99C4,SHA256=1D4902A04D99E8CCBFE7085E63155955FEE397449D386453F6C452AE407B8743,IMPHASH=7FF0758B766F747CE57DFAC70743FB88\nParentProcessGuid: {f0ea5239-bc39-624c-e021-000000007a00}\nParentProcessId: 26748\nParentImage: C:\\Windows\\System32\\cmd.exe\nParentCommandLine: \"C:\\WINDOWS\\system32\\cmd.exe\" \nParentUser: BRIAN-PC\\Brian",
+            "kibana.alert.rule.consumer" : "siem",
+            "kibana.alert.rule.category" : "Custom Query Rule",
+            "event.action" : "Process Create (rule: ProcessCreate)",
+            "@timestamp" : "2022-04-05T22:21:13.589Z",
+            "kibana.alert.rule.created_at" : "2021-10-26T19:56:52.377Z",
+            "kibana.alert.original_event.action" : "Process Create (rule: ProcessCreate)",
+            "kibana.alert.rule.severity" : "low",
+            "event.type" : [
+              "start",
+              "process_start"
+            ],
+            "kibana.alert.rule.execution.uuid" : "d9fc538e-4479-4ffa-9fb8-36bde38514a8",
+            "kibana.space_ids" : [
+              "default"
+            ],
+            "kibana.alert.rule.meta.kibana_siem_app_url" : "https://localhost:5601/app/security",
+            "kibana.alert.uuid" : "aa559f416e6eac90d49ba97168f91d53dd87e616bd8106b141d60424180c5d22",
+            "kibana.version" : "8.1.0",
+            "kibana.alert.rule.meta.from" : "4m",
+            "user" : {
+              "domain" : "BRIAN-PC",
+              "name" : "Brian",
+              "id" : "S-1-5-18"
+            },
+            "kibana.alert.rule.rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+            "kibana.alert.original_time" : "2022-04-05T22:19:48.795Z"
+          }
+        },
+        {
+          "_index" : ".internal.alerts-security.alerts-default-000001",
+          "_id" : "e23e79b204284a76bc0b51882f8d4e86026657e405a79a39293522ded1343e61",
+          "_score" : 1.0,
+          "_source" : {
+            "kibana.alert.severity" : "low",
+            "agent" : {
+              "hostname" : "BRIAN-PC",
+              "name" : "BRIAN-PC",
+              "id" : "21aa23a8-6f3f-4365-b3ce-55855b75dd51",
+              "ephemeral_id" : "6c3529f9-c218-4928-91af-6761eb3b82d4",
+              "type" : "winlogbeat",
+              "version" : "7.15.1"
+            },
+            "kibana.alert.rule.updated_by" : "elastic",
+            "kibana.alert.rule.references" : [ ],
+            "event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.threat" : [
+              {
+                "framework" : "MITRE ATT&CK",
+                "technique" : [
+                  {
+                    "reference" : "https://attack.mitre.org/techniques/T1033/",
+                    "name" : "System Owner/User Discovery",
+                    "subtechnique" : [ ],
+                    "id" : "T1033"
+                  }
+                ],
+                "tactic" : {
+                  "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                  "name" : "Discovery",
+                  "id" : "TA0007"
+                }
+              }
+            ],
+            "kibana.alert.original_event.code" : "1",
+            "kibana.alert.rule.description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+            "kibana.alert.rule.tags" : [
+              "Discovery",
+              "Elastic",
+              "Host",
+              "Linux",
+              "Threat Detection",
+              "auto_disabled_8.0"
+            ],
+            "kibana.alert.rule.producer" : "siem",
+            "kibana.alert.rule.to" : "now",
+            "kibana.alert.rule.created_by" : "elastic",
+            "kibana.alert.rule.timestamp_override" : "event.ingested",
+            "ecs" : {
+              "version" : "1.11.0"
+            },
+            "kibana.alert.risk_score" : 21,
+            "host" : {
+              "hostname" : "BRIAN-PC",
+              "os" : {
+                "build" : "19043.1586",
+                "kernel" : "10.0.19041.1586 (WinBuild.160101.0800)",
+                "name" : "Windows 10 Pro",
+                "type" : "windows",
+                "family" : "windows",
+                "version" : "10.0",
+                "platform" : "windows"
+              },
+              "ip" : [
+                "fe80::c8a4:dc53:fc0e:9397",
+                "169.254.147.151",
+                "fe80::ccba:d63e:19e:4eed",
+                "169.254.78.237",
+                "fe80::2907:26a0:83d9:94d0",
+                "172.31.57.1",
+                "fe80::803c:5a27:a82f:ceea",
+                "192.168.1.218",
+                "fe80::a1b6:f82f:32e8:cdca",
+                "169.254.205.202",
+                "fe80::602f:fe9a:a624:2328",
+                "169.254.35.40",
+                "fe80::cd9f:2a9c:6f46:8af3",
+                "169.254.138.243",
+                "fe80::6d34:cc68:395b:44c2",
+                "172.29.176.1",
+                "fe80::e554:66d6:7d6c:6e8e",
+                "172.26.176.1",
+                "fe80::3ded:1d20:ac33:db13",
+                "172.30.160.1",
+                "fe80::c109:c7c2:c75f:9075",
+                "172.21.112.1",
+                "fe80::1942:7d8:2686:7bfd",
+                "192.168.160.1",
+                "fe80::9994:c065:c16f:67c3",
+                "172.29.208.1",
+                "fe80::891:fa92:b512:e465",
+                "172.29.80.1"
+              ],
+              "name" : "BRIAN-PC",
+              "id" : "f0ea5239-c22b-4596-bf23-1a94c654eabb",
+              "mac" : [
+                "00:ff:a3:9b:ea:65",
+                "00:15:5d:38:01:02",
+                "00:15:5d:38:01:10",
+                "38:94:ed:2e:cf:0d",
+                "3a:94:ed:2e:cf:0d",
+                "38:94:ed:2e:cf:0d",
+                "00:ff:54:a4:e6:78",
+                "00:15:5d:9b:44:9d",
+                "00:15:5d:28:d1:82",
+                "00:15:5d:c4:85:25",
+                "00:15:5d:ea:59:ee",
+                "00:15:5d:62:40:b4",
+                "00:15:5d:a0:c8:a0",
+                "00:15:5d:49:4c:ae"
+              ],
+              "architecture" : "x86_64"
+            },
+            "kibana.alert.rule.name" : "User Discovery via Whoami [Duplicate]",
+            "event.kind" : "signal",
+            "kibana.alert.workflow_status" : "open",
+            "kibana.alert.rule.uuid" : "dd13a810-3696-11ec-a7c8-b9d14d243cd3",
+            "kibana.alert.original_event.created" : "2022-04-05T22:01:33.170Z",
+            "kibana.alert.original_event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.risk_score_mapping" : [ ],
+            "kibana.alert.original_event.module" : "sysmon",
+            "kibana.alert.rule.interval" : "5m",
+            "kibana.alert.reason" : "process event with process whoami.exe, parent process cmd.exe, by Brian on BRIAN-PC created low alert User Discovery via Whoami [Duplicate].",
+            "kibana.alert.rule.type" : "query",
+            "event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.immutable" : false,
+            "event.code" : "1",
+            "kibana.alert.original_event.type" : [
+              "start",
+              "process_start"
+            ],
+            "event.created" : "2022-04-05T22:01:33.170Z",
+            "kibana.alert.depth" : 1,
+            "kibana.alert.rule.enabled" : true,
+            "kibana.alert.rule.version" : 8,
+            "kibana.alert.rule.from" : "now-540s",
+            "hash" : {
+              "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+              "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+              "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+            },
+            "kibana.alert.rule.parameters" : {
+              "severity" : "low",
+              "max_signals" : 100,
+              "severity_mapping" : [ ],
+              "references" : [ ],
+              "risk_score" : 21,
+              "risk_score_mapping" : [ ],
+              "author" : [
+                "Elastic"
+              ],
+              "query" : "event.category:process and event.type:(start or process_started) and process.name:\"whoami.exe\" ",
+              "description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+              "index" : [
+                "winlogbeat-*"
+              ],
+              "language" : "kuery",
+              "filters" : [ ],
+              "type" : "query",
+              "version" : 8,
+              "rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+              "license" : "Elastic License v2",
+              "immutable" : false,
+              "exceptions_list" : [ ],
+              "timestamp_override" : "event.ingested",
+              "meta" : {
+                "from" : "4m",
+                "kibana_siem_app_url" : "https://localhost:5601/app/security"
+              },
+              "from" : "now-540s",
+              "false_positives" : [
+                "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+              ],
+              "threat" : [
+                {
+                  "framework" : "MITRE ATT&CK",
+                  "technique" : [
+                    {
+                      "reference" : "https://attack.mitre.org/techniques/T1033/",
+                      "name" : "System Owner/User Discovery",
+                      "subtechnique" : [ ],
+                      "id" : "T1033"
+                    }
+                  ],
+                  "tactic" : {
+                    "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                    "name" : "Discovery",
+                    "id" : "TA0007"
+                  }
+                }
+              ],
+              "to" : "now"
+            },
+            "log" : {
+              "level" : "information"
+            },
+            "kibana.alert.status" : "active",
+            "kibana.alert.ancestors" : [
+              {
+                "depth" : 0,
+                "index" : "winlogbeat-7.15.1-2022.03.25-000006",
+                "id" : "Rde_-38BBH9ED-7iUg77",
+                "type" : "event"
+              }
+            ],
+            "kibana.alert.rule.exceptions_list" : [ ],
+            "kibana.alert.rule.actions" : [ ],
+            "kibana.alert.rule.rule_type_id" : "siem.queryRule",
+            "related" : {
+              "user" : "Brian",
+              "hash" : [
+                "a4a6924f3eaf97981323703d38fd99c4",
+                "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "7ff0758b766f747ce57dfac70743fb88"
+              ]
+            },
+            "event.module" : "sysmon",
+            "kibana.alert.original_event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.license" : "Elastic License v2",
+            "kibana.alert.original_event.kind" : "event",
+            "kibana.alert.rule.severity_mapping" : [ ],
+            "process" : {
+              "args" : [
+                "whoami",
+                "/priv"
+              ],
+              "parent" : {
+                "args" : [
+                  "C:\\WINDOWS\\system32\\cmd.exe"
+                ],
+                "name" : "cmd.exe",
+                "pid" : 26748,
+                "entity_id" : "{f0ea5239-bc39-624c-e021-000000007a00}",
+                "command_line" : "\"C:\\WINDOWS\\system32\\cmd.exe\" ",
+                "executable" : "C:\\Windows\\System32\\cmd.exe"
+              },
+              "pe" : {
+                "file_version" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "product" : "Microsoft® Windows® Operating System",
+                "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+                "description" : "whoami - displays logged on user information",
+                "original_file_name" : "whoami.exe",
+                "company" : "Microsoft Corporation"
+              },
+              "name" : "whoami.exe",
+              "pid" : 29004,
+              "working_directory" : "C:\\Users\\Brian\\",
+              "entity_id" : "{f0ea5239-bc3b-624c-e321-000000007a00}",
+              "hash" : {
+                "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+              },
+              "executable" : "C:\\Windows\\System32\\whoami.exe",
+              "command_line" : "whoami  /priv"
+            },
+            "winlog" : {
+              "computer_name" : "BRIAN-PC",
+              "process" : {
+                "pid" : 5524,
+                "thread" : {
+                  "id" : 6632
+                }
+              },
+              "channel" : "Microsoft-Windows-Sysmon/Operational",
+              "event_data" : {
+                "Company" : "Microsoft Corporation",
+                "LogonGuid" : "{f0ea5239-2409-624b-f8bf-020000000000}",
+                "Description" : "whoami - displays logged on user information",
+                "TerminalSessionId" : "1",
+                "IntegrityLevel" : "Medium",
+                "FileVersion" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "Product" : "Microsoft® Windows® Operating System",
+                "ParentUser" : "BRIAN-PC\\Brian",
+                "LogonId" : "0x2bff8"
+              },
+              "opcode" : "Info",
+              "version" : 5,
+              "record_id" : 81085196,
+              "task" : "Process Create (rule: ProcessCreate)",
+              "event_id" : "1",
+              "provider_guid" : "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}",
+              "api" : "wineventlog",
+              "provider_name" : "Microsoft-Windows-Sysmon",
+              "user" : {
+                "identifier" : "S-1-5-18",
+                "domain" : "NT AUTHORITY",
+                "name" : "SYSTEM",
+                "type" : "User"
+              }
+            },
+            "kibana.alert.rule.max_signals" : 100,
+            "kibana.alert.rule.updated_at" : "2022-04-05T20:19:58.607Z",
+            "kibana.alert.rule.risk_score" : 21,
+            "kibana.alert.rule.author" : [
+              "Elastic"
+            ],
+            "kibana.alert.rule.false_positives" : [
+              "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+            ],
+            "message" : "Process Create:\nRuleName: -\nUtcTime: 2022-04-05 22:01:31.394\nProcessGuid: {f0ea5239-bc3b-624c-e321-000000007a00}\nProcessId: 29004\nImage: C:\\Windows\\System32\\whoami.exe\nFileVersion: 10.0.19041.1 (WinBuild.160101.0800)\nDescription: whoami - displays logged on user information\nProduct: Microsoft® Windows® Operating System\nCompany: Microsoft Corporation\nOriginalFileName: whoami.exe\nCommandLine: whoami  /priv\nCurrentDirectory: C:\\Users\\Brian\\\nUser: BRIAN-PC\\Brian\nLogonGuid: {f0ea5239-2409-624b-f8bf-020000000000}\nLogonId: 0x2BFF8\nTerminalSessionId: 1\nIntegrityLevel: Medium\nHashes: MD5=A4A6924F3EAF97981323703D38FD99C4,SHA256=1D4902A04D99E8CCBFE7085E63155955FEE397449D386453F6C452AE407B8743,IMPHASH=7FF0758B766F747CE57DFAC70743FB88\nParentProcessGuid: {f0ea5239-bc39-624c-e021-000000007a00}\nParentProcessId: 26748\nParentImage: C:\\Windows\\System32\\cmd.exe\nParentCommandLine: \"C:\\WINDOWS\\system32\\cmd.exe\" \nParentUser: BRIAN-PC\\Brian",
+            "kibana.alert.rule.consumer" : "siem",
+            "kibana.alert.rule.category" : "Custom Query Rule",
+            "event.action" : "Process Create (rule: ProcessCreate)",
+            "@timestamp" : "2022-04-05T22:06:04.069Z",
+            "kibana.alert.rule.created_at" : "2021-10-26T19:56:52.377Z",
+            "kibana.alert.original_event.action" : "Process Create (rule: ProcessCreate)",
+            "kibana.alert.rule.severity" : "low",
+            "event.type" : [
+              "start",
+              "process_start"
+            ],
+            "kibana.alert.rule.execution.uuid" : "1c44a66a-6429-4355-b1ae-244561904d75",
+            "kibana.space_ids" : [
+              "default"
+            ],
+            "kibana.alert.rule.meta.kibana_siem_app_url" : "https://localhost:5601/app/security",
+            "kibana.alert.uuid" : "e23e79b204284a76bc0b51882f8d4e86026657e405a79a39293522ded1343e61",
+            "kibana.version" : "8.1.0",
+            "kibana.alert.rule.meta.from" : "4m",
+            "user" : {
+              "domain" : "BRIAN-PC",
+              "name" : "Brian",
+              "id" : "S-1-5-18"
+            },
+            "kibana.alert.rule.rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+            "kibana.alert.original_time" : "2022-04-05T22:01:31.394Z"
+          }
+        },
+        {
+          "_index" : ".internal.alerts-security.alerts-default-000001",
+          "_id" : "12a0a64b53f382a7065af80968a6dc48c98f53471e56212287995d23f8e5cdc5",
+          "_score" : 1.0,
+          "_source" : {
+            "kibana.alert.severity" : "low",
+            "agent" : {
+              "hostname" : "BRIAN-PC",
+              "name" : "BRIAN-PC",
+              "id" : "21aa23a8-6f3f-4365-b3ce-55855b75dd51",
+              "type" : "winlogbeat",
+              "ephemeral_id" : "6c3529f9-c218-4928-91af-6761eb3b82d4",
+              "version" : "7.15.1"
+            },
+            "kibana.alert.rule.updated_by" : "elastic",
+            "kibana.alert.rule.references" : [ ],
+            "event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.threat" : [
+              {
+                "framework" : "MITRE ATT&CK",
+                "technique" : [
+                  {
+                    "reference" : "https://attack.mitre.org/techniques/T1033/",
+                    "name" : "System Owner/User Discovery",
+                    "subtechnique" : [ ],
+                    "id" : "T1033"
+                  }
+                ],
+                "tactic" : {
+                  "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                  "name" : "Discovery",
+                  "id" : "TA0007"
+                }
+              }
+            ],
+            "kibana.alert.original_event.code" : "1",
+            "kibana.alert.rule.description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+            "kibana.alert.rule.tags" : [
+              "Discovery",
+              "Elastic",
+              "Host",
+              "Linux",
+              "Threat Detection",
+              "auto_disabled_8.0"
+            ],
+            "kibana.alert.rule.producer" : "siem",
+            "kibana.alert.rule.to" : "now",
+            "kibana.alert.rule.created_by" : "elastic",
+            "kibana.alert.rule.timestamp_override" : "event.ingested",
+            "ecs" : {
+              "version" : "1.11.0"
+            },
+            "kibana.alert.risk_score" : 21,
+            "host" : {
+              "hostname" : "BRIAN-PC",
+              "os" : {
+                "build" : "19043.1586",
+                "kernel" : "10.0.19041.1586 (WinBuild.160101.0800)",
+                "name" : "Windows 10 Pro",
+                "family" : "windows",
+                "type" : "windows",
+                "version" : "10.0",
+                "platform" : "windows"
+              },
+              "ip" : [
+                "fe80::c8a4:dc53:fc0e:9397",
+                "169.254.147.151",
+                "fe80::ccba:d63e:19e:4eed",
+                "169.254.78.237",
+                "fe80::2907:26a0:83d9:94d0",
+                "172.31.57.1",
+                "fe80::803c:5a27:a82f:ceea",
+                "192.168.1.218",
+                "fe80::a1b6:f82f:32e8:cdca",
+                "169.254.205.202",
+                "fe80::602f:fe9a:a624:2328",
+                "169.254.35.40",
+                "fe80::cd9f:2a9c:6f46:8af3",
+                "169.254.138.243",
+                "fe80::6d34:cc68:395b:44c2",
+                "172.29.176.1",
+                "fe80::e554:66d6:7d6c:6e8e",
+                "172.26.176.1",
+                "fe80::3ded:1d20:ac33:db13",
+                "172.30.160.1",
+                "fe80::c109:c7c2:c75f:9075",
+                "172.21.112.1",
+                "fe80::1942:7d8:2686:7bfd",
+                "192.168.160.1",
+                "fe80::9994:c065:c16f:67c3",
+                "172.29.208.1",
+                "fe80::891:fa92:b512:e465",
+                "172.29.80.1"
+              ],
+              "name" : "BRIAN-PC",
+              "id" : "f0ea5239-c22b-4596-bf23-1a94c654eabb",
+              "mac" : [
+                "00:ff:a3:9b:ea:65",
+                "00:15:5d:38:01:02",
+                "00:15:5d:38:01:10",
+                "38:94:ed:2e:cf:0d",
+                "3a:94:ed:2e:cf:0d",
+                "38:94:ed:2e:cf:0d",
+                "00:ff:54:a4:e6:78",
+                "00:15:5d:9b:44:9d",
+                "00:15:5d:28:d1:82",
+                "00:15:5d:c4:85:25",
+                "00:15:5d:ea:59:ee",
+                "00:15:5d:62:40:b4",
+                "00:15:5d:a0:c8:a0",
+                "00:15:5d:49:4c:ae"
+              ],
+              "architecture" : "x86_64"
+            },
+            "kibana.alert.rule.name" : "User Discovery via Whoami [Duplicate]",
+            "event.kind" : "signal",
+            "kibana.alert.workflow_status" : "open",
+            "kibana.alert.rule.uuid" : "dd13a810-3696-11ec-a7c8-b9d14d243cd3",
+            "kibana.alert.original_event.created" : "2022-04-05T21:55:20.266Z",
+            "kibana.alert.original_event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.risk_score_mapping" : [ ],
+            "kibana.alert.original_event.module" : "sysmon",
+            "kibana.alert.rule.interval" : "5m",
+            "kibana.alert.reason" : "process event with process whoami.exe, parent process cmd.exe, by Brian on BRIAN-PC created low alert User Discovery via Whoami [Duplicate].",
+            "kibana.alert.rule.type" : "query",
+            "event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.immutable" : false,
+            "event.code" : "1",
+            "kibana.alert.original_event.type" : [
+              "start",
+              "process_start"
+            ],
+            "event.created" : "2022-04-05T21:55:20.266Z",
+            "kibana.alert.depth" : 1,
+            "kibana.alert.rule.enabled" : true,
+            "kibana.alert.rule.version" : 8,
+            "kibana.alert.rule.from" : "now-540s",
+            "hash" : {
+              "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+              "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+              "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+            },
+            "kibana.alert.rule.parameters" : {
+              "severity" : "low",
+              "max_signals" : 100,
+              "severity_mapping" : [ ],
+              "references" : [ ],
+              "risk_score" : 21,
+              "risk_score_mapping" : [ ],
+              "author" : [
+                "Elastic"
+              ],
+              "query" : "event.category:process and event.type:(start or process_started) and process.name:\"whoami.exe\" ",
+              "description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+              "index" : [
+                "winlogbeat-*"
+              ],
+              "language" : "kuery",
+              "filters" : [ ],
+              "type" : "query",
+              "version" : 8,
+              "rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+              "license" : "Elastic License v2",
+              "immutable" : false,
+              "exceptions_list" : [ ],
+              "timestamp_override" : "event.ingested",
+              "meta" : {
+                "from" : "4m",
+                "kibana_siem_app_url" : "https://localhost:5601/app/security"
+              },
+              "from" : "now-540s",
+              "false_positives" : [
+                "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+              ],
+              "threat" : [
+                {
+                  "framework" : "MITRE ATT&CK",
+                  "technique" : [
+                    {
+                      "reference" : "https://attack.mitre.org/techniques/T1033/",
+                      "name" : "System Owner/User Discovery",
+                      "subtechnique" : [ ],
+                      "id" : "T1033"
+                    }
+                  ],
+                  "tactic" : {
+                    "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                    "name" : "Discovery",
+                    "id" : "TA0007"
+                  }
+                }
+              ],
+              "to" : "now"
+            },
+            "log" : {
+              "level" : "information"
+            },
+            "kibana.alert.status" : "active",
+            "kibana.alert.ancestors" : [
+              {
+                "depth" : 0,
+                "index" : "winlogbeat-7.15.1-2022.03.25-000006",
+                "id" : "Cte5-38BBH9ED-7iogxV",
+                "type" : "event"
+              }
+            ],
+            "kibana.alert.rule.exceptions_list" : [ ],
+            "kibana.alert.rule.actions" : [ ],
+            "kibana.alert.rule.rule_type_id" : "siem.queryRule",
+            "related" : {
+              "user" : "Brian",
+              "hash" : [
+                "a4a6924f3eaf97981323703d38fd99c4",
+                "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "7ff0758b766f747ce57dfac70743fb88"
+              ]
+            },
+            "event.module" : "sysmon",
+            "kibana.alert.original_event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.license" : "Elastic License v2",
+            "kibana.alert.original_event.kind" : "event",
+            "kibana.alert.rule.severity_mapping" : [ ],
+            "process" : {
+              "args" : [
+                "whoami",
+                "/priv"
+              ],
+              "parent" : {
+                "args" : [
+                  "C:\\WINDOWS\\system32\\cmd.exe"
+                ],
+                "name" : "cmd.exe",
+                "pid" : 31548,
+                "entity_id" : "{f0ea5239-bac5-624c-1221-000000007a00}",
+                "executable" : "C:\\Windows\\System32\\cmd.exe",
+                "command_line" : "\"C:\\WINDOWS\\system32\\cmd.exe\" "
+              },
+              "pe" : {
+                "file_version" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "product" : "Microsoft® Windows® Operating System",
+                "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+                "description" : "whoami - displays logged on user information",
+                "original_file_name" : "whoami.exe",
+                "company" : "Microsoft Corporation"
+              },
+              "name" : "whoami.exe",
+              "pid" : 27600,
+              "working_directory" : "C:\\Users\\Brian\\",
+              "entity_id" : "{f0ea5239-bac7-624c-1421-000000007a00}",
+              "executable" : "C:\\Windows\\System32\\whoami.exe",
+              "command_line" : "whoami  /priv",
+              "hash" : {
+                "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+              }
+            },
+            "winlog" : {
+              "computer_name" : "BRIAN-PC",
+              "process" : {
+                "pid" : 5524,
+                "thread" : {
+                  "id" : 6632
+                }
+              },
+              "channel" : "Microsoft-Windows-Sysmon/Operational",
+              "event_data" : {
+                "Company" : "Microsoft Corporation",
+                "Description" : "whoami - displays logged on user information",
+                "LogonGuid" : "{f0ea5239-2409-624b-f8bf-020000000000}",
+                "TerminalSessionId" : "1",
+                "IntegrityLevel" : "Medium",
+                "FileVersion" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "ParentUser" : "BRIAN-PC\\Brian",
+                "Product" : "Microsoft® Windows® Operating System",
+                "LogonId" : "0x2bff8"
+              },
+              "opcode" : "Info",
+              "version" : 5,
+              "record_id" : 81084837,
+              "event_id" : "1",
+              "task" : "Process Create (rule: ProcessCreate)",
+              "provider_guid" : "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}",
+              "api" : "wineventlog",
+              "provider_name" : "Microsoft-Windows-Sysmon",
+              "user" : {
+                "identifier" : "S-1-5-18",
+                "domain" : "NT AUTHORITY",
+                "name" : "SYSTEM",
+                "type" : "User"
+              }
+            },
+            "kibana.alert.rule.max_signals" : 100,
+            "kibana.alert.rule.updated_at" : "2022-04-05T20:19:58.607Z",
+            "kibana.alert.rule.risk_score" : 21,
+            "kibana.alert.rule.author" : [
+              "Elastic"
+            ],
+            "kibana.alert.rule.false_positives" : [
+              "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+            ],
+            "message" : "Process Create:\nRuleName: -\nUtcTime: 2022-04-05 21:55:19.001\nProcessGuid: {f0ea5239-bac7-624c-1421-000000007a00}\nProcessId: 27600\nImage: C:\\Windows\\System32\\whoami.exe\nFileVersion: 10.0.19041.1 (WinBuild.160101.0800)\nDescription: whoami - displays logged on user information\nProduct: Microsoft® Windows® Operating System\nCompany: Microsoft Corporation\nOriginalFileName: whoami.exe\nCommandLine: whoami  /priv\nCurrentDirectory: C:\\Users\\Brian\\\nUser: BRIAN-PC\\Brian\nLogonGuid: {f0ea5239-2409-624b-f8bf-020000000000}\nLogonId: 0x2BFF8\nTerminalSessionId: 1\nIntegrityLevel: Medium\nHashes: MD5=A4A6924F3EAF97981323703D38FD99C4,SHA256=1D4902A04D99E8CCBFE7085E63155955FEE397449D386453F6C452AE407B8743,IMPHASH=7FF0758B766F747CE57DFAC70743FB88\nParentProcessGuid: {f0ea5239-bac5-624c-1221-000000007a00}\nParentProcessId: 31548\nParentImage: C:\\Windows\\System32\\cmd.exe\nParentCommandLine: \"C:\\WINDOWS\\system32\\cmd.exe\" \nParentUser: BRIAN-PC\\Brian",
+            "kibana.alert.rule.consumer" : "siem",
+            "kibana.alert.rule.category" : "Custom Query Rule",
+            "event.action" : "Process Create (rule: ProcessCreate)",
+            "@timestamp" : "2022-04-05T21:55:58.184Z",
+            "kibana.alert.rule.created_at" : "2021-10-26T19:56:52.377Z",
+            "kibana.alert.original_event.action" : "Process Create (rule: ProcessCreate)",
+            "kibana.alert.rule.severity" : "low",
+            "event.type" : [
+              "start",
+              "process_start"
+            ],
+            "kibana.alert.rule.execution.uuid" : "02f95083-6a2f-4b74-b09f-2230a4f46710",
+            "kibana.space_ids" : [
+              "default"
+            ],
+            "kibana.alert.rule.meta.kibana_siem_app_url" : "https://localhost:5601/app/security",
+            "kibana.alert.uuid" : "12a0a64b53f382a7065af80968a6dc48c98f53471e56212287995d23f8e5cdc5",
+            "kibana.version" : "8.1.0",
+            "kibana.alert.rule.meta.from" : "4m",
+            "user" : {
+              "domain" : "BRIAN-PC",
+              "name" : "Brian",
+              "id" : "S-1-5-18"
+            },
+            "kibana.alert.rule.rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+            "kibana.alert.original_time" : "2022-04-05T21:55:19.001Z"
+          }
+        },
+        {
+          "_index" : ".internal.alerts-security.alerts-default-000001",
+          "_id" : "62ac4b9057914b9a04ec6107ef3663dde69aa452a076dd76fb316d180a764d07",
+          "_score" : 1.0,
+          "_source" : {
+            "kibana.alert.severity" : "low",
+            "agent" : {
+              "hostname" : "BRIAN-PC",
+              "name" : "BRIAN-PC",
+              "id" : "21aa23a8-6f3f-4365-b3ce-55855b75dd51",
+              "ephemeral_id" : "6c3529f9-c218-4928-91af-6761eb3b82d4",
+              "type" : "winlogbeat",
+              "version" : "7.15.1"
+            },
+            "kibana.alert.rule.updated_by" : "elastic",
+            "kibana.alert.rule.references" : [ ],
+            "event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.threat" : [
+              {
+                "framework" : "MITRE ATT&CK",
+                "technique" : [
+                  {
+                    "reference" : "https://attack.mitre.org/techniques/T1033/",
+                    "name" : "System Owner/User Discovery",
+                    "subtechnique" : [ ],
+                    "id" : "T1033"
+                  }
+                ],
+                "tactic" : {
+                  "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                  "name" : "Discovery",
+                  "id" : "TA0007"
+                }
+              }
+            ],
+            "kibana.alert.original_event.code" : "1",
+            "kibana.alert.rule.description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+            "kibana.alert.rule.tags" : [
+              "Discovery",
+              "Elastic",
+              "Host",
+              "Linux",
+              "Threat Detection",
+              "auto_disabled_8.0"
+            ],
+            "kibana.alert.rule.producer" : "siem",
+            "kibana.alert.rule.to" : "now",
+            "kibana.alert.rule.created_by" : "elastic",
+            "kibana.alert.rule.timestamp_override" : "event.ingested",
+            "ecs" : {
+              "version" : "1.11.0"
+            },
+            "kibana.alert.risk_score" : 21,
+            "host" : {
+              "hostname" : "BRIAN-PC",
+              "os" : {
+                "build" : "19043.1586",
+                "kernel" : "10.0.19041.1586 (WinBuild.160101.0800)",
+                "name" : "Windows 10 Pro",
+                "type" : "windows",
+                "family" : "windows",
+                "version" : "10.0",
+                "platform" : "windows"
+              },
+              "ip" : [
+                "fe80::c8a4:dc53:fc0e:9397",
+                "169.254.147.151",
+                "fe80::ccba:d63e:19e:4eed",
+                "169.254.78.237",
+                "fe80::2907:26a0:83d9:94d0",
+                "172.31.57.1",
+                "fe80::803c:5a27:a82f:ceea",
+                "192.168.1.218",
+                "fe80::a1b6:f82f:32e8:cdca",
+                "169.254.205.202",
+                "fe80::602f:fe9a:a624:2328",
+                "169.254.35.40",
+                "fe80::cd9f:2a9c:6f46:8af3",
+                "169.254.138.243",
+                "fe80::6d34:cc68:395b:44c2",
+                "172.29.176.1",
+                "fe80::e554:66d6:7d6c:6e8e",
+                "172.26.176.1",
+                "fe80::3ded:1d20:ac33:db13",
+                "172.30.160.1",
+                "fe80::c109:c7c2:c75f:9075",
+                "172.21.112.1",
+                "fe80::1942:7d8:2686:7bfd",
+                "192.168.160.1",
+                "fe80::9994:c065:c16f:67c3",
+                "172.29.208.1",
+                "fe80::891:fa92:b512:e465",
+                "172.29.80.1"
+              ],
+              "name" : "BRIAN-PC",
+              "id" : "f0ea5239-c22b-4596-bf23-1a94c654eabb",
+              "mac" : [
+                "00:ff:a3:9b:ea:65",
+                "00:15:5d:38:01:02",
+                "00:15:5d:38:01:10",
+                "38:94:ed:2e:cf:0d",
+                "3a:94:ed:2e:cf:0d",
+                "38:94:ed:2e:cf:0d",
+                "00:ff:54:a4:e6:78",
+                "00:15:5d:9b:44:9d",
+                "00:15:5d:28:d1:82",
+                "00:15:5d:c4:85:25",
+                "00:15:5d:ea:59:ee",
+                "00:15:5d:62:40:b4",
+                "00:15:5d:a0:c8:a0",
+                "00:15:5d:49:4c:ae"
+              ],
+              "architecture" : "x86_64"
+            },
+            "kibana.alert.rule.name" : "User Discovery via Whoami [Duplicate]",
+            "event.kind" : "signal",
+            "kibana.alert.workflow_status" : "open",
+            "kibana.alert.rule.uuid" : "dd13a810-3696-11ec-a7c8-b9d14d243cd3",
+            "kibana.alert.original_event.created" : "2022-04-05T21:27:23.489Z",
+            "kibana.alert.original_event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.risk_score_mapping" : [ ],
+            "kibana.alert.original_event.module" : "sysmon",
+            "kibana.alert.rule.interval" : "5m",
+            "kibana.alert.reason" : "process event with process whoami.exe, parent process cmd.exe, by Brian on BRIAN-PC created low alert User Discovery via Whoami [Duplicate].",
+            "kibana.alert.rule.type" : "query",
+            "event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.immutable" : false,
+            "event.code" : "1",
+            "kibana.alert.original_event.type" : [
+              "start",
+              "process_start"
+            ],
+            "event.created" : "2022-04-05T21:27:23.489Z",
+            "kibana.alert.depth" : 1,
+            "kibana.alert.rule.enabled" : true,
+            "kibana.alert.rule.version" : 8,
+            "kibana.alert.rule.from" : "now-540s",
+            "hash" : {
+              "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+              "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+              "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+            },
+            "kibana.alert.rule.parameters" : {
+              "severity" : "low",
+              "max_signals" : 100,
+              "severity_mapping" : [ ],
+              "references" : [ ],
+              "risk_score" : 21,
+              "risk_score_mapping" : [ ],
+              "author" : [
+                "Elastic"
+              ],
+              "query" : "event.category:process and event.type:(start or process_started) and process.name:\"whoami.exe\" ",
+              "description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+              "index" : [
+                "winlogbeat-*"
+              ],
+              "language" : "kuery",
+              "filters" : [ ],
+              "type" : "query",
+              "version" : 8,
+              "rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+              "license" : "Elastic License v2",
+              "immutable" : false,
+              "exceptions_list" : [ ],
+              "timestamp_override" : "event.ingested",
+              "meta" : {
+                "from" : "4m",
+                "kibana_siem_app_url" : "https://localhost:5601/app/security"
+              },
+              "from" : "now-540s",
+              "false_positives" : [
+                "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+              ],
+              "threat" : [
+                {
+                  "framework" : "MITRE ATT&CK",
+                  "technique" : [
+                    {
+                      "reference" : "https://attack.mitre.org/techniques/T1033/",
+                      "name" : "System Owner/User Discovery",
+                      "subtechnique" : [ ],
+                      "id" : "T1033"
+                    }
+                  ],
+                  "tactic" : {
+                    "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                    "name" : "Discovery",
+                    "id" : "TA0007"
+                  }
+                }
+              ],
+              "to" : "now"
+            },
+            "log" : {
+              "level" : "information"
+            },
+            "kibana.alert.status" : "active",
+            "kibana.alert.ancestors" : [
+              {
+                "depth" : 0,
+                "index" : "winlogbeat-7.15.1-2022.03.25-000006",
+                "id" : "ddag-38BBH9ED-7iDP91",
+                "type" : "event"
+              }
+            ],
+            "kibana.alert.rule.exceptions_list" : [ ],
+            "kibana.alert.rule.actions" : [ ],
+            "kibana.alert.rule.rule_type_id" : "siem.queryRule",
+            "related" : {
+              "user" : "Brian",
+              "hash" : [
+                "a4a6924f3eaf97981323703d38fd99c4",
+                "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "7ff0758b766f747ce57dfac70743fb88"
+              ]
+            },
+            "event.module" : "sysmon",
+            "kibana.alert.original_event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.license" : "Elastic License v2",
+            "kibana.alert.original_event.kind" : "event",
+            "kibana.alert.rule.severity_mapping" : [ ],
+            "process" : {
+              "args" : [
+                "whoami",
+                "/priv"
+              ],
+              "parent" : {
+                "args" : [
+                  "C:\\WINDOWS\\system32\\cmd.exe"
+                ],
+                "name" : "cmd.exe",
+                "pid" : 29076,
+                "entity_id" : "{f0ea5239-b437-624c-621e-000000007a00}",
+                "executable" : "C:\\Windows\\System32\\cmd.exe",
+                "command_line" : "\"C:\\WINDOWS\\system32\\cmd.exe\" "
+              },
+              "pe" : {
+                "file_version" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "product" : "Microsoft® Windows® Operating System",
+                "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+                "description" : "whoami - displays logged on user information",
+                "original_file_name" : "whoami.exe",
+                "company" : "Microsoft Corporation"
+              },
+              "name" : "whoami.exe",
+              "pid" : 21736,
+              "working_directory" : "C:\\Users\\Brian\\",
+              "entity_id" : "{f0ea5239-b43a-624c-731e-000000007a00}",
+              "hash" : {
+                "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+              },
+              "executable" : "C:\\Windows\\System32\\whoami.exe",
+              "command_line" : "whoami  /priv"
+            },
+            "winlog" : {
+              "computer_name" : "BRIAN-PC",
+              "process" : {
+                "pid" : 5524,
+                "thread" : {
+                  "id" : 6632
+                }
+              },
+              "channel" : "Microsoft-Windows-Sysmon/Operational",
+              "event_data" : {
+                "Company" : "Microsoft Corporation",
+                "Description" : "whoami - displays logged on user information",
+                "LogonGuid" : "{f0ea5239-2409-624b-f8bf-020000000000}",
+                "IntegrityLevel" : "Medium",
+                "TerminalSessionId" : "1",
+                "FileVersion" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "ParentUser" : "BRIAN-PC\\Brian",
+                "Product" : "Microsoft® Windows® Operating System",
+                "LogonId" : "0x2bff8"
+              },
+              "opcode" : "Info",
+              "version" : 5,
+              "record_id" : 81083401,
+              "task" : "Process Create (rule: ProcessCreate)",
+              "event_id" : "1",
+              "provider_guid" : "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}",
+              "api" : "wineventlog",
+              "provider_name" : "Microsoft-Windows-Sysmon",
+              "user" : {
+                "identifier" : "S-1-5-18",
+                "domain" : "NT AUTHORITY",
+                "name" : "SYSTEM",
+                "type" : "User"
+              }
+            },
+            "kibana.alert.rule.max_signals" : 100,
+            "kibana.alert.rule.updated_at" : "2022-04-05T20:19:58.607Z",
+            "kibana.alert.rule.risk_score" : 21,
+            "kibana.alert.rule.author" : [
+              "Elastic"
+            ],
+            "kibana.alert.rule.false_positives" : [
+              "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+            ],
+            "message" : "Process Create:\nRuleName: -\nUtcTime: 2022-04-05 21:27:22.168\nProcessGuid: {f0ea5239-b43a-624c-731e-000000007a00}\nProcessId: 21736\nImage: C:\\Windows\\System32\\whoami.exe\nFileVersion: 10.0.19041.1 (WinBuild.160101.0800)\nDescription: whoami - displays logged on user information\nProduct: Microsoft® Windows® Operating System\nCompany: Microsoft Corporation\nOriginalFileName: whoami.exe\nCommandLine: whoami  /priv\nCurrentDirectory: C:\\Users\\Brian\\\nUser: BRIAN-PC\\Brian\nLogonGuid: {f0ea5239-2409-624b-f8bf-020000000000}\nLogonId: 0x2BFF8\nTerminalSessionId: 1\nIntegrityLevel: Medium\nHashes: MD5=A4A6924F3EAF97981323703D38FD99C4,SHA256=1D4902A04D99E8CCBFE7085E63155955FEE397449D386453F6C452AE407B8743,IMPHASH=7FF0758B766F747CE57DFAC70743FB88\nParentProcessGuid: {f0ea5239-b437-624c-621e-000000007a00}\nParentProcessId: 29076\nParentImage: C:\\Windows\\System32\\cmd.exe\nParentCommandLine: \"C:\\WINDOWS\\system32\\cmd.exe\" \nParentUser: BRIAN-PC\\Brian",
+            "kibana.alert.rule.consumer" : "siem",
+            "kibana.alert.rule.category" : "Custom Query Rule",
+            "event.action" : "Process Create (rule: ProcessCreate)",
+            "@timestamp" : "2022-04-05T21:30:43.082Z",
+            "kibana.alert.rule.created_at" : "2021-10-26T19:56:52.377Z",
+            "kibana.alert.original_event.action" : "Process Create (rule: ProcessCreate)",
+            "kibana.alert.rule.severity" : "low",
+            "event.type" : [
+              "start",
+              "process_start"
+            ],
+            "kibana.alert.rule.execution.uuid" : "f17c932a-2ab5-4d15-8970-7977508afa0a",
+            "kibana.space_ids" : [
+              "default"
+            ],
+            "kibana.alert.rule.meta.kibana_siem_app_url" : "https://localhost:5601/app/security",
+            "kibana.alert.uuid" : "62ac4b9057914b9a04ec6107ef3663dde69aa452a076dd76fb316d180a764d07",
+            "kibana.version" : "8.1.0",
+            "kibana.alert.rule.meta.from" : "4m",
+            "user" : {
+              "domain" : "BRIAN-PC",
+              "name" : "Brian",
+              "id" : "S-1-5-18"
+            },
+            "kibana.alert.rule.rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+            "kibana.alert.original_time" : "2022-04-05T21:27:22.168Z"
+          }
+        },
+        {
+          "_index" : ".internal.alerts-security.alerts-default-000001",
+          "_id" : "2729ccef41095d8e1e41618e9389a8883857f8cd4c848b1a14ddb07201982e9f",
+          "_score" : 1.0,
+          "_source" : {
+            "kibana.alert.severity" : "low",
+            "agent" : {
+              "hostname" : "BRIAN-PC",
+              "name" : "BRIAN-PC",
+              "id" : "21aa23a8-6f3f-4365-b3ce-55855b75dd51",
+              "type" : "winlogbeat",
+              "ephemeral_id" : "6c3529f9-c218-4928-91af-6761eb3b82d4",
+              "version" : "7.15.1"
+            },
+            "kibana.alert.rule.updated_by" : "elastic",
+            "kibana.alert.rule.references" : [ ],
+            "event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.threat" : [
+              {
+                "framework" : "MITRE ATT&CK",
+                "technique" : [
+                  {
+                    "reference" : "https://attack.mitre.org/techniques/T1033/",
+                    "name" : "System Owner/User Discovery",
+                    "subtechnique" : [ ],
+                    "id" : "T1033"
+                  }
+                ],
+                "tactic" : {
+                  "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                  "name" : "Discovery",
+                  "id" : "TA0007"
+                }
+              }
+            ],
+            "kibana.alert.original_event.code" : "1",
+            "kibana.alert.rule.description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+            "kibana.alert.rule.tags" : [
+              "Discovery",
+              "Elastic",
+              "Host",
+              "Linux",
+              "Threat Detection",
+              "auto_disabled_8.0"
+            ],
+            "kibana.alert.rule.producer" : "siem",
+            "kibana.alert.rule.to" : "now",
+            "kibana.alert.rule.created_by" : "elastic",
+            "kibana.alert.rule.timestamp_override" : "event.ingested",
+            "ecs" : {
+              "version" : "1.11.0"
+            },
+            "kibana.alert.risk_score" : 21,
+            "host" : {
+              "hostname" : "BRIAN-PC",
+              "os" : {
+                "build" : "19043.1586",
+                "kernel" : "10.0.19041.1586 (WinBuild.160101.0800)",
+                "name" : "Windows 10 Pro",
+                "family" : "windows",
+                "type" : "windows",
+                "version" : "10.0",
+                "platform" : "windows"
+              },
+              "ip" : [
+                "fe80::c8a4:dc53:fc0e:9397",
+                "169.254.147.151",
+                "fe80::ccba:d63e:19e:4eed",
+                "169.254.78.237",
+                "fe80::2907:26a0:83d9:94d0",
+                "172.31.57.1",
+                "fe80::803c:5a27:a82f:ceea",
+                "192.168.1.218",
+                "fe80::a1b6:f82f:32e8:cdca",
+                "169.254.205.202",
+                "fe80::602f:fe9a:a624:2328",
+                "169.254.35.40",
+                "fe80::cd9f:2a9c:6f46:8af3",
+                "169.254.138.243",
+                "fe80::6d34:cc68:395b:44c2",
+                "172.29.176.1",
+                "fe80::e554:66d6:7d6c:6e8e",
+                "172.26.176.1",
+                "fe80::3ded:1d20:ac33:db13",
+                "172.30.160.1",
+                "fe80::c109:c7c2:c75f:9075",
+                "172.21.112.1",
+                "fe80::1942:7d8:2686:7bfd",
+                "192.168.160.1",
+                "fe80::9994:c065:c16f:67c3",
+                "172.29.208.1",
+                "fe80::891:fa92:b512:e465",
+                "172.29.80.1"
+              ],
+              "name" : "BRIAN-PC",
+              "id" : "f0ea5239-c22b-4596-bf23-1a94c654eabb",
+              "mac" : [
+                "00:ff:a3:9b:ea:65",
+                "00:15:5d:38:01:02",
+                "00:15:5d:38:01:10",
+                "38:94:ed:2e:cf:0d",
+                "3a:94:ed:2e:cf:0d",
+                "38:94:ed:2e:cf:0d",
+                "00:ff:54:a4:e6:78",
+                "00:15:5d:9b:44:9d",
+                "00:15:5d:28:d1:82",
+                "00:15:5d:c4:85:25",
+                "00:15:5d:ea:59:ee",
+                "00:15:5d:62:40:b4",
+                "00:15:5d:a0:c8:a0",
+                "00:15:5d:49:4c:ae"
+              ],
+              "architecture" : "x86_64"
+            },
+            "kibana.alert.rule.name" : "User Discovery via Whoami [Duplicate]",
+            "event.kind" : "signal",
+            "kibana.alert.workflow_status" : "open",
+            "kibana.alert.rule.uuid" : "dd13a810-3696-11ec-a7c8-b9d14d243cd3",
+            "kibana.alert.original_event.created" : "2022-04-05T21:20:22.931Z",
+            "kibana.alert.original_event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.risk_score_mapping" : [ ],
+            "kibana.alert.original_event.module" : "sysmon",
+            "kibana.alert.rule.interval" : "5m",
+            "kibana.alert.reason" : "process event with process whoami.exe, parent process cmd.exe, by Brian on BRIAN-PC created low alert User Discovery via Whoami [Duplicate].",
+            "kibana.alert.rule.type" : "query",
+            "event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.immutable" : false,
+            "event.code" : "1",
+            "kibana.alert.original_event.type" : [
+              "start",
+              "process_start"
+            ],
+            "event.created" : "2022-04-05T21:20:22.931Z",
+            "kibana.alert.depth" : 1,
+            "kibana.alert.rule.enabled" : true,
+            "kibana.alert.rule.version" : 8,
+            "kibana.alert.rule.from" : "now-540s",
+            "hash" : {
+              "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+              "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+              "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+            },
+            "kibana.alert.rule.parameters" : {
+              "severity" : "low",
+              "max_signals" : 100,
+              "severity_mapping" : [ ],
+              "references" : [ ],
+              "risk_score" : 21,
+              "risk_score_mapping" : [ ],
+              "author" : [
+                "Elastic"
+              ],
+              "query" : "event.category:process and event.type:(start or process_started) and process.name:\"whoami.exe\" ",
+              "description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+              "index" : [
+                "winlogbeat-*"
+              ],
+              "language" : "kuery",
+              "filters" : [ ],
+              "type" : "query",
+              "version" : 8,
+              "rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+              "license" : "Elastic License v2",
+              "immutable" : false,
+              "exceptions_list" : [ ],
+              "timestamp_override" : "event.ingested",
+              "meta" : {
+                "from" : "4m",
+                "kibana_siem_app_url" : "https://localhost:5601/app/security"
+              },
+              "from" : "now-540s",
+              "false_positives" : [
+                "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+              ],
+              "threat" : [
+                {
+                  "framework" : "MITRE ATT&CK",
+                  "technique" : [
+                    {
+                      "reference" : "https://attack.mitre.org/techniques/T1033/",
+                      "name" : "System Owner/User Discovery",
+                      "subtechnique" : [ ],
+                      "id" : "T1033"
+                    }
+                  ],
+                  "tactic" : {
+                    "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                    "name" : "Discovery",
+                    "id" : "TA0007"
+                  }
+                }
+              ],
+              "to" : "now"
+            },
+            "log" : {
+              "level" : "information"
+            },
+            "kibana.alert.status" : "active",
+            "kibana.alert.ancestors" : [
+              {
+                "depth" : 0,
+                "index" : "winlogbeat-7.15.1-2022.03.25-000006",
+                "id" : "vtaZ-38BBH9ED-7iof2i",
+                "type" : "event"
+              }
+            ],
+            "kibana.alert.rule.exceptions_list" : [ ],
+            "kibana.alert.rule.actions" : [ ],
+            "kibana.alert.rule.rule_type_id" : "siem.queryRule",
+            "related" : {
+              "user" : "Brian",
+              "hash" : [
+                "a4a6924f3eaf97981323703d38fd99c4",
+                "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "7ff0758b766f747ce57dfac70743fb88"
+              ]
+            },
+            "event.module" : "sysmon",
+            "kibana.alert.original_event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.license" : "Elastic License v2",
+            "kibana.alert.original_event.kind" : "event",
+            "kibana.alert.rule.severity_mapping" : [ ],
+            "process" : {
+              "args" : [
+                "whoami",
+                "/priv"
+              ],
+              "parent" : {
+                "args" : [
+                  "C:\\WINDOWS\\system32\\cmd.exe"
+                ],
+                "name" : "cmd.exe",
+                "pid" : 23944,
+                "entity_id" : "{f0ea5239-b293-624c-1a1e-000000007a00}",
+                "executable" : "C:\\Windows\\System32\\cmd.exe",
+                "command_line" : "\"C:\\WINDOWS\\system32\\cmd.exe\" "
+              },
+              "pe" : {
+                "file_version" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "product" : "Microsoft® Windows® Operating System",
+                "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+                "description" : "whoami - displays logged on user information",
+                "original_file_name" : "whoami.exe",
+                "company" : "Microsoft Corporation"
+              },
+              "name" : "whoami.exe",
+              "pid" : 30284,
+              "working_directory" : "C:\\Users\\Brian\\",
+              "entity_id" : "{f0ea5239-b295-624c-1c1e-000000007a00}",
+              "executable" : "C:\\Windows\\System32\\whoami.exe",
+              "hash" : {
+                "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+              },
+              "command_line" : "whoami  /priv"
+            },
+            "winlog" : {
+              "computer_name" : "BRIAN-PC",
+              "process" : {
+                "pid" : 5524,
+                "thread" : {
+                  "id" : 6632
+                }
+              },
+              "channel" : "Microsoft-Windows-Sysmon/Operational",
+              "event_data" : {
+                "Company" : "Microsoft Corporation",
+                "LogonGuid" : "{f0ea5239-2409-624b-f8bf-020000000000}",
+                "Description" : "whoami - displays logged on user information",
+                "IntegrityLevel" : "Medium",
+                "TerminalSessionId" : "1",
+                "FileVersion" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "ParentUser" : "BRIAN-PC\\Brian",
+                "Product" : "Microsoft® Windows® Operating System",
+                "LogonId" : "0x2bff8"
+              },
+              "opcode" : "Info",
+              "version" : 5,
+              "record_id" : 81083113,
+              "task" : "Process Create (rule: ProcessCreate)",
+              "event_id" : "1",
+              "provider_guid" : "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}",
+              "api" : "wineventlog",
+              "provider_name" : "Microsoft-Windows-Sysmon",
+              "user" : {
+                "identifier" : "S-1-5-18",
+                "domain" : "NT AUTHORITY",
+                "name" : "SYSTEM",
+                "type" : "User"
+              }
+            },
+            "kibana.alert.rule.max_signals" : 100,
+            "kibana.alert.rule.updated_at" : "2022-04-05T20:19:58.607Z",
+            "kibana.alert.rule.risk_score" : 21,
+            "kibana.alert.rule.author" : [
+              "Elastic"
+            ],
+            "kibana.alert.rule.false_positives" : [
+              "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+            ],
+            "message" : "Process Create:\nRuleName: -\nUtcTime: 2022-04-05 21:20:21.175\nProcessGuid: {f0ea5239-b295-624c-1c1e-000000007a00}\nProcessId: 30284\nImage: C:\\Windows\\System32\\whoami.exe\nFileVersion: 10.0.19041.1 (WinBuild.160101.0800)\nDescription: whoami - displays logged on user information\nProduct: Microsoft® Windows® Operating System\nCompany: Microsoft Corporation\nOriginalFileName: whoami.exe\nCommandLine: whoami  /priv\nCurrentDirectory: C:\\Users\\Brian\\\nUser: BRIAN-PC\\Brian\nLogonGuid: {f0ea5239-2409-624b-f8bf-020000000000}\nLogonId: 0x2BFF8\nTerminalSessionId: 1\nIntegrityLevel: Medium\nHashes: MD5=A4A6924F3EAF97981323703D38FD99C4,SHA256=1D4902A04D99E8CCBFE7085E63155955FEE397449D386453F6C452AE407B8743,IMPHASH=7FF0758B766F747CE57DFAC70743FB88\nParentProcessGuid: {f0ea5239-b293-624c-1a1e-000000007a00}\nParentProcessId: 23944\nParentImage: C:\\Windows\\System32\\cmd.exe\nParentCommandLine: \"C:\\WINDOWS\\system32\\cmd.exe\" \nParentUser: BRIAN-PC\\Brian",
+            "kibana.alert.rule.consumer" : "siem",
+            "kibana.alert.rule.category" : "Custom Query Rule",
+            "event.action" : "Process Create (rule: ProcessCreate)",
+            "@timestamp" : "2022-04-05T21:20:37.021Z",
+            "kibana.alert.rule.created_at" : "2021-10-26T19:56:52.377Z",
+            "kibana.alert.original_event.action" : "Process Create (rule: ProcessCreate)",
+            "kibana.alert.rule.severity" : "low",
+            "event.type" : [
+              "start",
+              "process_start"
+            ],
+            "kibana.alert.rule.execution.uuid" : "8b341362-87d2-4227-85d2-ef81e90cbae1",
+            "kibana.space_ids" : [
+              "default"
+            ],
+            "kibana.alert.rule.meta.kibana_siem_app_url" : "https://localhost:5601/app/security",
+            "kibana.alert.uuid" : "2729ccef41095d8e1e41618e9389a8883857f8cd4c848b1a14ddb07201982e9f",
+            "kibana.version" : "8.1.0",
+            "kibana.alert.rule.meta.from" : "4m",
+            "user" : {
+              "domain" : "BRIAN-PC",
+              "name" : "Brian",
+              "id" : "S-1-5-18"
+            },
+            "kibana.alert.rule.rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+            "kibana.alert.original_time" : "2022-04-05T21:20:21.175Z"
+          }
+        },
+        {
+          "_index" : ".internal.alerts-security.alerts-default-000001",
+          "_id" : "00cb8893007fb5beb020bb279250ea742319e1eeafeda7b36d331bd87e8f7cb2",
+          "_score" : 1.0,
+          "_source" : {
+            "kibana.alert.severity" : "low",
+            "agent" : {
+              "hostname" : "BRIAN-PC",
+              "name" : "BRIAN-PC",
+              "id" : "21aa23a8-6f3f-4365-b3ce-55855b75dd51",
+              "type" : "winlogbeat",
+              "ephemeral_id" : "6c3529f9-c218-4928-91af-6761eb3b82d4",
+              "version" : "7.15.1"
+            },
+            "kibana.alert.rule.updated_by" : "elastic",
+            "kibana.alert.rule.references" : [ ],
+            "event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.threat" : [
+              {
+                "framework" : "MITRE ATT&CK",
+                "technique" : [
+                  {
+                    "reference" : "https://attack.mitre.org/techniques/T1033/",
+                    "name" : "System Owner/User Discovery",
+                    "subtechnique" : [ ],
+                    "id" : "T1033"
+                  }
+                ],
+                "tactic" : {
+                  "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                  "name" : "Discovery",
+                  "id" : "TA0007"
+                }
+              }
+            ],
+            "kibana.alert.original_event.code" : "1",
+            "kibana.alert.rule.description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+            "kibana.alert.rule.tags" : [
+              "Discovery",
+              "Elastic",
+              "Host",
+              "Linux",
+              "Threat Detection",
+              "auto_disabled_8.0"
+            ],
+            "kibana.alert.rule.producer" : "siem",
+            "kibana.alert.rule.to" : "now",
+            "kibana.alert.rule.created_by" : "elastic",
+            "kibana.alert.rule.timestamp_override" : "event.ingested",
+            "ecs" : {
+              "version" : "1.11.0"
+            },
+            "kibana.alert.risk_score" : 21,
+            "host" : {
+              "hostname" : "BRIAN-PC",
+              "os" : {
+                "build" : "19043.1586",
+                "kernel" : "10.0.19041.1586 (WinBuild.160101.0800)",
+                "name" : "Windows 10 Pro",
+                "type" : "windows",
+                "family" : "windows",
+                "version" : "10.0",
+                "platform" : "windows"
+              },
+              "ip" : [
+                "fe80::c8a4:dc53:fc0e:9397",
+                "169.254.147.151",
+                "fe80::ccba:d63e:19e:4eed",
+                "169.254.78.237",
+                "fe80::2907:26a0:83d9:94d0",
+                "172.31.57.1",
+                "fe80::803c:5a27:a82f:ceea",
+                "192.168.1.218",
+                "fe80::a1b6:f82f:32e8:cdca",
+                "169.254.205.202",
+                "fe80::602f:fe9a:a624:2328",
+                "169.254.35.40",
+                "fe80::cd9f:2a9c:6f46:8af3",
+                "169.254.138.243",
+                "fe80::6d34:cc68:395b:44c2",
+                "172.29.176.1",
+                "fe80::e554:66d6:7d6c:6e8e",
+                "172.26.176.1",
+                "fe80::3ded:1d20:ac33:db13",
+                "172.30.160.1",
+                "fe80::c109:c7c2:c75f:9075",
+                "172.21.112.1",
+                "fe80::1942:7d8:2686:7bfd",
+                "192.168.160.1",
+                "fe80::9994:c065:c16f:67c3",
+                "172.29.208.1",
+                "fe80::891:fa92:b512:e465",
+                "172.29.80.1"
+              ],
+              "name" : "BRIAN-PC",
+              "id" : "f0ea5239-c22b-4596-bf23-1a94c654eabb",
+              "mac" : [
+                "00:ff:a3:9b:ea:65",
+                "00:15:5d:38:01:02",
+                "00:15:5d:38:01:10",
+                "38:94:ed:2e:cf:0d",
+                "3a:94:ed:2e:cf:0d",
+                "38:94:ed:2e:cf:0d",
+                "00:ff:54:a4:e6:78",
+                "00:15:5d:9b:44:9d",
+                "00:15:5d:28:d1:82",
+                "00:15:5d:c4:85:25",
+                "00:15:5d:ea:59:ee",
+                "00:15:5d:62:40:b4",
+                "00:15:5d:a0:c8:a0",
+                "00:15:5d:49:4c:ae"
+              ],
+              "architecture" : "x86_64"
+            },
+            "kibana.alert.rule.name" : "User Discovery via Whoami [Duplicate]",
+            "event.kind" : "signal",
+            "kibana.alert.workflow_status" : "open",
+            "kibana.alert.rule.uuid" : "dd13a810-3696-11ec-a7c8-b9d14d243cd3",
+            "kibana.alert.original_event.created" : "2022-04-05T20:48:04.634Z",
+            "kibana.alert.original_event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.risk_score_mapping" : [ ],
+            "kibana.alert.original_event.module" : "sysmon",
+            "kibana.alert.rule.interval" : "5m",
+            "kibana.alert.reason" : "process event with process whoami.exe, parent process cmd.exe, by Brian on BRIAN-PC created low alert User Discovery via Whoami [Duplicate].",
+            "kibana.alert.rule.type" : "query",
+            "event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.immutable" : false,
+            "event.code" : "1",
+            "kibana.alert.original_event.type" : [
+              "start",
+              "process_start"
+            ],
+            "event.created" : "2022-04-05T20:48:04.634Z",
+            "kibana.alert.depth" : 1,
+            "kibana.alert.rule.enabled" : true,
+            "kibana.alert.rule.version" : 8,
+            "kibana.alert.rule.from" : "now-540s",
+            "hash" : {
+              "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+              "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+              "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+            },
+            "kibana.alert.rule.parameters" : {
+              "severity" : "low",
+              "max_signals" : 100,
+              "severity_mapping" : [ ],
+              "references" : [ ],
+              "risk_score" : 21,
+              "risk_score_mapping" : [ ],
+              "author" : [
+                "Elastic"
+              ],
+              "query" : "event.category:process and event.type:(start or process_started) and process.name:\"whoami.exe\" ",
+              "description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+              "index" : [
+                "winlogbeat-*"
+              ],
+              "language" : "kuery",
+              "filters" : [ ],
+              "type" : "query",
+              "version" : 8,
+              "rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+              "license" : "Elastic License v2",
+              "immutable" : false,
+              "exceptions_list" : [ ],
+              "timestamp_override" : "event.ingested",
+              "meta" : {
+                "from" : "4m",
+                "kibana_siem_app_url" : "https://localhost:5601/app/security"
+              },
+              "from" : "now-540s",
+              "false_positives" : [
+                "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+              ],
+              "threat" : [
+                {
+                  "framework" : "MITRE ATT&CK",
+                  "technique" : [
+                    {
+                      "reference" : "https://attack.mitre.org/techniques/T1033/",
+                      "name" : "System Owner/User Discovery",
+                      "subtechnique" : [ ],
+                      "id" : "T1033"
+                    }
+                  ],
+                  "tactic" : {
+                    "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                    "name" : "Discovery",
+                    "id" : "TA0007"
+                  }
+                }
+              ],
+              "to" : "now"
+            },
+            "log" : {
+              "level" : "information"
+            },
+            "kibana.alert.status" : "active",
+            "kibana.alert.ancestors" : [
+              {
+                "depth" : 0,
+                "index" : "winlogbeat-7.15.1-2022.03.25-000006",
+                "id" : "rNZ8-38BBH9ED-7iDvYo",
+                "type" : "event"
+              }
+            ],
+            "kibana.alert.rule.exceptions_list" : [ ],
+            "kibana.alert.rule.actions" : [ ],
+            "kibana.alert.rule.rule_type_id" : "siem.queryRule",
+            "related" : {
+              "user" : "Brian",
+              "hash" : [
+                "a4a6924f3eaf97981323703d38fd99c4",
+                "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "7ff0758b766f747ce57dfac70743fb88"
+              ]
+            },
+            "event.module" : "sysmon",
+            "kibana.alert.original_event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.license" : "Elastic License v2",
+            "kibana.alert.original_event.kind" : "event",
+            "kibana.alert.rule.severity_mapping" : [ ],
+            "process" : {
+              "args" : [
+                "whoami",
+                "/priv"
+              ],
+              "parent" : {
+                "args" : [
+                  "C:\\WINDOWS\\system32\\cmd.exe"
+                ],
+                "name" : "cmd.exe",
+                "pid" : 1576,
+                "entity_id" : "{f0ea5239-ab00-624c-c51c-000000007a00}",
+                "executable" : "C:\\Windows\\System32\\cmd.exe",
+                "command_line" : "\"C:\\WINDOWS\\system32\\cmd.exe\" "
+              },
+              "pe" : {
+                "file_version" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "product" : "Microsoft® Windows® Operating System",
+                "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+                "description" : "whoami - displays logged on user information",
+                "original_file_name" : "whoami.exe",
+                "company" : "Microsoft Corporation"
+              },
+              "name" : "whoami.exe",
+              "pid" : 8628,
+              "working_directory" : "C:\\Users\\Brian\\",
+              "entity_id" : "{f0ea5239-ab02-624c-c71c-000000007a00}",
+              "hash" : {
+                "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+              },
+              "executable" : "C:\\Windows\\System32\\whoami.exe",
+              "command_line" : "whoami  /priv"
+            },
+            "winlog" : {
+              "computer_name" : "BRIAN-PC",
+              "process" : {
+                "pid" : 5524,
+                "thread" : {
+                  "id" : 6632
+                }
+              },
+              "channel" : "Microsoft-Windows-Sysmon/Operational",
+              "event_data" : {
+                "Company" : "Microsoft Corporation",
+                "Description" : "whoami - displays logged on user information",
+                "LogonGuid" : "{f0ea5239-2409-624b-f8bf-020000000000}",
+                "IntegrityLevel" : "Medium",
+                "TerminalSessionId" : "1",
+                "FileVersion" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "ParentUser" : "BRIAN-PC\\Brian",
+                "Product" : "Microsoft® Windows® Operating System",
+                "LogonId" : "0x2bff8"
+              },
+              "opcode" : "Info",
+              "version" : 5,
+              "record_id" : 81082021,
+              "task" : "Process Create (rule: ProcessCreate)",
+              "event_id" : "1",
+              "provider_guid" : "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}",
+              "api" : "wineventlog",
+              "provider_name" : "Microsoft-Windows-Sysmon",
+              "user" : {
+                "identifier" : "S-1-5-18",
+                "domain" : "NT AUTHORITY",
+                "name" : "SYSTEM",
+                "type" : "User"
+              }
+            },
+            "kibana.alert.rule.max_signals" : 100,
+            "kibana.alert.rule.updated_at" : "2022-04-05T20:19:58.607Z",
+            "kibana.alert.rule.risk_score" : 21,
+            "kibana.alert.rule.author" : [
+              "Elastic"
+            ],
+            "kibana.alert.rule.false_positives" : [
+              "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+            ],
+            "message" : "Process Create:\nRuleName: -\nUtcTime: 2022-04-05 20:48:02.850\nProcessGuid: {f0ea5239-ab02-624c-c71c-000000007a00}\nProcessId: 8628\nImage: C:\\Windows\\System32\\whoami.exe\nFileVersion: 10.0.19041.1 (WinBuild.160101.0800)\nDescription: whoami - displays logged on user information\nProduct: Microsoft® Windows® Operating System\nCompany: Microsoft Corporation\nOriginalFileName: whoami.exe\nCommandLine: whoami  /priv\nCurrentDirectory: C:\\Users\\Brian\\\nUser: BRIAN-PC\\Brian\nLogonGuid: {f0ea5239-2409-624b-f8bf-020000000000}\nLogonId: 0x2BFF8\nTerminalSessionId: 1\nIntegrityLevel: Medium\nHashes: MD5=A4A6924F3EAF97981323703D38FD99C4,SHA256=1D4902A04D99E8CCBFE7085E63155955FEE397449D386453F6C452AE407B8743,IMPHASH=7FF0758B766F747CE57DFAC70743FB88\nParentProcessGuid: {f0ea5239-ab00-624c-c51c-000000007a00}\nParentProcessId: 1576\nParentImage: C:\\Windows\\System32\\cmd.exe\nParentCommandLine: \"C:\\WINDOWS\\system32\\cmd.exe\" \nParentUser: BRIAN-PC\\Brian",
+            "kibana.alert.rule.consumer" : "siem",
+            "kibana.alert.rule.category" : "Custom Query Rule",
+            "event.action" : "Process Create (rule: ProcessCreate)",
+            "@timestamp" : "2022-04-05T20:50:18.741Z",
+            "kibana.alert.rule.created_at" : "2021-10-26T19:56:52.377Z",
+            "kibana.alert.original_event.action" : "Process Create (rule: ProcessCreate)",
+            "kibana.alert.rule.severity" : "low",
+            "event.type" : [
+              "start",
+              "process_start"
+            ],
+            "kibana.alert.rule.execution.uuid" : "e12ef1dc-c916-4943-b54c-353aeb238e65",
+            "kibana.space_ids" : [
+              "default"
+            ],
+            "kibana.alert.rule.meta.kibana_siem_app_url" : "https://localhost:5601/app/security",
+            "kibana.alert.uuid" : "00cb8893007fb5beb020bb279250ea742319e1eeafeda7b36d331bd87e8f7cb2",
+            "kibana.version" : "8.1.0",
+            "kibana.alert.rule.meta.from" : "4m",
+            "user" : {
+              "domain" : "BRIAN-PC",
+              "name" : "Brian",
+              "id" : "S-1-5-18"
+            },
+            "kibana.alert.rule.rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+            "kibana.alert.original_time" : "2022-04-05T20:48:02.850Z"
+          }
+        },
+        {
+          "_index" : ".internal.alerts-security.alerts-default-000001",
+          "_id" : "bc9a2430e43aa8cc80809df3217de490586bb5f35a905aa5e50807506fe9a224",
+          "_score" : 1.0,
+          "_source" : {
+            "kibana.alert.severity" : "low",
+            "agent" : {
+              "hostname" : "BRIAN-PC",
+              "name" : "BRIAN-PC",
+              "id" : "21aa23a8-6f3f-4365-b3ce-55855b75dd51",
+              "ephemeral_id" : "6c3529f9-c218-4928-91af-6761eb3b82d4",
+              "type" : "winlogbeat",
+              "version" : "7.15.1"
+            },
+            "kibana.alert.rule.updated_by" : "elastic",
+            "kibana.alert.rule.references" : [ ],
+            "event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.threat" : [
+              {
+                "framework" : "MITRE ATT&CK",
+                "technique" : [
+                  {
+                    "reference" : "https://attack.mitre.org/techniques/T1033/",
+                    "name" : "System Owner/User Discovery",
+                    "subtechnique" : [ ],
+                    "id" : "T1033"
+                  }
+                ],
+                "tactic" : {
+                  "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                  "name" : "Discovery",
+                  "id" : "TA0007"
+                }
+              }
+            ],
+            "kibana.alert.original_event.code" : "1",
+            "kibana.alert.rule.description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+            "kibana.alert.rule.tags" : [
+              "Discovery",
+              "Elastic",
+              "Host",
+              "Linux",
+              "Threat Detection",
+              "auto_disabled_8.0"
+            ],
+            "kibana.alert.rule.producer" : "siem",
+            "kibana.alert.rule.to" : "now",
+            "kibana.alert.rule.created_by" : "elastic",
+            "kibana.alert.rule.timestamp_override" : "event.ingested",
+            "ecs" : {
+              "version" : "1.11.0"
+            },
+            "kibana.alert.risk_score" : 21,
+            "host" : {
+              "hostname" : "BRIAN-PC",
+              "os" : {
+                "build" : "19043.1586",
+                "kernel" : "10.0.19041.1586 (WinBuild.160101.0800)",
+                "name" : "Windows 10 Pro",
+                "family" : "windows",
+                "type" : "windows",
+                "version" : "10.0",
+                "platform" : "windows"
+              },
+              "ip" : [
+                "fe80::c8a4:dc53:fc0e:9397",
+                "169.254.147.151",
+                "fe80::ccba:d63e:19e:4eed",
+                "169.254.78.237",
+                "fe80::2907:26a0:83d9:94d0",
+                "172.31.57.1",
+                "fe80::803c:5a27:a82f:ceea",
+                "192.168.1.218",
+                "fe80::a1b6:f82f:32e8:cdca",
+                "169.254.205.202",
+                "fe80::602f:fe9a:a624:2328",
+                "169.254.35.40",
+                "fe80::cd9f:2a9c:6f46:8af3",
+                "169.254.138.243",
+                "fe80::6d34:cc68:395b:44c2",
+                "172.29.176.1",
+                "fe80::e554:66d6:7d6c:6e8e",
+                "172.26.176.1",
+                "fe80::3ded:1d20:ac33:db13",
+                "172.30.160.1",
+                "fe80::c109:c7c2:c75f:9075",
+                "172.21.112.1",
+                "fe80::1942:7d8:2686:7bfd",
+                "192.168.160.1",
+                "fe80::9994:c065:c16f:67c3",
+                "172.29.208.1",
+                "fe80::891:fa92:b512:e465",
+                "172.29.80.1"
+              ],
+              "name" : "BRIAN-PC",
+              "id" : "f0ea5239-c22b-4596-bf23-1a94c654eabb",
+              "mac" : [
+                "00:ff:a3:9b:ea:65",
+                "00:15:5d:38:01:02",
+                "00:15:5d:38:01:10",
+                "38:94:ed:2e:cf:0d",
+                "3a:94:ed:2e:cf:0d",
+                "38:94:ed:2e:cf:0d",
+                "00:ff:54:a4:e6:78",
+                "00:15:5d:9b:44:9d",
+                "00:15:5d:28:d1:82",
+                "00:15:5d:c4:85:25",
+                "00:15:5d:ea:59:ee",
+                "00:15:5d:62:40:b4",
+                "00:15:5d:a0:c8:a0",
+                "00:15:5d:49:4c:ae"
+              ],
+              "architecture" : "x86_64"
+            },
+            "kibana.alert.rule.name" : "User Discovery via Whoami [Duplicate]",
+            "event.kind" : "signal",
+            "kibana.alert.workflow_status" : "open",
+            "kibana.alert.rule.uuid" : "dd13a810-3696-11ec-a7c8-b9d14d243cd3",
+            "kibana.alert.original_event.created" : "2022-04-05T20:19:12.595Z",
+            "kibana.alert.original_event.category" : [
+              "process"
+            ],
+            "kibana.alert.rule.risk_score_mapping" : [ ],
+            "kibana.alert.original_event.module" : "sysmon",
+            "kibana.alert.rule.interval" : "5m",
+            "kibana.alert.reason" : "process event with process whoami.exe, parent process cmd.exe, by Brian on BRIAN-PC created low alert User Discovery via Whoami [Duplicate].",
+            "kibana.alert.rule.type" : "query",
+            "event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.immutable" : false,
+            "event.code" : "1",
+            "kibana.alert.original_event.type" : [
+              "start",
+              "process_start"
+            ],
+            "event.created" : "2022-04-05T20:19:12.595Z",
+            "kibana.alert.depth" : 1,
+            "kibana.alert.rule.enabled" : true,
+            "kibana.alert.rule.version" : 8,
+            "kibana.alert.rule.from" : "now-540s",
+            "hash" : {
+              "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+              "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+              "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+            },
+            "kibana.alert.rule.parameters" : {
+              "severity" : "low",
+              "max_signals" : 100,
+              "severity_mapping" : [ ],
+              "references" : [ ],
+              "risk_score" : 21,
+              "risk_score_mapping" : [ ],
+              "author" : [
+                "Elastic"
+              ],
+              "query" : "event.category:process and event.type:(start or process_started) and process.name:\"whoami.exe\" ",
+              "description" : "The whoami application was executed on a Linux host. This is often used by tools and persistence mechanisms to test for privileged access.",
+              "index" : [
+                "winlogbeat-*"
+              ],
+              "language" : "kuery",
+              "filters" : [ ],
+              "type" : "query",
+              "version" : 8,
+              "rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+              "license" : "Elastic License v2",
+              "immutable" : false,
+              "exceptions_list" : [ ],
+              "timestamp_override" : "event.ingested",
+              "meta" : {
+                "from" : "4m",
+                "kibana_siem_app_url" : "https://localhost:5601/app/security"
+              },
+              "from" : "now-540s",
+              "false_positives" : [
+                "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+              ],
+              "threat" : [
+                {
+                  "framework" : "MITRE ATT&CK",
+                  "technique" : [
+                    {
+                      "reference" : "https://attack.mitre.org/techniques/T1033/",
+                      "name" : "System Owner/User Discovery",
+                      "subtechnique" : [ ],
+                      "id" : "T1033"
+                    }
+                  ],
+                  "tactic" : {
+                    "reference" : "https://attack.mitre.org/tactics/TA0007/",
+                    "name" : "Discovery",
+                    "id" : "TA0007"
+                  }
+                }
+              ],
+              "to" : "now"
+            },
+            "log" : {
+              "level" : "information"
+            },
+            "kibana.alert.status" : "active",
+            "kibana.alert.ancestors" : [
+              {
+                "depth" : 0,
+                "index" : "winlogbeat-7.15.1-2022.03.25-000006",
+                "id" : "y9Zh-38BBH9ED-7ioOJe",
+                "type" : "event"
+              }
+            ],
+            "kibana.alert.rule.exceptions_list" : [ ],
+            "kibana.alert.rule.actions" : [ ],
+            "kibana.alert.rule.rule_type_id" : "siem.queryRule",
+            "related" : {
+              "user" : "Brian",
+              "hash" : [
+                "a4a6924f3eaf97981323703d38fd99c4",
+                "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "7ff0758b766f747ce57dfac70743fb88"
+              ]
+            },
+            "event.module" : "sysmon",
+            "kibana.alert.original_event.provider" : "Microsoft-Windows-Sysmon",
+            "kibana.alert.rule.license" : "Elastic License v2",
+            "kibana.alert.original_event.kind" : "event",
+            "kibana.alert.rule.severity_mapping" : [ ],
+            "process" : {
+              "args" : [
+                "whoami"
+              ],
+              "parent" : {
+                "args" : [
+                  "C:\\WINDOWS\\system32\\cmd.exe"
+                ],
+                "name" : "cmd.exe",
+                "pid" : 10364,
+                "entity_id" : "{f0ea5239-a439-624c-6919-000000007a00}",
+                "command_line" : "\"C:\\WINDOWS\\system32\\cmd.exe\" ",
+                "executable" : "C:\\Windows\\System32\\cmd.exe"
+              },
+              "pe" : {
+                "file_version" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "product" : "Microsoft® Windows® Operating System",
+                "imphash" : "7ff0758b766f747ce57dfac70743fb88",
+                "description" : "whoami - displays logged on user information",
+                "original_file_name" : "whoami.exe",
+                "company" : "Microsoft Corporation"
+              },
+              "name" : "whoami.exe",
+              "working_directory" : "C:\\Users\\Brian\\",
+              "pid" : 26748,
+              "entity_id" : "{f0ea5239-a43f-624c-6b19-000000007a00}",
+              "command_line" : "whoami",
+              "executable" : "C:\\Windows\\System32\\whoami.exe",
+              "hash" : {
+                "sha256" : "1d4902a04d99e8ccbfe7085e63155955fee397449d386453f6c452ae407b8743",
+                "md5" : "a4a6924f3eaf97981323703d38fd99c4"
+              }
+            },
+            "winlog" : {
+              "computer_name" : "BRIAN-PC",
+              "process" : {
+                "pid" : 5524,
+                "thread" : {
+                  "id" : 6632
+                }
+              },
+              "channel" : "Microsoft-Windows-Sysmon/Operational",
+              "event_data" : {
+                "Company" : "Microsoft Corporation",
+                "Description" : "whoami - displays logged on user information",
+                "LogonGuid" : "{f0ea5239-2409-624b-f8bf-020000000000}",
+                "TerminalSessionId" : "1",
+                "IntegrityLevel" : "Medium",
+                "FileVersion" : "10.0.19041.1 (WinBuild.160101.0800)",
+                "Product" : "Microsoft® Windows® Operating System",
+                "ParentUser" : "BRIAN-PC\\Brian",
+                "LogonId" : "0x2bff8"
+              },
+              "opcode" : "Info",
+              "version" : 5,
+              "record_id" : 81080203,
+              "task" : "Process Create (rule: ProcessCreate)",
+              "event_id" : "1",
+              "provider_guid" : "{5770385f-c22a-43e0-bf4c-06f5698ffbd9}",
+              "api" : "wineventlog",
+              "provider_name" : "Microsoft-Windows-Sysmon",
+              "user" : {
+                "identifier" : "S-1-5-18",
+                "domain" : "NT AUTHORITY",
+                "name" : "SYSTEM",
+                "type" : "User"
+              }
+            },
+            "kibana.alert.rule.max_signals" : 100,
+            "kibana.alert.rule.updated_at" : "2022-04-05T20:19:58.607Z",
+            "kibana.alert.rule.risk_score" : 21,
+            "kibana.alert.rule.author" : [
+              "Elastic"
+            ],
+            "kibana.alert.rule.false_positives" : [
+              "Security testing tools and frameworks may run this command. Some normal use of this command may originate from automation tools and frameworks."
+            ],
+            "message" : "Process Create:\nRuleName: -\nUtcTime: 2022-04-05 20:19:11.028\nProcessGuid: {f0ea5239-a43f-624c-6b19-000000007a00}\nProcessId: 26748\nImage: C:\\Windows\\System32\\whoami.exe\nFileVersion: 10.0.19041.1 (WinBuild.160101.0800)\nDescription: whoami - displays logged on user information\nProduct: Microsoft® Windows® Operating System\nCompany: Microsoft Corporation\nOriginalFileName: whoami.exe\nCommandLine: whoami\nCurrentDirectory: C:\\Users\\Brian\\\nUser: BRIAN-PC\\Brian\nLogonGuid: {f0ea5239-2409-624b-f8bf-020000000000}\nLogonId: 0x2BFF8\nTerminalSessionId: 1\nIntegrityLevel: Medium\nHashes: MD5=A4A6924F3EAF97981323703D38FD99C4,SHA256=1D4902A04D99E8CCBFE7085E63155955FEE397449D386453F6C452AE407B8743,IMPHASH=7FF0758B766F747CE57DFAC70743FB88\nParentProcessGuid: {f0ea5239-a439-624c-6919-000000007a00}\nParentProcessId: 10364\nParentImage: C:\\Windows\\System32\\cmd.exe\nParentCommandLine: \"C:\\WINDOWS\\system32\\cmd.exe\" \nParentUser: BRIAN-PC\\Brian",
+            "kibana.alert.rule.consumer" : "siem",
+            "kibana.alert.rule.category" : "Custom Query Rule",
+            "event.action" : "Process Create (rule: ProcessCreate)",
+            "@timestamp" : "2022-04-05T20:20:04.336Z",
+            "kibana.alert.rule.created_at" : "2021-10-26T19:56:52.377Z",
+            "kibana.alert.original_event.action" : "Process Create (rule: ProcessCreate)",
+            "kibana.alert.rule.severity" : "low",
+            "event.type" : [
+              "start",
+              "process_start"
+            ],
+            "kibana.alert.rule.execution.uuid" : "9448a6bf-e5bd-4ab1-95ea-3c1d9ecd8516",
+            "kibana.space_ids" : [
+              "default"
+            ],
+            "kibana.alert.rule.meta.kibana_siem_app_url" : "https://localhost:5601/app/security",
+            "kibana.alert.uuid" : "bc9a2430e43aa8cc80809df3217de490586bb5f35a905aa5e50807506fe9a224",
+            "kibana.version" : "8.1.0",
+            "kibana.alert.rule.meta.from" : "4m",
+            "user" : {
+              "domain" : "BRIAN-PC",
+              "name" : "Brian",
+              "id" : "S-1-5-18"
+            },
+            "kibana.alert.rule.rule_id" : "75ab9c57-8a37-4637-a1c0-ab0dc57c5fe2",
+            "kibana.alert.original_time" : "2022-04-05T20:19:11.028Z"
+          }
+        }
+      ]
+}

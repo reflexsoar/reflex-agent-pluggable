@@ -155,13 +155,13 @@ class EventManager:
                 logger.error(f"Unable to restart EventSpooler: {e}")
 
     def prepare_events(self, *events, signature_fields: list = None,
-                       observable_mappping: dict = None):
+                       observable_mapping: list = None):
 
         if signature_fields is None:
             signature_fields = []
 
-        if observable_mappping is None:
-            observable_mappping = {}
+        if observable_mapping is None:
+            observable_mapping = []
 
         # Makes sure the EventManager is fully initialized
         if self._initialized is False:
