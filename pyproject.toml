@@ -25,7 +25,6 @@ flake8-bandit = "^4.1.1"
 [tool.poetry.group.dev.dependencies]
 pylint = "^2.15.5"
 autopep8 = "^2.0.0"
-pytest = "^7.2.0"
 pre-commit = "^2.20.0"
 coverage = {extras = ["toml"], version = "^6.5.0"}
 mypy = "^0.990"
@@ -36,6 +35,7 @@ types-requests = "^2.28.11.4"
 isort = "^5.10.1"
 flynt = "^0.76"
 safety = "^2.3.1"
+pytest = "^7.2.0"
 
 [build-system]
 requires = ["poetry-core"]
