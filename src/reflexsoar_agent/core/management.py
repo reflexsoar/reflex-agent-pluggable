@@ -168,6 +168,26 @@ class ManagementConnection(HTTPConnection):
             response = response.json()
         return response
 
+    def agent_get_input_credentials(self, credential_uuid: str):
+        """Gets the credentials for the input"""
+
+        username = None
+        secret = None
+
+        response = self.call_api(
+            'GET', f'/api/v2.0/credential/{credential_uuid}', None)
+        if response and response.status_code == 200:
+            response = response.json()
+            username = response['username']
+
+        response = self.call_api(
+            'GET', f'/api/v2.0/credential/decrypt/{credential_uuid}', None)
+        if response and response.status_code == 200:
+            response = response.json()
+            secret = response['secret']
+
+        return (username, secret)
+
 
 # Globally registered connections dictionary that can be imported
 # not useful across multiprocess boundaries so the agent manages an additional

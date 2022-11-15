@@ -1,7 +1,15 @@
+import inspect
+import sys
 import time
 from multiprocessing import Event, Manager, Process
 
 from ...core.logging import logger
+
+
+from reflexsoar_agent.core.event.manager import EventManager
+from reflexsoar_agent.input.base import BaseInput
+# pylint: disable=wildcard-import,unused-wildcard-import
+from reflexsoar_agent.input import *  # noqa: F403, F401
 
 
 class RoleGuard(type):
@@ -47,6 +55,8 @@ class BaseRole(Process, metaclass=RoleGuard):
         self._running = manager.Value(bool, False)
         self.config = config
         self.connections = connections
+        self.loaded_inputs = {}
+        self.event_manager = EventManager()
 
         super().__init__(*args, **kwargs)
 
@@ -96,6 +106,31 @@ class BaseRole(Process, metaclass=RoleGuard):
         """
         if name in self.connections and name != "default":
             del self.connections[name]
+
+    @RoleGuard.final
+    def _load_classes(self, base_class):
+        """Loads all classes from a module.
+
+        This method loads all classes from a module.
+        """
+
+        # Load all classes from a module.
+        return [r for r in
+                inspect.getmembers(sys.modules[__name__], inspect.isclass)
+                if issubclass(r[1], base_class) and r[1] != base_class
+                ]
+
+    @RoleGuard.final
+    def load_inputs(self):
+        """Automatically loads all the inputs installed in to the agent library
+        and instantiates them.  Configurations for each agent are loaded from
+        the agent configuration file.
+        """
+        # Find all the inputs in the agent input library that have been subclassed
+        inputs = self._load_classes(BaseInput)  # noqa: F405
+
+        for _, _class in inputs:
+            self.loaded_inputs[_class.alias] = _class
 
     def main(self):
         """The main method for the role. This function performs all the work

@@ -14,9 +14,15 @@ from reflexsoar_agent.input.base import InputTypes
 
 class ElasticInput(BaseInput):
 
-    def __init__(self, alias: str, input_type: str = InputTypes.POLL,
+    alias = "elasticsearch"
+    config_fields = ['hosts', 'distro', 'index', 'lucene_filter',
+                              'cafile', 'scheme', 'auth_method',
+                              'cert_verification', 'check_hostname',
+                              'no_scroll', 'search_size']
+
+    def __init__(self, input_type: str = InputTypes.POLL,
                  config: dict = None, credentials: tuple = None):
-        super().__init__(alias, input_type, config)
+        super().__init__(input_type, config)
 
         self.config = config
         self.status = 'waiting'
@@ -111,7 +117,7 @@ class ElasticInput(BaseInput):
         return query_body
 
     @retry(ConnectionError, tries=10, delay=2, backoff=2)
-    def poll(self) -> list:  # noqa: C901
+    def main(self) -> list:  # noqa: C901
         """Polls an Elasticsearch instance for data."""
 
         events = []
@@ -139,6 +145,7 @@ class ElasticInput(BaseInput):
             search_params['body'] = {"query": search_params.pop('query')}
 
         try:
+            logger.info(f"Searching {index} for events")
             res = self.conn.search(**search_params)
             scroll_id = res['_scroll_id']
             if 'total' in res['hits'] and res['hits']['total']['value'] > 0:
@@ -178,6 +185,7 @@ class ElasticInput(BaseInput):
                          f"Unable to connect to {self.config['hosts']}:"
                          f": {e}"
                          )
+            error = True
 
         if error:
             return []
