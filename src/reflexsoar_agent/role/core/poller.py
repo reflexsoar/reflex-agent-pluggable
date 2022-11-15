@@ -1,5 +1,5 @@
-from reflexsoar_agent.role import BaseRole
 from reflexsoar_agent.core.event import event_manager
+from reflexsoar_agent.role import BaseRole
 
 
 class Poller(BaseRole):

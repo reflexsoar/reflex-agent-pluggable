@@ -1,5 +1,6 @@
-from .base import BaseInput
+from .base import BaseInput, InputTypes
 
 __all__ = [
-    BaseInput
+    BaseInput,
+    InputTypes
 ]

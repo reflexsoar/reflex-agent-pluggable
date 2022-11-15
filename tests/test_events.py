@@ -1,5 +1,7 @@
 import json
+
 import pytest
+
 from reflexsoar_agent.core.event import Event, Observable
 
 

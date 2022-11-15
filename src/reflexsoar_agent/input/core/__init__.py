@@ -1,5 +1,5 @@
-from .elasticsearch import Elasticsearch
+from .es import ElasticInput
 
 __all__ = [
-    Elasticsearch
+    ElasticInput
 ]

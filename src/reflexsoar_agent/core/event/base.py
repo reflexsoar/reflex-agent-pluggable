@@ -6,9 +6,9 @@ to create events and observables that are sent to the API.
 """
 
 
-import json
 import datetime
 import hashlib
+import json
 
 from reflexsoar_agent.core.event.encoders import JSONSerializable
 
