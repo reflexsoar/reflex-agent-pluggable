@@ -12,6 +12,7 @@ __pycache__/
 
 # Visual Studio Code
 .vscode/
+.deadcode/
 
 # Powershell test scripts
 *.ps1
