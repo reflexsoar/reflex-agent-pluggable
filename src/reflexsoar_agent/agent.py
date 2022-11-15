@@ -17,7 +17,6 @@ from .core.logging import logger, setup_logging
 from .core.management import (ManagementConnection, connections,
                               get_management_connection)
 from .core.version import version_number
-
 from .role import *  # pylint: disable=wildcard-import,unused-wildcard-import # noqa: F403
 
 

@@ -1,9 +1,8 @@
 import datetime
 
-
 from reflexsoar_agent.core.logging import logger
-from reflexsoar_agent.role import BaseRole
 from reflexsoar_agent.core.management import ManagementConnection
+from reflexsoar_agent.role import BaseRole
 
 
 class Poller(BaseRole):

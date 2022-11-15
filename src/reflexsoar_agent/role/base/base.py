@@ -3,13 +3,11 @@ import sys
 import time
 from multiprocessing import Event, Manager, Process
 
-from ...core.logging import logger
-
-
 from reflexsoar_agent.core.event.manager import EventManager
+from reflexsoar_agent.input import *  # noqa: F403,F401,B950 # pylint: disable=wildcard-import,unused-wildcard-import
 from reflexsoar_agent.input.base import BaseInput
 
-from reflexsoar_agent.input import *  # noqa: F403,F401,B950 # pylint: disable=wildcard-import,unused-wildcard-import
+from ...core.logging import logger
 
 
 class RoleGuard(type):
