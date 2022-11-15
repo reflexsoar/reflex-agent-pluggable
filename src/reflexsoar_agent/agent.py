@@ -17,7 +17,7 @@ from .core.logging import logger, setup_logging
 from .core.management import (ManagementConnection, connections,
                               get_management_connection)
 from .core.version import version_number
-from .input import *  # pylint: disable=wildcard-import,unused-wildcard-import # noqa: F403
+
 from .role import *  # pylint: disable=wildcard-import,unused-wildcard-import # noqa: F403
 
 
@@ -172,7 +172,6 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         self._managed_configs = {}
 
         # Load all available inputs and roles
-        self.load_inputs()
         self.load_roles()
 
     def _set_config(self, config: dict) -> None:
@@ -440,18 +439,6 @@ class Agent:  # pylint: disable=too-many-instance-attributes
                 return False
 
         return True
-
-    def load_inputs(self):
-        """Automatically loads all the inputs installed in to the agent library
-        and instantiates them.  Configurations for each agent are loaded from
-        the agent configuration file.
-        """
-        # Find all the inputs in the agent input library that have been subclassed
-        inputs = self._load_classes(BaseInput)  # noqa: F405
-
-        for name, _class in inputs:
-            _shortname = name.lower()
-            self.loaded_inputs[_shortname] = _class(_shortname, 'base', {})
 
     def load_roles(self):
         """Automatically loads all the roles installed in to the agent library
