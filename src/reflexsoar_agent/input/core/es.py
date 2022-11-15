@@ -1,7 +1,8 @@
 import json
 import ssl
 
-from elasticsearch import (ApiError, AuthenticationException, BadRequestError,
+from elastic_transport import ConnectionError
+from elasticsearch import (AuthenticationException, BadRequestError,
                            Elasticsearch)
 from opensearchpy import OpenSearch
 from retry import retry
@@ -109,7 +110,7 @@ class ElasticInput(BaseInput):
 
         return query_body
 
-    @retry(ApiError, tries=3, delay=2, backoff=2)
+    @retry(ConnectionError, tries=10, delay=2, backoff=2)
     def poll(self) -> list:  # noqa: C901
         """Polls an Elasticsearch instance for data."""
 
@@ -140,7 +141,7 @@ class ElasticInput(BaseInput):
         try:
             res = self.conn.search(**search_params)
             scroll_id = res['_scroll_id']
-            if 'total' in res['hits']:
+            if 'total' in res['hits'] and res['hits']['total']['value'] > 0:
                 logger.info(
                     f"Found {res['hits']['total']['value']} total events in {index}")
                 scroll_size = search_size
@@ -172,14 +173,13 @@ class ElasticInput(BaseInput):
         except BadRequestError as e:
             logger.error(f"Bad request for {self.alias}: {e}")
             error = True
-        except ApiError as e:
-            logger.error(f"API error for {self.alias}: {e}")
-            error = True
+        except ConnectionError as e:
+            logger.error(f"Connection error for {self.alias}."
+                         f"Unable to connect to {self.config['hosts']}:"
+                         f": {e}"
+                         )
 
         if error:
             return []
 
         return events
-
-    def run(self):
-        raise NotImplementedError

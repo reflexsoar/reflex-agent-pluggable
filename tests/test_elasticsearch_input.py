@@ -146,12 +146,38 @@ def test_es_as_opensearch(os_connection):
     assert len(events) > 0
 
 
-def test_es_search_no_index(es_connection, es_config):
-    """Checks to make sure that the search size parameter works as expected."""
+def test_es_search_no_index(es_connection):
+    """Checks to make sure no data is returned when no index is specified."""
 
     es_connection.config['search_size'] = 10
-    es_connection.config['index'] = ""
+    es_connection.config['index'] = None
 
     events = es_connection.poll()
+    assert events is not None
+    assert len(events) == 0
+
+def test_es_search_unknown_distro_with_http_auth(es_config):
+    """Checks to make sure that the search size parameter works as expected."""
+
+    es_config2 = copy.copy(es_config)
+
+    es_config2['distro'] = "bad_distro"
+    es_config2['http_auth'] = ()
+
+    es_connection = ElasticInput("test", config=es_config2, credentials=(os.getenv("ES_USER"), os.getenv("ES_PASS")))
+
+    events = es_connection.poll()
+    assert events is not None
+    assert len(events) > 0
+
+def test_es_search_retry(es_config):
+    """Checks to make sure that the search size parameter works as expected."""
+
+    bad_config = copy.copy(es_config)
+    bad_config['hosts'] = ['https://localhost:9000']
+
+    bad_connection = ElasticInput("test", config=bad_config, credentials=("test","badpassword"))
+
+    events = bad_connection.poll()
     assert events is not None
     assert len(events) == 0
