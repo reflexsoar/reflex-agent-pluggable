@@ -6,13 +6,14 @@ import os
 import socket
 import sys
 import time
-from multiprocessing import Manager
+from multiprocessing import Manager, Queue
 
 from dotenv import load_dotenv
 from platformdirs import user_data_dir
 
 from .core.errors import (AgentHeartbeatFailed, ConsoleAlreadyPaired,
                           ConsoleNotPaired)
+from .core.event.manager import EventManager, EventSpooler
 from .core.logging import logger, setup_logging
 from .core.management import (ManagementConnection, connections,
                               get_management_connection)
@@ -167,6 +168,9 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         self.warnings = []
         self.version_number = version_number
         self._role_manager = Manager()
+        self._event_manager = None
+        self._event_spooler = None
+        self._event_queue = Queue()
         self._managed_connections = self._role_manager.dict(connections)
         self._managed_configs = {}
 
@@ -476,7 +480,10 @@ class Agent:  # pylint: disable=too-many-instance-attributes
 
         config = self._managed_configs[config_name]
 
-        return _class(config=config, connections=self._managed_connections)
+        return _class(config=config,
+                      connections=self._managed_connections,
+                      event_manager=self._event_manager
+                      )
 
     def start_roles(self):
         """Starts all roles.
@@ -539,6 +546,13 @@ class Agent:  # pylint: disable=too-many-instance-attributes
             self.running_roles[name] = self.initialize_role(name)
             self.running_roles[name].start()
 
+    def start_event_pipeline(self):
+        conn = get_management_connection()
+        test_conn = ManagementConnection('http://localhost:5000', api_key='')
+        self._event_manager = EventManager(conn=conn, event_queue=self._event_queue)
+        self._event_spooler = EventSpooler(conn=test_conn, event_queue=self._event_queue)
+        self._event_spooler.start()
+
     def run(self):
         """Runs the agent.
 
@@ -549,11 +563,13 @@ class Agent:  # pylint: disable=too-many-instance-attributes
             logger.warning(
                 'Running in offline mode. Some roles may not work.')
         if self.heartbeat(skip_run=True):
+            self.start_event_pipeline()
             self.start_roles()
             try:
                 while True:
+                    seconds = self.config.health_check_interval
                     logger.info(
-                        f"Agent sleeping for {self.config.health_check_interval} seconds.")
+                        f"Agent sleeping for {seconds} seconds.")
                     time.sleep(self.config.health_check_interval)
                     if not self.heartbeat():
                         self.stop_roles()

@@ -15,3 +15,5 @@ class Detector(BaseRole):
 
     def main(self):
         self.logger.info('DO SOMETHING DIFFERENT!')
+
+        self.event_manager.prepare_events({'test': self.__class__.__name__})

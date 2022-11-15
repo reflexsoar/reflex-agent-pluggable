@@ -1,7 +1,6 @@
 import datetime
 
 from reflexsoar_agent.core.logging import logger
-from reflexsoar_agent.core.management import ManagementConnection
 from reflexsoar_agent.role import BaseRole
 
 
@@ -40,11 +39,7 @@ class Poller(BaseRole):
             yield self.configured_inputs[inputs_sorted[0]]
 
     def main(self):
-
-        conn2 = ManagementConnection('http://127.0.0.1:5000', api_key='', name='test')
         conn = self.get_connection()
-        self.event_manager.initialize(conn=conn2)
-
         if conn:
 
             # Fetch all the inputs

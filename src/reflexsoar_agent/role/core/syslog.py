@@ -1,4 +1,4 @@
-from socketserver import BaseRequestHandler, UDPServer
+from socketserver import BaseRequestHandler  # , UDPServer
 
 from reflexsoar_agent.core.logging import logger
 from reflexsoar_agent.role import BaseRole
@@ -34,10 +34,10 @@ class SyslogServer(BaseRole):
 
     def main(self):
         self.logger.info('Syslog hit different tho!')
-        try:
-            server = UDPServer(("0.0.0.0", 514), SyslogUDPHandler)
-            server.serve_forever(poll_interval=0.5)
-        except (IOError, SystemExit):
-            raise
-        except KeyboardInterrupt:
-            pass
+        # try:
+        #     server = UDPServer(("0.0.0.0", 514), SyslogUDPHandler)
+        #     server.serve_forever(poll_interval=0.5)
+        # except (IOError, SystemExit):
+        #     raise
+        # except KeyboardInterrupt:
+        #     pass

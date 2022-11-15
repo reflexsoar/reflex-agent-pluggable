@@ -68,7 +68,8 @@ class EventManager:
     list of fields to extract, fields to map to observables, signature fields, etc.
     """
 
-    def __init__(self, conn: ManagementConnection = None, *args, **kwargs) -> None:
+    def __init__(self, conn: ManagementConnection = None,
+                 event_queue: Queue = None, *args, **kwargs) -> None:
         """Initializes the EventManager class.
         Args:
             conn (ManagementConnection): ManagementConnection object for
