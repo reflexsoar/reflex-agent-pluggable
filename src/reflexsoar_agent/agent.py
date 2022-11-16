@@ -548,9 +548,8 @@ class Agent:  # pylint: disable=too-many-instance-attributes
 
     def start_event_pipeline(self):
         conn = get_management_connection()
-        test_conn = ManagementConnection('http://localhost:5000', api_key='')
         self._event_manager = EventManager(conn=conn, event_queue=self._event_queue)
-        self._event_spooler = EventSpooler(conn=test_conn, event_queue=self._event_queue)
+        self._event_spooler = EventSpooler(conn=conn, event_queue=self._event_queue)
         self._event_spooler.start()
 
     def run(self):
