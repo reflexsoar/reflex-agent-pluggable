@@ -3,9 +3,9 @@ import sys
 import time
 from multiprocessing import Event, Manager, Process
 
+from reflexsoar_agent.core.event import EventManager
 from reflexsoar_agent.input import *  # noqa: F403,F401,B950 # pylint: disable=wildcard-import,unused-wildcard-import
 from reflexsoar_agent.input.base import BaseInput
-from reflexsoar_agent.core.event import EventManager
 
 from ...core.logging import logger
 

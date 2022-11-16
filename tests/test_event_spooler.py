@@ -1,14 +1,14 @@
 import time
+from multiprocessing import Queue
+
 import pytest
 import requests
 import requests_mock
 from requests import HTTPError
 
-
-from multiprocessing import Queue
-
 from reflexsoar_agent.core.event import EventSpooler
 from reflexsoar_agent.core.management import ManagementConnection
+
 
 @pytest.fixture
 def event_queue():

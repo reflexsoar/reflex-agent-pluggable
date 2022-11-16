@@ -1,5 +1,5 @@
-from reflexsoar_agent.role import BaseRole
 from reflexsoar_agent.core.logging import logger
+from reflexsoar_agent.role import BaseRole
 
 
 class Detector(BaseRole):

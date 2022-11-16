@@ -29,7 +29,7 @@ class Poller(BaseRole):
         unrun_inputs = [i for i in self.configured_inputs.values()
                         if i.last_run is None]
         if len(unrun_inputs) > 0:
-            for _uuid, _input in unrun_inputs:
+            for _input in unrun_inputs:
                 if _input.last_run is None:
                     yield _input
         else:

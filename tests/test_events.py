@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from reflexsoar_agent.core.event import Event, Observable, CustomJsonEncoder
+from reflexsoar_agent.core.event import CustomJsonEncoder, Event, Observable
 
 
 @pytest.fixture

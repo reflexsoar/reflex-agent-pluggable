@@ -48,7 +48,7 @@ class BaseInput:
         # Get the Event base fields
         self.base_fields = {k: _actual_config.get(k, None) for k, v in _actual_config.items()
                             if k in ['rule_name', 'description_field',
-                                     'severity_field', 'source_refence',
+                                     'severity_field', 'source_reference',
                                      'original_date_field', 'tag_fields', 'static_tags']
                             }
 

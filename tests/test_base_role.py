@@ -1,8 +1,10 @@
 import time
+
 import pytest
 
-from reflexsoar_agent.role.base import BaseRole
 from reflexsoar_agent.core.management import ManagementConnection
+from reflexsoar_agent.role.base import BaseRole
+
 
 @pytest.fixture
 def mock_connection():

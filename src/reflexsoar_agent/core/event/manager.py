@@ -1,6 +1,8 @@
+import json
 import time
 from itertools import islice
-from multiprocessing import Process, Queue, Event as mpEvent
+from multiprocessing import Event as mpEvent
+from multiprocessing import Process, Queue
 
 from reflexsoar_agent.core.event.base import Event
 from reflexsoar_agent.core.event.errors import EventManagedInitializedError
@@ -33,7 +35,10 @@ class EventSpooler(Process):
         The job ID is stored in an awaiting_ack dict with the events that
         need to be removed from the shelve when done
         """
-        response = self.conn.bulk_events(events)
+        _events = []
+        [_events.append(json.loads(e.jsonify())) for e in events]
+
+        response = self.conn.bulk_events(_events)
         if response:
             logger.info(f"Sent {len(events)} to {self.conn.url}")
         else:
@@ -215,6 +220,5 @@ class EventManager:
                               observable_mapping=observable_mapping,
                               source_field=source_field,
                               source=source)
-                event.raw_log = None
                 self.event_queue.put(event)
         return None
