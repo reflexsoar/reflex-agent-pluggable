@@ -40,6 +40,8 @@ flynt = "^0.76"
 safety = "^2.3.1"
 pytest = "^7.2.0"
 bandit = "^1.7.4"
+requests-mock = "^1.10.0"
+pytest-loguru = "^0.2.0"
 
 [build-system]
 requires = ["poetry-core"]

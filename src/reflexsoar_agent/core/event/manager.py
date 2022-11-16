@@ -1,6 +1,6 @@
 import time
 from itertools import islice
-from multiprocessing import Process, Queue
+from multiprocessing import Process, Queue, Event as mpEvent
 
 from reflexsoar_agent.core.event.base import Event
 from reflexsoar_agent.core.event.errors import EventManagedInitializedError
@@ -20,6 +20,7 @@ class EventSpooler(Process):
         self._event_queue = event_queue
         self._event_queue_poll_period = 1
         self.conn = conn
+        self._should_stop = mpEvent()
 
     def _listen_for_acks(self):
         """Listens to a pub/sub channel with the API and waits for ACKs
@@ -37,6 +38,7 @@ class EventSpooler(Process):
         if response:
             logger.info(f"Sent {len(events)} to {self.conn.url}")
         else:
+            print(response)
             logger.info(f"Failed to send {len(events)} to {self.conn.url}")
 
     def _process_events(self):
@@ -60,10 +62,20 @@ class EventSpooler(Process):
             self._running = True
             logger.info("EventSpooler started")
             while self._running:
+                if self._should_stop.is_set():
+                    self._running = False
+                    break
                 self._process_events()
         except KeyboardInterrupt:
             logger.info("EventSpooler stopped")
             self._running = False
+
+    def stop(self, from_self=False):
+        logger.info(f"Stop of {self.__class__.__name__} requested")
+        self._running = False
+        self._should_stop.set()
+        if not from_self:
+            self.join()
 
 
 class EventManager:

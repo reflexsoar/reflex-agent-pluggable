@@ -103,7 +103,7 @@ class HTTPConnection:
         except ConnectionError as e:
             logger.error(f"Failed to connect to {self.url}. {e}")
         except HTTPError as e:
-            logger.error(f"Failed to connect to {self.url}. {e}")
+            logger.error(f"Failed to make a call to {self.url}. {e}")
         return None
 
 
@@ -132,10 +132,10 @@ class ManagementConnection(HTTPConnection):
             # Update this connection with the new access token
             self.update_header('Authorization', f"Bearer {response['token']}")
             self.api_key = response['token']
-        elif response and response.status_code == 409:
+        elif response.status_code == 409:
             raise ConsoleAlreadyPaired(
                 f"Failed to pair agent: {response.text}")
-        elif response and response.status_code == 500:
+        elif response.status_code == 500:
             raise ConsoleInternalServerError(
                 f"Failed to pair agent: {response.text}")
 
@@ -163,7 +163,7 @@ class ManagementConnection(HTTPConnection):
             "events": events
         }
         response = self.call_api(
-            'POST', '/api/v2.0/agent/bulk_events', data=data)
+            'POST', '/api/v2.0/event/_bulk', data=data)
         if response and response.status_code == 200:
             response = response.json()
         return response
