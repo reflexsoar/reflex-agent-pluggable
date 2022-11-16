@@ -20,7 +20,7 @@ class BaseInput:
 
     def __init__(self, input_type: str, config: dict):
         self.type = input_type
-        self.config = config
+        self.parse_config(config)
         self.last_run = None
 
     @classmethod
@@ -29,7 +29,32 @@ class BaseInput:
         This method parses the input configuration and only returns the
         fields in the dict that are involved with configuring the input
         """
-        return {k: v for k, v in config.items() if k in self.config_fields}
+
+        self.organization = config.get('organization', None)
+
+        # Extract the observable mapping
+        self.observable_mapping = config.get('field_mapping', {}).get('fields', {})
+
+        # The entire input config is passed in here but has its own
+        # config sub-key so it has to be pulled upwards
+        _actual_config = config.get('config', {})
+
+        # Grab the signature fields
+        self.signature_fields = _actual_config.get('signature_fields', [])
+
+        # Grab the source field
+        self.source_field = _actual_config.get('source_field', '_source')
+
+        # Get the Event base fields
+        self.base_fields = {k: _actual_config.get(k, None) for k, v in _actual_config.items()
+                            if k in ['rule_name', 'description_field',
+                                     'severity_field', 'source_refence',
+                                     'original_date_field', 'tag_fields', 'static_tags']
+                            }
+
+        # Return configs for the actual input
+        self.config = {k: v for k, v in _actual_config.items()
+                       if k in self.config_fields}
 
     def main(self):
         """Main loop.

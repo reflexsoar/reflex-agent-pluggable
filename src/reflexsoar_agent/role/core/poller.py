@@ -19,7 +19,6 @@ class Poller(BaseRole):
         self.configured_inputs = {}
 
     def configure_input(self, alias, input_module, config, credential):
-        config = input_module.parse_config(config)
         configured_input = input_module(config=config, credentials=credential)
         self.configured_inputs[alias] = configured_input
 
@@ -30,7 +29,7 @@ class Poller(BaseRole):
         unrun_inputs = [i for i in self.configured_inputs.values()
                         if i.last_run is None]
         if len(unrun_inputs) > 0:
-            for _input in unrun_inputs:
+            for _uuid, _input in unrun_inputs:
                 if _input.last_run is None:
                     yield _input
         else:
@@ -55,7 +54,7 @@ class Poller(BaseRole):
                             _input['credential'])
                         input_module = self.loaded_inputs.get(input_alias)
                         self.configure_input(input_uuid, input_module,
-                                             _input['config'], input_credentials)
+                                             _input, input_credentials)
 
                 # Check to see if the input has been removed from the agent
                 input_uuids = [i['uuid'].lower() for i in inputs]
@@ -71,7 +70,12 @@ class Poller(BaseRole):
             # running_inputs = []
             for _input in self.fetch_inputs():
                 events = _input.run()
+                self.event_manager.prepare_events(*events,
+                                                  base_fields=_input.base_fields,
+                                                  signature_fields=_input.signature_fields,
+                                                  observable_mapping=_input.observable_mapping,
+                                                  source_field=_input.source_field
+                                                  )
                 _input.last_run = datetime.datetime.utcnow()
-                self.event_manager.prepare_events(*events)
-
-        logger.info(f"{self.configured_inputs}")
+                # logger.success(_input['config']['signature_fields'])
+                # logger.success(_input['field_mapping'])

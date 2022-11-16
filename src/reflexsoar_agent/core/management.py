@@ -1,7 +1,6 @@
 """Defines all the functions that are used to manage the agent and have
 the agent communicate with the ReflexSOAR management server
 """
-
 from typing import Any
 
 from requests import Request, Session
@@ -121,8 +120,12 @@ class ManagementConnection(HTTPConnection):
             response = response.json()
             return response
         else:
-            raise AgentHeartbeatFailed(
-                f"Failed to send heartbeat: {response.text}")
+            if response:
+                raise AgentHeartbeatFailed(
+                    f"Failed to send heartbeat: {response.text}")
+            else:
+                raise AgentHeartbeatFailed(
+                    "Failed to send heartbeat: No Connection could be made")
 
     def agent_pair(self, data: dict) -> dict:
         """Pairs the agent with the management server"""

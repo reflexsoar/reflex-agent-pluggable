@@ -1,4 +1,3 @@
-import json
 import ssl
 
 from elastic_transport import ConnectionError
@@ -18,17 +17,24 @@ class ElasticInput(BaseInput):
     config_fields = ['hosts', 'distro', 'index', 'lucene_filter',
                               'cafile', 'scheme', 'auth_method',
                               'cert_verification', 'check_hostname',
-                              'no_scroll', 'search_size']
+                              'no_scroll', 'search_size', 'search_period']
 
     def __init__(self, input_type: str = InputTypes.POLL,
                  config: dict = None, credentials: tuple = None):
+
         super().__init__(input_type, config)
 
-        self.config = config
         self.status = 'waiting'
         self.credentials = credentials
         self.conn = self.build_es_connection()
         self.plugin_type = input_type
+
+    def _get_base_fields(self):
+        return {k: v for k, v in self.config.items() if k in [
+            'rule_name', 'description_field', 'severity_field',
+            'source_refence', 'original_date_field',
+            'tag_fields', 'static_tags']
+        }
 
     def build_es_connection(self):
         '''
@@ -42,7 +48,7 @@ class ElasticInput(BaseInput):
 
         # If we are defining a ca_file use ssl_contexts with the ca_file
         # else disable ca_certs and verify_certs and don't use ssl_context
-        if self.config['cafile'] != "":
+        if 'cafile' in self.config and self.config['cafile'] != "":
 
             context = ssl.create_default_context(cafile=self.config['cafile'])
             CONTEXT_VERIFY_MODES = {
@@ -61,7 +67,7 @@ class ElasticInput(BaseInput):
             # es_config['ssl_assert_hostname'] = self.config['check_hostname']
 
         # Set the API Authentication method
-        if self.config['auth_method'] == 'api_key':
+        if 'auth_method' in self.config['auth_method'] == 'api_key':
             es_config['api_key'] = self.credentials
         else:
             es_config['http_auth'] = self.credentials
@@ -111,8 +117,6 @@ class ElasticInput(BaseInput):
         if lucene_filter:
             filter_query = {"query_string": {"query": lucene_filter}}
             query_body['bool']['must'].append(filter_query)
-
-        print(json.dumps(query_body, indent=2))
 
         return query_body
 

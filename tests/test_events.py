@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-from reflexsoar_agent.core.event import Event, Observable
+from reflexsoar_agent.core.event import Event, Observable, CustomJsonEncoder
 
 
 @pytest.fixture
@@ -144,6 +144,7 @@ def test_elastic_signals(elastic_signals, base_fields, observable_mapping, signa
     for raw_event in elastic_signals:
         event = Event(raw_event, base_fields=base_fields, signature_fields=signature_fields,
                       observable_mapping=observable_mapping, source_field="_source", source="pytest")
+
         assert event.observables not in empty_field
         assert event.title not in empty_field
         assert event.description is not None
@@ -153,6 +154,7 @@ def test_elastic_signals(elastic_signals, base_fields, observable_mapping, signa
         assert event.tags not in empty_field
         assert event.source not in empty_field
         assert event.original_date is not None
+        assert event.reference is not None
         assert not event.original_date.endswith('Z')
         events.append(event)
 
@@ -179,3 +181,10 @@ def test_event_as_json(event_item):
         print(k)
         if k.startswith('_'):
             assert True == True
+
+def test_event_json_dump(event_item):
+
+    event = Event(**event_item)
+    event_json = json.dumps(event, cls=CustomJsonEncoder)
+
+    assert isinstance(event_json, str)

@@ -11,15 +11,21 @@ load_dotenv()
 @pytest.fixture
 def es_config():
     return {
-        "hosts": ["https://localhost:9200"],
-        "cafile": "",
-        "cert_verification": "none",
-        "check_hostname": False,
-        "auth_method": "basic",
-        "index": "winlogbeat-*",
-        "search_period": "5m",
-        "lucene_filter": "",
-        "search_size": 10
+        "config":
+        {
+            "hosts": ["https://localhost:9200"],
+            "cafile": "",
+            "cert_verification": "none",
+            "check_hostname": False,
+            "auth_method": "basic",
+            "index": "winlogbeat-*",
+            "search_period": "5m",
+            "lucene_filter": "",
+            "search_size": 10
+        },
+        "signature_fields": [],
+        "field_mapping": {},
+        "source_field": "_source"
     }
 
 @pytest.fixture

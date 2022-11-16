@@ -1,4 +1,5 @@
 from reflexsoar_agent.role import BaseRole
+from reflexsoar_agent.core.logging import logger
 
 
 class Detector(BaseRole):
@@ -14,6 +15,4 @@ class Detector(BaseRole):
         super().__init__(*args, **kwargs)
 
     def main(self):
-        self.logger.info('DO SOMETHING DIFFERENT!')
-
-        self.event_manager.prepare_events({'test': self.__class__.__name__})
+        logger.info('DO SOMETHING DIFFERENT!')

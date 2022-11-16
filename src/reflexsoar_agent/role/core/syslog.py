@@ -7,7 +7,6 @@ from reflexsoar_agent.role import BaseRole
 class SyslogUDPHandler(BaseRequestHandler):
 
     def __init__(self, *args, **kwargs):
-        self.logger = logger
         super().__init__(*args, **kwargs)
 
     def handle(self):
@@ -16,7 +15,7 @@ class SyslogUDPHandler(BaseRequestHandler):
         if data:
             with open('syslog.log', 'a', encoding="utf-8") as f:
                 f.write(data + '\n')
-        self.logger.info(f"{self.client_address[0]} : {str(data)}")
+        logger.info(f"{self.client_address[0]} : {str(data)}")
 
 
 class SyslogServer(BaseRole):
@@ -33,7 +32,7 @@ class SyslogServer(BaseRole):
         self.disable_run_loop = True
 
     def main(self):
-        self.logger.info('Syslog hit different tho!')
+        logger.info('Syslog hit different tho!')
         # try:
         #     server = UDPServer(("0.0.0.0", 514), SyslogUDPHandler)
         #     server.serve_forever(poll_interval=0.5)

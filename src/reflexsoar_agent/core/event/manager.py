@@ -33,12 +33,10 @@ class EventSpooler(Process):
         The job ID is stored in an awaiting_ack dict with the events that
         need to be removed from the shelve when done
         """
-
         response = self.conn.bulk_events(events)
         if response:
             logger.info(f"Sent {len(events)} to {self.conn.url}")
         else:
-            print(response)
             logger.info(f"Failed to send {len(events)} to {self.conn.url}")
 
     def _process_events(self):
@@ -158,12 +156,6 @@ class EventManager:
         else:
             raise ValueError("observable_mapping must be a dict")
 
-    def parse_event(self, event: dict) -> Event:
-        """Parses a dictionary into an Event object"""
-
-        # TODO: Add all the Event parsing logic here
-        return event
-
     def _check_spooler_health(self):
         if self.spooler.is_alive() is False:
             logger.error("EventSpooler is not alive.  Restarting...")
@@ -173,7 +165,8 @@ class EventManager:
                 logger.error(f"Unable to restart EventSpooler: {e}")
 
     def prepare_events(self, *events, base_fields: dict = None, signature_fields: list = None,
-                       observable_mapping: list = None):
+                       observable_mapping: list = None, source_field: str = None,
+                       source: str = None):
         """Prepares events for sending to the API by converating them to Event objects
 
         Args:
@@ -188,6 +181,12 @@ class EventManager:
 
         if observable_mapping is None:
             observable_mapping = []
+
+        if source_field is None:
+            source_field = "_source"
+
+        if source is None:
+            source = "Unknown"
 
         # Makes sure the EventManager is fully initialized
         if self._initialized is False:
@@ -211,6 +210,11 @@ class EventManager:
             if isinstance(event, Event):
                 self.event_queue.put(event)
             else:
-                parsed_event = self.parse_event(event)
-                self.event_queue.put(parsed_event)
+                event = Event(event, base_fields=base_fields,
+                              signature_fields=signature_fields,
+                              observable_mapping=observable_mapping,
+                              source_field=source_field,
+                              source=source)
+                event.raw_log = None
+                self.event_queue.put(event)
         return None
