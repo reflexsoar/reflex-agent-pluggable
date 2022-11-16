@@ -2,6 +2,8 @@
 
 ![Tests Status](./.badges/tests-badge.svg) ![Coverage](./.badges/coverage-badge.svg) ![Flake8](./.badges/flake8-badge.svg)
 
+<h1>** NOTE ** : WORK IN PROGRESS - FOR FUTURE RELEASE</h1>
+
 ## Quick Start
 
 ```bash
