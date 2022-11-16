@@ -157,3 +157,25 @@ def test_elastic_signals(elastic_signals, base_fields, observable_mapping, signa
         events.append(event)
 
     assert len(events) == 10
+
+def test_event_as_json(event_item):
+    """Checks to make sure that the jsonify() call fully serializes the Event
+    to JSON
+    """
+
+    event = Event(**event_item)
+    event_json = event.jsonify()
+
+    assert isinstance(event_json, str)
+
+    event_dict = json.loads(event_json)
+    assert isinstance(event_dict['observables'], list)
+    assert isinstance(event_dict['observables'][0], dict)
+    assert any([k.startswith('_') for k in event_dict]) == False
+
+    event = Event(**event_item, base_fields={'original_date_field': '@timestamp'})
+    event_json = json.loads(event.jsonify(ignore_private_fields=False, skip_null=True))
+    for k in event_json.keys():
+        print(k)
+        if k.startswith('_'):
+            assert True == True
