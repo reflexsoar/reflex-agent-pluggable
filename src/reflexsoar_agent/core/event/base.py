@@ -208,6 +208,7 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
         """
 
         _observables = []
+
         if observable_mapping is not None:
             self._observable_mapping = observable_mapping
 
@@ -360,7 +361,7 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
                             value = [self._extract_field_value(
                                 item, args[1:]) for item in value]
 
-                return value if len(args) == 1 else self._extract_field_value(value, args[1:])
+                return value if len(args) == 1 else self._extract_field_value(value, '.'.join(args[1:]))
 
     def _generate_signature(self, signature_fields: list = None):
         """Generates an event signature based on the provided signature_fields.

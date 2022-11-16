@@ -187,9 +187,6 @@ class EventManager:
         if observable_mapping is None:
             observable_mapping = []
 
-        if source_field is None:
-            source_field = "_source"
-
         if source is None:
             source = "Unknown"
 

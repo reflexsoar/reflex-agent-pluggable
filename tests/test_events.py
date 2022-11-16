@@ -160,6 +160,54 @@ def test_elastic_signals(elastic_signals, base_fields, observable_mapping, signa
 
     assert len(events) == 10
 
+def test_elastic_signals_with_no_base_fields(elastic_signals, empty_field):
+
+    no_source_ref_base_fields = {
+        'original_date_field': '_source.@timestamp',
+        'rule_name': '_source.kibana.alert.rule.name',
+        'severity_field': '_source.kibana.alert.rule.severity',
+        'description_field': '_source.kibana.alert.rule.description',
+        'tag_fields': ['_source.kibana.alert.rule.tags'],
+        'static_tags': ['awesome'],
+        'source_reference': '_source.kibana.alert.rule.uuid',
+    }
+
+    no_source_ref_observation_mapping = [
+        {
+                'value': 'test',
+                'data_type': 'hostname',
+                'tags': ['test', 'pytest'],
+                'tlp': 3,
+                'spotted': False,
+                'safe': False,
+                'ioc': False,
+                'field': '_source.host.hostname',
+                'original_source_field': '_source.host.hostname'
+            }
+    ]
+
+    no_source_ref_signature_fields = ['_source.host.hostname', '_source.kibana.alert.rule.name']
+
+    events = []
+    for raw_event in elastic_signals:
+        event = Event(raw_event, base_fields=no_source_ref_base_fields, signature_fields=no_source_ref_signature_fields,
+                      observable_mapping=no_source_ref_observation_mapping, source="pytest")
+
+        assert event.observables not in empty_field
+        assert event.title not in empty_field
+        assert event.description is not None
+        assert event.tlp is not None
+        assert event.tlp in [0, 1, 2, 3, 4]
+        assert event.severity in [1, 2, 3, 4]
+        assert event.tags not in empty_field
+        assert event.source not in empty_field
+        assert event.original_date is not None
+        assert event.reference is not None
+        assert not event.original_date.endswith('Z')
+        events.append(event)
+
+    assert len(events) == 10
+
 def test_event_as_json(event_item):
     """Checks to make sure that the jsonify() call fully serializes the Event
     to JSON
@@ -178,7 +226,6 @@ def test_event_as_json(event_item):
     event = Event(**event_item, base_fields={'original_date_field': '@timestamp'})
     event_json = json.loads(event.jsonify(ignore_private_fields=False, skip_null=True))
     for k in event_json.keys():
-        print(k)
         if k.startswith('_'):
             assert True == True
 
