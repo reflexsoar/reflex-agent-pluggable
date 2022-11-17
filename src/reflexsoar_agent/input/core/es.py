@@ -1,6 +1,5 @@
 import ssl
-
-from typing import Dict, Any, Tuple, Optional
+from typing import Any, Dict, Optional, Tuple
 
 from elastic_transport import ConnectionError
 from elasticsearch import (AuthenticationException, BadRequestError,

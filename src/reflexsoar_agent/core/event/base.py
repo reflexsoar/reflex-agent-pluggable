@@ -9,7 +9,7 @@ to create events and observables that are sent to the API.
 import datetime
 import hashlib
 import json
-from typing import Union, Optional, Dict, Any, List
+from typing import Any, Dict, List, Optional, Union
 
 from reflexsoar_agent.core.event.encoders import JSONSerializable
 

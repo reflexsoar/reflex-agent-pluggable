@@ -1,5 +1,6 @@
-import json
 import copy
+import json
+
 import pytest
 
 from reflexsoar_agent.core.event import CustomJsonEncoder, Event, Observable

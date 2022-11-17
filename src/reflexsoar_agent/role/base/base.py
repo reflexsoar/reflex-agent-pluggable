@@ -1,9 +1,8 @@
 import inspect
 import sys
 import time
-
-from typing import Dict, Any, Optional
 from multiprocessing import Event, Manager, Process
+from typing import Any, Dict, Optional
 
 from reflexsoar_agent.core.event import EventManager
 from reflexsoar_agent.input import *  # noqa: F403,F401,B950 # pylint: disable=wildcard-import,unused-wildcard-import

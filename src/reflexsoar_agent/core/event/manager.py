@@ -1,10 +1,9 @@
 import json
 import time
-
-from typing import Optional, List, Dict, Any
 from itertools import islice
 from multiprocessing import Event as mpEvent
 from multiprocessing import Process, Queue
+from typing import Any, Dict, List, Optional
 
 from reflexsoar_agent.core.event.base import Event
 from reflexsoar_agent.core.event.errors import EventManagedInitializedError
