@@ -42,13 +42,15 @@ pytest = "^7.2.0"
 bandit = "^1.7.4"
 requests-mock = "^1.10.0"
 pytest-loguru = "^0.2.0"
+types-setuptools = "^65.5.0.3"
+types-retry = "^0.9.9"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.coverage.run]
-omit = [".*", "*/site-packages/*"]
+omit = [".*", "*/site-packages/*", "*/tests/*"]
 
 #[tool.coverage.report]
 #fail_under = 100

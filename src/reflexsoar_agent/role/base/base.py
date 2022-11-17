@@ -2,6 +2,7 @@ import inspect
 import sys
 import time
 from multiprocessing import Event, Manager, Process
+from typing import Any, Dict, Optional
 
 from reflexsoar_agent.core.event import EventManager
 from reflexsoar_agent.input import *  # noqa: F403,F401,B950 # pylint: disable=wildcard-import,unused-wildcard-import
@@ -45,8 +46,10 @@ class BaseRole(Process, metaclass=RoleGuard):
 
     shortname = 'base'
 
-    def __init__(self, config: dict = None, connections: dict = None,
-                 event_manager: EventManager = None, *args, **kwargs):
+    def __init__(self, event_manager: EventManager,
+                 config: Optional[Dict[Any, Any]] = None,
+                 connections: Optional[Dict[Any, Any]] = None,
+                 *args, **kwargs):
         """Initializes the role"""
 
         manager = Manager()
@@ -62,7 +65,7 @@ class BaseRole(Process, metaclass=RoleGuard):
             self.connections = connections
         else:
             self.connections = {}
-        self.loaded_inputs = {}
+        self.loaded_inputs: Dict[Any, Any] = {}
 
         super().__init__(*args, **kwargs)
 

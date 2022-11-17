@@ -1,4 +1,5 @@
 import ssl
+from typing import Any, Dict, Optional, Tuple
 
 from elastic_transport import ConnectionError
 from elasticsearch import (AuthenticationException, BadRequestError,
@@ -19,8 +20,9 @@ class ElasticInput(BaseInput):
                               'cert_verification', 'check_hostname',
                               'no_scroll', 'search_size', 'search_period']
 
-    def __init__(self, input_type: str = InputTypes.POLL,
-                 config: dict = None, credentials: tuple = None):
+    def __init__(self, config: Dict[Any, Any],
+                 input_type: str = InputTypes.POLL,
+                 credentials: Optional[Tuple[Any, ...]] = None):
 
         super().__init__(input_type, config)
 
@@ -116,7 +118,7 @@ class ElasticInput(BaseInput):
 
         if lucene_filter:
             filter_query = {"query_string": {"query": lucene_filter}}
-            query_body['bool']['must'].append(filter_query)
+            query_body['bool']['must'].append(filter_query)  # type: ignore
 
         return query_body
 

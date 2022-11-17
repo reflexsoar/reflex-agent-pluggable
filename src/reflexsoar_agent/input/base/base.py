@@ -1,4 +1,5 @@
 import datetime
+from typing import Any, Dict, List
 
 
 class InputTypes:
@@ -16,12 +17,19 @@ input_types = InputTypes()
 class BaseInput:
 
     alias = "base"
-    config_fields = []
+    config_fields: List[str] = []
 
-    def __init__(self, input_type: str, config: dict):
+    def __init__(self, input_type: str, config: Dict[Any, Any]) -> None:
+
+        self.config: Dict[Any, Any]
         self.type = input_type
         self.parse_config(config)
         self.last_run = None
+        self.organization: str
+        self.observable_mapping: List[Dict[Any, Any]] = []
+        self.signature_fields: List[str] = []
+        self.source_field: str
+        self.base_fields: Dict[Any, Any] = {}
 
     @classmethod
     def parse_config(self, config: dict):
@@ -33,7 +41,7 @@ class BaseInput:
         self.organization = config.get('organization', None)
 
         # Extract the observable mapping
-        self.observable_mapping = config.get('field_mapping', {}).get('fields', {})
+        self.observable_mapping = config.get('field_mapping', {}).get('fields', [])
 
         # The entire input config is passed in here but has its own
         # config sub-key so it has to be pulled upwards

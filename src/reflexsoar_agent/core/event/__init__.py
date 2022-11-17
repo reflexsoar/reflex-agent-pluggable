@@ -6,11 +6,11 @@ from .manager import EventManager, EventSpooler
 event_manager = EventManager()
 
 __all__ = [
-    CustomJsonEncoder,
-    JSONSerializable,
-    Event,
-    EventManager,
-    EventSpooler,
-    Event,
-    Observable
+    'CustomJsonEncoder',
+    'JSONSerializable',
+    'Event',
+    'EventManager',
+    'EventSpooler',
+    'Event',
+    'Observable'
 ]

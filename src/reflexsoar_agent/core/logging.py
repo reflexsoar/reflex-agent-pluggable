@@ -1,8 +1,9 @@
 import sys
+from typing import Dict, List, Optional, Union
 
 from loguru import logger
 
-HANDLERS = {
+HANDLERS: Dict[str, Union[int, None]] = {
     'json': None,
     'stdout': None,
     'file': None
@@ -30,7 +31,7 @@ def formatter(message):
 def setup_logging(log_path="reflexsoar_agent.log",
                   rotation=1,
                   retention=10,
-                  handlers: list = None, level="INFO", init=False):
+                  handlers: Optional[List[str]] = None, level="INFO", init=False):
     """Sets up the logging for the agent and all of its components and modules
 
     Args:
