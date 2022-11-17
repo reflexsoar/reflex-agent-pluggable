@@ -2,6 +2,7 @@ import time
 
 import pytest
 
+from reflexsoar_agent.core.event import EventManager
 from reflexsoar_agent.core.management import ManagementConnection
 from reflexsoar_agent.role.base import BaseRole
 
@@ -26,14 +27,14 @@ def test_base_role_guard():
             def set_config():
                 super().set_config()
 
-        n = NewRole()
+        n = NewRole(None, {}, {})
 
 def test_new_role_from_base():
     """Tests that a new role can be created from the base role"""
     class NewRole(BaseRole):
         shortname = 'new'
 
-    new_role = NewRole({}, connections={})
+    new_role = NewRole(None, {}, connections={})
 
     assert new_role.shortname == 'new'
 
@@ -45,7 +46,7 @@ def test_base_role_get_connections(mock_connection):
     class NewRole(BaseRole):
         shortname = 'new'
 
-    new_role = NewRole({}, connections={'test': mock_connection})
+    new_role = NewRole(None, {}, connections={'test': mock_connection})
 
     assert new_role.get_connection('test') == mock_connection
 
@@ -63,7 +64,7 @@ def test_base_role_load_inputs():
     class NewRole(BaseRole):
         shortname = 'new'
 
-    new_role = NewRole({}, connections={})
+    new_role = NewRole(None, {}, connections={})
 
     new_role.load_inputs()
     assert len(new_role.loaded_inputs) > 0
@@ -74,7 +75,7 @@ def test_base_role_main(caplog):
     class NewRole(BaseRole):
         shortname = 'new'
 
-    new_role = NewRole(config={'wait_interval': 10}, connections={})
+    new_role = NewRole(None, config={'wait_interval': 10}, connections={})
 
     new_role.main()
     assert 'Hello World from new' in caplog.text
@@ -84,7 +85,7 @@ def test_base_role_without_config():
     class NewRole(BaseRole):
         shortname = 'new'
 
-    new_role = NewRole({}, connections={})
+    new_role = NewRole(None, {}, connections={})
     assert new_role.config['wait_interval'] == 10
 
 
@@ -93,7 +94,7 @@ def test_base_role_with_wait_interval_missing():
     class NewRole(BaseRole):
         shortname = 'new'
 
-    new_role = NewRole({'random': 'abc'}, connections={})
+    new_role = NewRole(None, {'random': 'abc'}, connections={})
     assert new_role.config['wait_interval'] == 10
 
 
@@ -103,13 +104,13 @@ def test_base_role_repr():
     class NewRole(BaseRole):
         shortname = 'new'
 
-    new_role = NewRole({}, connections={})
+    new_role = NewRole(None, {}, connections={})
     assert 'NewRole' in str(new_role)
 
 def test_base_role_start_stop():
     """Makes sure that the start and stop functions work correctly"""
 
-    new_role = BaseRole({}, connections={})
+    new_role = BaseRole(None, {}, connections={})
     new_role.start()
     assert new_role.is_alive() == True
     new_role.stop()
@@ -120,7 +121,7 @@ def test_base_role_run():
     class NewRole(BaseRole):
         shortname = 'new'
 
-    new_role = NewRole({}, connections={})
+    new_role = NewRole(None, {}, connections={})
     new_role.disable_run_loop = True
     new_role.run()
 

@@ -4,8 +4,8 @@ from .runner import Runner
 from .syslog import SyslogServer
 
 __all__ = [
-    Detector,
-    Poller,
-    Runner,
-    SyslogServer
+    'Detector',
+    'Poller',
+    'Runner',
+    'SyslogServer'
 ]

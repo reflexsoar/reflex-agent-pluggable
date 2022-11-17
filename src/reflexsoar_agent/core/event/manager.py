@@ -1,5 +1,7 @@
 import json
 import time
+
+from typing import Optional, List, Dict, Any
 from itertools import islice
 from multiprocessing import Event as mpEvent
 from multiprocessing import Process, Queue
@@ -87,8 +89,8 @@ class EventManager:
     list of fields to extract, fields to map to observables, signature fields, etc.
     """
 
-    def __init__(self, conn: ManagementConnection = None,
-                 event_queue: Queue = None, *args, **kwargs) -> None:
+    def __init__(self, conn: Optional[ManagementConnection] = None,
+                 event_queue: Optional[Queue] = None, *args, **kwargs) -> None:
         """Initializes the EventManager class.
         Args:
             conn (ManagementConnection): ManagementConnection object for
@@ -101,7 +103,6 @@ class EventManager:
         self.back_pressure = 1
         self._max_spooled_events = 10000
 
-        # A ManagementConnection is required
         if conn is None:
             self.management_conn = None
         else:
@@ -169,9 +170,11 @@ class EventManager:
             except Exception as e:
                 logger.error(f"Unable to restart EventSpooler: {e}")
 
-    def prepare_events(self, *events, base_fields: dict = None, signature_fields: list = None,
-                       observable_mapping: list = None, source_field: str = None,
-                       source: str = None):
+    def prepare_events(self, *events, base_fields: Optional[Dict[Any, Any]] = None,
+                       signature_fields: Optional[List[str]] = None,
+                       observable_mapping: Optional[List[Dict[Any, Any]]] = None,
+                       source_field: Optional[str] = None,
+                       source: Optional[str] = None):
         """Prepares events for sending to the API by converating them to Event objects
 
         Args:
@@ -214,7 +217,7 @@ class EventManager:
             else:
                 event = Event(event, base_fields=base_fields,
                               signature_fields=signature_fields,
-                              observable_mapping=observable_mapping,
+                              observable_mapping=observable_mapping,  # type: ignore
                               source_field=source_field,
                               source=source)
                 self.event_queue.put(event)
