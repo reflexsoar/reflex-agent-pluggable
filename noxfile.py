@@ -31,7 +31,8 @@ def lint(session):
     session.run("poetry", "shell")
     session.run("pylint", *SOURCE_FILES, "--exit-zero")
     # session.run("black", "--check", ".")
-    session.run("flake8", ".", "--config", ".flake8", "--exit-zero", "--statistics",
+    session.run("python", "-c", "import os; os.remove('reports/flake8/flake8stats.txt')")
+    session.run("flake8", ".", "--color", "never", "--config", ".flake8", "--exit-zero", "--statistics",
                 f"--output-file={REPORTS_DIR}/flake8/flake8stats.txt")
     session.run("genbadge", "flake8", "-o", f"{BAGDES_DIR}/flake8-badge.svg")
     session.run("flynt", *SOURCE_FILES)
