@@ -121,12 +121,7 @@ class ManagementConnection(HTTPConnection):
             response = response.json()
             return response
         else:
-            if response:
-                raise AgentHeartbeatFailed(
-                    f"Failed to send heartbeat: {response.text}")
-            else:
-                raise AgentHeartbeatFailed(
-                    "Failed to send heartbeat: No Connection could be made")
+            raise AgentHeartbeatFailed("Failed to send heartbeat")
 
     def agent_pair(self, data: dict) -> dict:
         """Pairs the agent with the management server"""

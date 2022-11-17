@@ -4,8 +4,11 @@ repos:
   hooks:
   - id: trailing-whitespace
   - id: detect-private-key
+  - id: end-of-file-fixer
   - id: name-tests-test
     args: ['--pytest-test-first']
+  - id: no-commit-to-branch
+    args: [--branch, main]
 - repo: https://gitlab.com/pycqa/flake8
   rev: 3.8.1
   hooks:
