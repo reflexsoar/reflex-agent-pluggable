@@ -1,7 +1,7 @@
 """Defines all the functions that are used to manage the agent and have
 the agent communicate with the ReflexSOAR management server
 """
-from typing import Any
+from typing import Any, Dict, Optional, Union
 
 from requests import Request, Session
 from requests.exceptions import ConnectionError, HTTPError
@@ -20,7 +20,7 @@ class HTTPConnection:
 
     def __init__(self, url: str, api_key: str, ignore_tls: bool = False,
                  name: str = 'default', register_globally=False,
-                 user_agent: str = None) -> None:
+                 user_agent: Optional[str] = None) -> None:
         """Initializes the HTTP connection
 
         Args:
@@ -63,7 +63,8 @@ class HTTPConnection:
 
         self._session.headers[key] = value
 
-    def call_api(self, method: str, endpoint: str, data: dict = None, **kwargs) -> Any:
+    def call_api(self, method: str, endpoint: str,
+                 data: Optional[Dict[Any, Any]] = None, **kwargs) -> Any:
         """Calls the management API
 
         Args:
@@ -89,7 +90,7 @@ class HTTPConnection:
 
             # If passing data, add it to the request as the json parameter
             if data:
-                request_data['json'] = data
+                request_data['json'] = data  # type: ignore
 
             # Prepare the HTTP request
             request = Request(method, **request_data,
@@ -111,7 +112,7 @@ class ManagementConnection(HTTPConnection):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-    def agent_heartbeat(self, agent_id: str, data: dict) -> dict:
+    def agent_heartbeat(self, agent_id: str, data: dict) -> Union[dict, str]:
         """Sends a heartbeat to the management server"""
         response = self.call_api('POST',
                                  f'/api/v2.0/agent/heartbeat/{agent_id}',
@@ -215,7 +216,7 @@ def build_connection(url: str, api_key: str, ignore_tls: bool = False,
         return conn
 
 
-def add_management_connection(conn: ManagementConnection) -> None:
+def add_management_connection(conn: Union[ManagementConnection, HTTPConnection]) -> None:
     """Adds a management connection to the agent
 
     This method adds a management connection to the agent. The connection
@@ -227,7 +228,7 @@ def add_management_connection(conn: ManagementConnection) -> None:
     connections.update({conn.name: conn})
 
 
-def remove_management_connection(conn: ManagementConnection) -> None:
+def remove_management_connection(conn: Union[ManagementConnection, HTTPConnection]) -> None:
     """Removes a management connection from the agent
 
     This method removes a management connection from the agent. The connection
@@ -239,7 +240,7 @@ def remove_management_connection(conn: ManagementConnection) -> None:
     connections.pop(conn.name)
 
 
-def get_management_connection(name: str = 'default') -> ManagementConnection:
+def get_management_connection(name: str = 'default') -> Union[ManagementConnection, HTTPConnection, None]:  # noqa: B950
     """Returns a management connection from the agent
 
     This method returns a management connection from the agent. The connection
