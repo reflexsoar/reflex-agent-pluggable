@@ -28,24 +28,13 @@ def observable_mapping():
                 "workstation"
             ]
         },
-
         {
-            "field":"kibana.alert.rule.threat.framework",
-            "alias": "threat",
-            "data_type": "framework",
+            "field": "host.ip",
+            "alias": "ip",
+            "data_type": "ip",
             "tlp": 3,
             "tags": [
-                "mitre"
-            ]
-        },
-
-        {
-            "field":"kibana.alert.rule.threat.technique.name",
-            "alias": "threat",
-            "data_type": "framework",
-            "tlp": 3,
-            "tags": [
-                "mitre"
+                "workstation"
             ]
         }
     ]
@@ -58,9 +47,11 @@ def base_fields():
         'rule_name': 'kibana.alert.rule.name',
         'severity_field': 'kibana.alert.rule.severity',
         'description_field': 'kibana.alert.rule.description',
-        'tag_fields': ['kibana.alert.rule.tags'],
+        'tag_fields': ['kibana.alert.rule.tags','host.hostname'],
         'static_tags': ['awesome'],
         'source_reference': 'kibana.alert.rule.uuid',
+        'tlp': 0,
+        'risk_score': 10
     }
 
 

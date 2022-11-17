@@ -166,10 +166,6 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
             self._generate_signature()
             self._extract_observables()
 
-    def set_base_fields(self, **fields):
-        """Sets the base fields for the Event"""
-        self._base_fields = fields
-
     def _severity_from_map(self, severity: Union[str, int] = None):
         """Converts the provided severity string to the appropriate
         integer value
@@ -288,10 +284,10 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
         if 'severity_field' in self._base_fields:
             severity = self._extract_field_value(
                 self._message, self._base_fields['severity_field'])
-            if isinstance(severity, str):
-                self.severity = self._severity_from_map(severity)
-            else:
-                self.severity = severity
+
+            self.severity = self._severity_from_map(severity)
+            #else:
+            #    self.severity = severity
 
         if 'static_tags' in self._base_fields:
             self.tags += self._base_fields['static_tags']
