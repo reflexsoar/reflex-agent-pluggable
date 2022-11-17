@@ -69,8 +69,8 @@ class ElasticInput(BaseInput):
             # es_config['ssl_assert_hostname'] = self.config['check_hostname']
 
         # Set the API Authentication method
-        if 'auth_method' in self.config['auth_method'] == 'api_key':
-            es_config['api_key'] = self.credentials
+        if 'auth_method' in self.config and self.config['auth_method'] == 'api_key':
+            es_config['api_key'] = self.credentials[1]
         else:
             es_config['http_auth'] = self.credentials
 

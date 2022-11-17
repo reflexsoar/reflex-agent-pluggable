@@ -10,4 +10,5 @@ exclude = .git,
     noxfile.py,
     .pytest_cache,
     .mypy_cache,
-    tests
+    tests,
+    tests/test*.py
