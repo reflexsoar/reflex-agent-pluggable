@@ -7,6 +7,7 @@ import socket
 import sys
 import time
 from multiprocessing import Manager, Queue
+from typing import Any, Dict, List, Optional
 
 from dotenv import load_dotenv
 from platformdirs import user_data_dir
@@ -26,15 +27,16 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
     the Reflex Agent
     """
 
-    def __init__(self, uuid: str = None, roles: list = None, policy: dict = None, **kwargs):
+    def __init__(self, uuid: Optional[str] = None, roles: Optional[List[str]] = None,
+                 policy: Optional[Dict[Any, Any]] = None, **kwargs):
         """Initializes the AgentConfig object."""
         if roles is None:
             roles = []
 
         self.uuid = uuid
         self.roles = roles if roles else []
-        self.role_configs = {}
-        self.console_info = {}
+        self.role_configs: Dict[Any, Any] = {}
+        self.console_info: Dict[Any, Any] = {}
         self.name = socket.gethostname()
         setup_logging(init=True)
 
@@ -133,7 +135,8 @@ class Agent:  # pylint: disable=too-many-instance-attributes
     Reflex Agent. It is responsible for loading the configuration, loading
     roles and inputs, and starting the management connection."""
 
-    def __init__(self, config: dict = None, persistent_config_path: str = None,
+    def __init__(self, config: Optional[Dict[Any, Any]] = None,
+                 persistent_config_path: Optional[str] = None,
                  offline: bool = False):
         """Initializes the agent."""
 
@@ -159,20 +162,20 @@ class Agent:  # pylint: disable=too-many-instance-attributes
                 self._set_config({})
 
         self.offline = offline
-        self.loaded_roles = {}
-        self.loaded_inputs = {}
-        self.running_roles = {}
-        self.event_cache = {}
-        self.health = {}
+        self.loaded_roles: Dict[Any, Any] = {}
+        self.loaded_inputs: Dict[Any, Any] = {}
+        self.running_roles: Dict[Any, Any] = {}
+        self.event_cache: Dict[Any, Any] = {}
+        self.health: Dict[Any, Any] = {}
         self.healthy = True
-        self.warnings = []
+        self.warnings: List[str] = []
         self.version_number = version_number
         self._role_manager = Manager()
         self._event_manager = None
         self._event_spooler = None
-        self._event_queue = Queue()
+        self._event_queue: Queue = Queue()
         self._managed_connections = self._role_manager.dict(connections)
-        self._managed_configs = {}
+        self._managed_configs: Dict[Any, Any] = {}
 
         # Load all available inputs and roles
         self.load_roles()
@@ -405,6 +408,8 @@ class Agent:  # pylint: disable=too-many-instance-attributes
             self._managed_connections[conn.name] = conn
             self.config.console_info = conn.config
             self.save_persistent_config()
+            return True
+        return False
 
     def heartbeat(self, skip_run=False) -> bool:
         """Sends a heartbeat to the management server.
@@ -430,7 +435,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         if conn:
             self.add_managed_connection(conn)
             try:
-                if conn.agent_heartbeat(self.config.uuid, data):
+                if conn.agent_heartbeat(self.config.uuid, data):  # type: ignore
                     logger.success(f"Heartbeat sent to {conn.config['url']}")
                     if not skip_run:
                         self.check_policy()
@@ -519,7 +524,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
             self.running_roles[role].stop()
             self.running_roles[role] = None
 
-    def stop_roles(self, roles: list = None):
+    def stop_roles(self, roles: Optional[List[str]] = None):
         """Stops all roles.
 
         This method stops all roles.
