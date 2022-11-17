@@ -177,9 +177,9 @@ def test_es_search_retry(es_config):
     """Checks to make sure that the search size parameter works as expected."""
 
     bad_config = copy.copy(es_config)
-    bad_config['hosts'] = ['https://localhost:9000']
+    bad_config['config']['hosts'] = ['https://localhost:9300']
 
-    bad_connection = ElasticInput(config=bad_config, credentials=("test","badpassword"))
+    bad_connection = ElasticInput(config=bad_config, credentials=(os.getenv("ES_USER"), os.getenv("ES_PASS")))
 
     events = bad_connection.main()
     assert events is not None

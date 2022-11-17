@@ -9,6 +9,7 @@ to create events and observables that are sent to the API.
 import datetime
 import hashlib
 import json
+from typing import Union
 
 from reflexsoar_agent.core.event.encoders import JSONSerializable
 
@@ -40,7 +41,8 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-many-arguments
     def __init__(self, data: dict = None, base_fields: dict = None,
                  signature_fields: list = None, observable_mapping: dict = None,
-                 source_field: str = None, source: str = None, **kwargs) -> None:
+                 source_field: str = None, source: str = None,
+                 severity_map: dict = None, **kwargs) -> None:
         """Initializes the Event class
 
         Args:
@@ -50,6 +52,7 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
             observable_mapping (dict): The mapping of fields to observables
             source_field (str): The field to use for the source
             source (str): The source where this event originated
+            severity_map (dict): The mapping of severity values to integers
 
         Keyword Arguments:
             title (str): The title of the event
@@ -80,6 +83,7 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
         self.original_date = None
         self._base_fields = {}
         self._observable_mapping = {}
+        self._custom_severity_map = severity_map
 
         if source is None:
             raise ValueError('Source must be provided')
@@ -87,11 +91,14 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
         self.source = source
 
         if kwargs:
-            for item in kwargs.items():
-                if item[0] == 'observables':
-                    self._parse_observables_from_init(item[1])
+            for key, value in kwargs.items():
+                if key == 'observables':
+                    self._parse_observables_from_init(value)
+                elif key == 'severity':
+                    value = self._severity_from_map(value)
+                    setattr(self, key, value)
                 else:
-                    setattr(self, *item)
+                    setattr(self, key, value)
 
         self._init_parsing_config(
             data, base_fields, signature_fields, observable_mapping, source_field)
@@ -163,14 +170,12 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
         """Sets the base fields for the Event"""
         self._base_fields = fields
 
-    def _severity_from_string(self, severity: str = None, severity_map: dict = None):
+    def _severity_from_map(self, severity: Union[str, int] = None):
         """Converts the provided severity string to the appropriate
         integer value
 
         Args:
             severity (str): The severity string to convert
-            severity_map (dict): The severity map to use for the conversion if
-                                 none is provided a default map will be used
         """
 
         if not isinstance(severity, (str, int)):
@@ -179,8 +184,8 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
         if isinstance(severity, str):
             severity = severity.lower()
 
-        if severity_map:
-            _severity_map = severity_map
+        if self._custom_severity_map:
+            _severity_map = self._custom_severity_map
         else:
             _severity_map = {
                 'low': 1,
@@ -198,19 +203,13 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
 
         return _severity_map[severity]
 
-    def _extract_observables(self, observable_mapping: dict = None):
+    def _extract_observables(self):
         """Extracts all the observables from the Event based on the
         provided observabal_mapping. If no observable_mapping is supplied, the
         observables list will not be populated
-
-        Args:
-            observable_mapping (dict): The mapping of fields to observables
         """
 
         _observables = []
-
-        if observable_mapping is not None:
-            self._observable_mapping = observable_mapping
 
         for field in self._observable_mapping:
 
@@ -290,7 +289,7 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
             severity = self._extract_field_value(
                 self._message, self._base_fields['severity_field'])
             if isinstance(severity, str):
-                self.severity = self._severity_from_string(severity)
+                self.severity = self._severity_from_map(severity)
             else:
                 self.severity = severity
 
@@ -328,6 +327,8 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
         """
 
         if isinstance(field, str):
+            if message == None:
+                return None
             if field in message:
                 return message[field]
 
@@ -371,15 +372,12 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
 
         signature_values = []
 
-        if signature_fields is None:
-            signature_fields = self._signature_fields
-
         # Set the default to the event title and current UTC time if no
         # signature_fields are provided
-        if signature_fields is None:
-            signature_values.append(self.title, datetime.datetime.utcnow())
+        if self._signature_fields == []:
+            signature_values += [self.title, datetime.datetime.utcnow()]
         else:
-            for field in signature_fields:
+            for field in self._signature_fields:
                 field_value = self._extract_field_value(self._message, field)
                 if field_value:
                     signature_values.append(field_value)

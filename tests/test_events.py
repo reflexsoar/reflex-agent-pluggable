@@ -1,5 +1,5 @@
 import json
-
+import copy
 import pytest
 
 from reflexsoar_agent.core.event import CustomJsonEncoder, Event, Observable
@@ -26,6 +26,26 @@ def observable_mapping():
             "tlp": 3,
             "tags": [
                 "workstation"
+            ]
+        },
+
+        {
+            "field":"kibana.alert.rule.threat.framework",
+            "alias": "threat",
+            "data_type": "framework",
+            "tlp": 3,
+            "tags": [
+                "mitre"
+            ]
+        },
+
+        {
+            "field":"kibana.alert.rule.threat.technique.name",
+            "alias": "threat",
+            "data_type": "framework",
+            "tlp": 3,
+            "tags": [
+                "mitre"
             ]
         }
     ]
@@ -105,7 +125,10 @@ def test_event_from_dict(event_item):
                 for okey, ovalue in value[0].items():
                     assert getattr(observable, okey) == ovalue
         else:
-            assert getattr(event, key) == value
+            if key == 'severity':
+                assert getattr(event, key) == 1
+            else:
+                assert getattr(event, key) == value
 
 
 def test_observable_from_dict(observable_item):
@@ -235,3 +258,36 @@ def test_event_json_dump(event_item):
     event_json = json.dumps(event, cls=CustomJsonEncoder)
 
     assert isinstance(event_json, str)
+
+def test_event_no_source(event_item):
+
+    event_no_source = copy.copy(event_item)
+
+    del event_no_source['source']
+    with pytest.raises(ValueError):
+        event = Event(**event_no_source)
+
+def test_event_with_invalid_severity(event_item):
+
+    event_invalid_severity = copy.copy(event_item)
+    event_invalid_severity['severity'] = 5
+
+    event = Event(**event_invalid_severity)
+    assert event.severity == 1
+
+    event_invalid_severity['severity'] = {}
+    with pytest.raises(TypeError):
+        event = Event(**event_invalid_severity)
+
+def test_event_with_custom_severity_map(event_item):
+
+    event = Event(**event_item, severity_map={'low': 10})
+    assert event.severity == 10
+
+def test_event_with_no_signature_fields(elastic_signals, base_fields, observable_mapping):
+
+    for raw_event in elastic_signals:
+        event = Event(raw_event, base_fields=base_fields, signature_fields=None,
+                      observable_mapping=observable_mapping, source_field="_source", source="pytest")
+        assert event.signature is not None
+        break
