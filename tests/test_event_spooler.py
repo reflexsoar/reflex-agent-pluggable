@@ -40,7 +40,7 @@ def test_event_spooler_init(event_spooler, event_queue):
     assert event_spooler._event_queue == event_queue
     assert event_spooler.conn.name == 'mock-api'
 
-def test_event_spooler_send_event(event_spooler, event_queue, mock_host):
+def test_event_spooler_send_event(event_spooler, event_queue, test_event):
     """Checks to see if the EventSpooler is consuming and sending Events
     correctly"""
 
@@ -48,7 +48,7 @@ def test_event_spooler_send_event(event_spooler, event_queue, mock_host):
 
     time.sleep(2)
     if event_spooler.is_alive():
-        event_queue.put({'test':'event'})
+        event_queue.put(test_event)
         while not event_queue.empty():
             time.sleep(1)
         assert event_queue.qsize() == 0
@@ -63,4 +63,3 @@ def test_event_spooler_graceful_stop(event_spooler, event_queue):
     time.sleep(1)
     event_spooler.stop()
     assert event_spooler.is_alive() == False
-

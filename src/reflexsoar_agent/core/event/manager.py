@@ -139,36 +139,6 @@ class EventManager:
     def is_initialized(self, value):
         raise ValueError("Cannot set the is_initialized property")
 
-    @property
-    def signature_fields(self):
-        return self._signature_fields
-
-    @signature_fields.setter
-    def signature_fields(self, value):
-        if isinstance(value, list):
-            self._signature_fields = value
-        else:
-            raise ValueError("signature_fields must be a list")
-
-    @property
-    def observable_mapping(self):
-        return self._observable_mapping
-
-    @observable_mapping.setter
-    def observable_mapping(self, value):
-        if isinstance(value, dict):
-            self._observable_mapping = value
-        else:
-            raise ValueError("observable_mapping must be a dict")
-
-    def _check_spooler_health(self):
-        if self.spooler.is_alive() is False:
-            logger.error("EventSpooler is not alive.  Restarting...")
-            try:
-                self._init_spooler()
-            except Exception as e:
-                logger.error(f"Unable to restart EventSpooler: {e}")
-
     def prepare_events(self, *events, base_fields: Optional[Dict[Any, Any]] = None,
                        signature_fields: Optional[List[str]] = None,
                        observable_mapping: Optional[List[Dict[Any, Any]]] = None,
@@ -196,10 +166,6 @@ class EventManager:
         if self._initialized is False:
             raise EventManagedInitializedError(
                 "The EventManager has not been initialized")
-
-        # Check the spooler health before preparing any events
-        # TODO: Make a health check available for the spooler
-        # self._check_spooler_health()
 
         """Prepares an Event for sending to the Management Console"""
         while self.event_queue.qsize() > self._max_spooled_events:

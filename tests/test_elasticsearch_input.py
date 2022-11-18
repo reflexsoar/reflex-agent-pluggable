@@ -36,7 +36,7 @@ def es_connection(es_config):
 @pytest.fixture
 def os_connection(es_config):
     os_config = copy.copy(es_config)
-    os_config['distro'] = 'opensearch'
+    os_config['config']['distro'] = 'opensearch'
     credentials = (os.getenv("ES_USER"), os.getenv("ES_PASS"))
     return ElasticInput(config=os_config, credentials=credentials)
 
@@ -136,7 +136,7 @@ def test_es_search_lucene_filter(es_connection, es_config):
 def test_es_search_with_api_key(es_config):
     """Checks to make sure that the search size parameter works as expected."""
 
-    es_config['auth_method'] = 'api_key'
+    es_config['config']['auth_method'] = 'api_key'
     es_connection = ElasticInput(config=es_config, credentials=(os.getenv("ES_API_USER"), os.getenv("ES_API_KEY")))
     events = es_connection.main()
     assert events is not None
@@ -164,8 +164,8 @@ def test_es_search_unknown_distro_with_http_auth(es_config):
 
     es_config2 = copy.copy(es_config)
 
-    es_config2['distro'] = "bad_distro"
-    es_config2['http_auth'] = ()
+    es_config2['config']['distro'] = "bad_distro"
+    es_config2['config']['http_auth'] = ()
 
     es_connection = ElasticInput(config=es_config2, credentials=(os.getenv("ES_USER"), os.getenv("ES_PASS")))
 

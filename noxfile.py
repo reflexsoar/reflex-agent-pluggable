@@ -16,6 +16,7 @@ def tests(session):
     session.run("poetry", "shell")
     session.run("coverage", "run", "-m", "pytest",
                 "--junit-xml=reports/junit/junit.xml")
+    session.run("coverage", "combine")
     session.run("coverage", "report")
     session.run("coverage", "xml", "-o", f"{REPORTS_DIR}/coverage.xml")
     session.run("coverage", "html", "-d", f"{REPORTS_DIR}/coverage")
