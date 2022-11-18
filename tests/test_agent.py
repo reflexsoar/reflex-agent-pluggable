@@ -1,13 +1,15 @@
+import json
 import os
 import re
-import json
-import pytest
 import uuid
+
+import pytest
 import requests
 import requests_mock
 
 from reflexsoar_agent.agent import Agent, cli
-from reflexsoar_agent.core.management import ManagementConnection, remove_management_connection
+from reflexsoar_agent.core.management import (ManagementConnection,
+                                              remove_management_connection)
 
 
 @pytest.fixture

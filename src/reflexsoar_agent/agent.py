@@ -98,7 +98,7 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
             raise ConsoleNotPaired(
                 f"Console {url} is not paired with this agent.")
 
-    def set_value(self, key: str, value: str) -> None:
+    def set_value(self, key: str, value: Any) -> bool:
         """Sets a configuration value.
 
         This method sets a configuration value.
