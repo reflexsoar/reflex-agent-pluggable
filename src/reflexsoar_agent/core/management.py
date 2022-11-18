@@ -223,16 +223,23 @@ def add_management_connection(conn: Union[ManagementConnection, HTTPConnection])
     connections.update({conn.name: conn})
 
 
-def remove_management_connection(conn: Union[ManagementConnection, HTTPConnection]) -> None:
+def remove_management_connection(conn: Union[ManagementConnection, HTTPConnection, str]) -> None:  # noqa: B950
     """Removes a management connection from the agent
 
     This method removes a management connection from the agent. The connection
     is used to communicate with the ReflexSOAR management server.
     """
-    if conn.name not in connections:
+
+    if isinstance(conn, str):
+        name = conn
+
+    if isinstance(conn, (HTTPConnection, ManagementConnection)):
+        name = conn.name
+
+    if name not in connections:
         raise ConnectionNotExist(
-            f"Connection with name \"{conn.name}\" does not exist")
-    connections.pop(conn.name)
+            f"Connection with name \"{name}\" does not exist")
+    connections.pop(name)
 
 
 def get_management_connection(name: str = 'default') -> Union[ManagementConnection, HTTPConnection, None]:  # noqa: B950

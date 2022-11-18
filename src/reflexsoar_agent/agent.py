@@ -46,9 +46,9 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
         else:
             self.from_policy(kwargs)
 
-    def json(self):
+    def json(self, indent=None):
         """Returns the agent configuration as a JSON string."""
-        return json.dumps(self.__dict__)
+        return json.dumps(self.__dict__, indent=indent)
 
     def from_policy(self, policy):
         """Loads the agent configuration from a policy obtained from
@@ -72,7 +72,7 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
             self.console_info = policy['console_info']
         self.roles = policy.get('roles', self.roles)
 
-    def add_paired_console(self, url: str, access_token: str):
+    def add_paired_console(self, url: str, api_key: str):
         """Adds a paired console to the agent configuration.
 
         This method adds a paired console to the agent configuration.
@@ -80,7 +80,7 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
 
         if self.console_info['url'] != url:
             self.console_info = {
-                'access_token': access_token,
+                'api_key': api_key,
                 'url': url
             }
         else:
@@ -109,21 +109,31 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
         """
         updateable_config_keys = [
             "roles", "event_cache_key", "event_cache_ttl",
-            "health_check_interval", "role_configs"
+            "health_check_interval", "role_configs", "disable_event_cache_check"
         ]
+
+        if isinstance(value, str):
+            if value.lower in ['true', 'false']:
+                value = value.lower() == 'true'
+
         if key in updateable_config_keys:
             if hasattr(self, key):
                 if isinstance(getattr(self, key), list):
                     setattr(self, key, value.split(",")
                             if value not in [""] else [])
-                if isinstance(getattr(self, key), int):
-                    setattr(self, key, int(value))
+                    return True
                 if isinstance(getattr(self, key), bool):
                     setattr(self, key, bool(value) if value else False)
+                    return True
+                if isinstance(getattr(self, key), int):
+                    setattr(self, key, int(value))
+                    return True
                 if isinstance(getattr(self, key), str):
                     setattr(self, key, value)
+                    return True
                 if isinstance(getattr(self, key), dict):
-                    setattr(self, key, value)
+                    setattr(self, key, json.loads(value))
+                    return True
             else:
                 raise KeyError(f"Key {key} does not exist in AgentConfig.")
         else:
@@ -159,7 +169,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
             if not self.load_persistent_config():
                 logger.warning(
                     "Failed to load persistent configuration. Using default configuration.")
-                self._set_config({})
+                self._set_config({}, from_failed_load=True)
 
         self.offline = offline
         self.loaded_roles: Dict[Any, Any] = {}
@@ -180,7 +190,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         # Load all available inputs and roles
         self.load_roles()
 
-    def _set_config(self, config: dict) -> None:
+    def _set_config(self, config: dict, from_failed_load=False) -> None:
         """Sets the agent configuration.
 
         This method sets the agent configuration.
@@ -189,7 +199,14 @@ class Agent:  # pylint: disable=too-many-instance-attributes
             config (dict): The agent configuration.
         """
         self.config = AgentConfig(**config)
-        self.save_persistent_config()
+        if not from_failed_load:
+            self.save_persistent_config()
+
+    def set_config_value(self, key: str, value: Any, save=True) -> None:
+        """Sets a configuration value and saves the configuration"""
+        success = self.config.set_value(key, value)
+        if save and success:
+            self.save_persistent_config()
 
     @property
     def roles(self) -> list:
@@ -365,7 +382,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         """
         del self._managed_connections[name]
 
-    def pair(self, console_url: str, access_token: str,
+    def pair(self, console_url: str, api_key: str,
              ignore_tls: bool = False, **kwargs) -> bool:
         """Pairs the agent with the management server.
 
@@ -373,7 +390,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
 
         Args:
             console_url (str): The management server URL.
-            access_token (str): The management server access token.
+            api_key (str): The management server access token.
             kwargs (dict): Additional keyword arguments.
 
         Returns:
@@ -381,7 +398,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         """
         if not console_url:
             raise ValueError("Console URL is required.")
-        if not access_token:
+        if not api_key:
             raise ValueError("Access token is required.")
 
         agent_data = {
@@ -395,10 +412,9 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         if 'url' in self.config.console_info and self.config.console_info['url'] == console_url:
             raise ConsoleAlreadyPaired(
                 f"Agent is already paired with {console_url}.")
-
         # Build a management connection to the pair the agent with
         conn = ManagementConnection(
-            console_url, access_token, ignore_tls=ignore_tls, register_globally=True)
+            console_url, api_key, ignore_tls=ignore_tls, register_globally=True)
 
         # Call the pairing endpoint
         response = conn.agent_pair(agent_data)
@@ -586,11 +602,12 @@ class Agent:  # pylint: disable=too-many-instance-attributes
             sys.exit(1)
 
 
-def cli_start(agent, console, token, groups):
+def cli_start(agent, console, token, groups, no_start=False):
     """Starts the agent."""
     try:
         agent.pair(console, token, groups=groups)
-        agent.run()
+        if not no_start:
+            agent.run()
     except (ConsoleAlreadyPaired, ConsoleNotPaired) as error:
         logger.error(f"Error during pairing process. {error}")
         sys.exit(1)
@@ -607,24 +624,24 @@ def cli_reset_console_pairing(agent, console):
     except (ConsoleNotPaired) as error:
         logger.error(
             f"Failed to reset console pairing for {console}. {error}")
-    sys.exit()
 
 
 def cli_view_config(agent):
     """Displays the agent configuration."""
     logger.info("Configuration Preview:")
-    print(json.dumps(agent.config.__dict__, indent=4))
-    sys.exit()
+    agent.config.json(indent=4)
 
 # pylint disable=too-many-statements
 
 
-def cli():
+def cli(argv=None):
     """Defines a command line entry point for the agent script"""
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--pair', action='store_true',
                         help='Pair the agent with the management server')
+    parser.add_argument('--pair-skip-start', action='store_true',
+                        default=False, help="Skip starting the agent after pairing")
     parser.add_argument('--start', action='store_true', help='Start the agent')
     parser.add_argument('--console', type=str,
                         help='The management server URL')
@@ -650,7 +667,9 @@ def cli():
                         help="Send a heartbeat to the management server")
     parser.add_argument('--offline', action="store_true",
                         help="Run the agent in offline mode", default=False)
-    args = parser.parse_args()
+    parser.add_argument('--config-path', type=str,
+                        help="The path to the agent configuration file", default=None)
+    args = parser.parse_args(argv)
 
     # Load the .env file if it exists
     load_dotenv(args.env_file)
@@ -660,11 +679,11 @@ def cli():
     args.console = args.console or os.getenv('REFLEX_API_HOST')
     args.token = args.token or os.getenv('REFLEX_AGENT_PAIR_TOKEN')
 
-    agent = Agent(offline=args.offline)
+    agent = Agent(offline=args.offline, persistent_config_path=args.config_path)
 
     if args.set_config_value:
-        key, value = args.set_config_value.split(':')
-        agent.config.set_value(key, value)
+        key, value = args.set_config_value.split(':', 1)
+        agent.set_config_value(key, value)
         agent.save_persistent_config()
 
     if args.view_config:
@@ -672,17 +691,16 @@ def cli():
 
     if args.clear_persistent_config:
         agent.clear_persistent_config()
-        sys.exit()
 
     if args.reset_console_pairing:
         cli_reset_console_pairing(agent, args.reset_console_pairing)
 
     if args.heartbeat:
         agent.heartbeat(skip_run=True)
-        sys.exit(1)
 
     if args.pair:
-        cli_start(agent, args.console, args.token, groups=args.groups)
+        cli_start(agent, args.console, args.token,
+                  groups=args.groups, no_start=args.pair_skip_start)
 
     if args.start:
         agent.run()
