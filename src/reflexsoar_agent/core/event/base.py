@@ -12,6 +12,7 @@ import json
 from typing import Any, Dict, List, Optional, Union
 
 from reflexsoar_agent.core.event.encoders import JSONSerializable
+from reflexsoar_agent.core.utils import IndexedDict
 
 
 class Observable(JSONSerializable):  # pylint: disable=too-many-instance-attributes
@@ -161,11 +162,15 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
 
         if data is None:
             self._message = {}
+
         else:
             if source_field:
                 self._message = data[source_field]
             else:
                 self._message = data
+
+            if self._message:
+                self._index = IndexedDict(self._message)
             self._set_event_base()
             self._generate_signature()
             self._extract_observables()
@@ -222,7 +227,7 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
             if 'tags' in field:
                 tags += field['tags']
 
-            value = self._extract_field_value(self._message, field['field'])
+            value = self._index[field['field']]
             source_field = field['field']
             original_source_field = field['field']
 
@@ -272,8 +277,10 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
         # assign it to the associated Event field
         for field in self._base_fields:
             if field in extractable_fields:
-                setattr(self, extractable_fields[field], self._extract_field_value(
-                    self._message, self._base_fields[field]))
+                setattr(self,
+                        extractable_fields[field],
+                        self._index[self._base_fields[field]]
+                        )
 
         # Fix the original_date to exclucde the Z
         if hasattr(self, 'original_date') and self.original_date is not None:
@@ -286,12 +293,9 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
 
         # Get the event severity field, if None default to Low
         if 'severity_field' in self._base_fields:
-            severity = self._extract_field_value(
-                self._message, self._base_fields['severity_field'])
+            severity = self._index[self._base_fields['severity_field']]
 
             self.severity = self._severity_from_map(severity)
-            #else:
-            #    self.severity = severity
 
         if 'static_tags' in self._base_fields:
             self.tags += self._base_fields['static_tags']
@@ -309,60 +313,13 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
         tags = []
         if fields is not None:
             for tag_field in fields:
-                tags = self._extract_field_value(self._message, tag_field)
+                tags = self._index[tag_field]
                 if tags:
                     if isinstance(tags, list):
-                        _ = [self.tags.append(f"{tag_field}:{tag}") for tag in tags] # type: ignore
+                        _ = [self.tags.append(f"{tag_field}:{tag}") for tag in tags]  # type: ignore # noqa: B950
                     else:
                         self.tags += [f"{tag_field}: {tags}"]
         return tags
-
-    # flake8: noqa: C901 # pylint: disable=too-many-branches,inconsistent-return-statements
-    def _extract_field_value(self, message: Union[List[Any], Dict[Any, Any]], field: Union[str, List[str]]):
-        """Extracts the value of the provided field from the Events raw
-        data. If no field is provided, None is returned
-
-        Args:
-            field (str): The field to extract the value from
-        """
-
-        if isinstance(field, str):
-            if message == None:
-                return None
-            if field in message:
-                return message[field] # type: ignore
-
-            args = field.split('.')
-        else:
-            args = field
-
-        # pylint: disable=too-many-nested-blocks
-        if args and message:
-            element = args[0]
-            if element:
-                if isinstance(message, list):
-                    values = []
-                    value = [m for m in message if m is not None]
-                    if any(isinstance(i, list) for i in value):
-                        for value_item in value:
-                            if isinstance(value_item, list):
-                                values += [v for v in value_item if v is not None]
-                    else:
-                        values += [v for v in value if not isinstance(v, list)]
-                    value = values
-                else:
-                    if isinstance(message, dict):
-                        value = message.get(element) # type: ignore
-                    else:
-                        value = message
-
-                if isinstance(value, list):
-                    if len(value) > 0 and isinstance(value[0], dict):
-                        if len(args) > 1:
-                            value = [self._extract_field_value(
-                                item, args[1:]) for item in value]
-
-                return value if len(args) == 1 else self._extract_field_value(value, '.'.join(args[1:]))
 
     def _generate_signature(self):
         """Generates an event signature based on the provided signature_fields.
@@ -378,7 +335,7 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
             signature_values += [self.title, datetime.datetime.utcnow()]
         else:
             for field in self._signature_fields:
-                field_value = self._extract_field_value(self._message, field)
+                field_value = self._index[field]
                 if field_value:
                     signature_values.append(field_value)
 

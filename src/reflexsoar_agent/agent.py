@@ -138,6 +138,7 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
                 raise KeyError(f"Key {key} does not exist in AgentConfig.")
         else:
             raise KeyError(f"Key {key} is not updateable.")
+        return False
 
 
 class Agent:  # pylint: disable=too-many-instance-attributes
