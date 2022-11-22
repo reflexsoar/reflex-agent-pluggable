@@ -24,7 +24,7 @@ class BaseInput:
         self.config: Dict[Any, Any]
         self.type = input_type
         self.last_run = None
-        self.organization: str
+        # self.organization: str
         # self.observable_mapping: List[Dict[Any, Any]] = []
         # self.signature_fields: List[str] = []
         # self.source_field: str
@@ -38,29 +38,31 @@ class BaseInput:
         fields in the dict that are involved with configuring the input
         """
 
-        self.organization = config.get('organization', None)
+        self.organization = config.get('organization', None)  # type: ignore
 
         # Extract the observable mapping
-        self.observable_mapping = config.get('field_mapping', {}).get('fields', [])
+        field_map = config.get('field_mapping', {}).get('fields', [])
+        self.observable_mapping = field_map  # type: ignore
 
         # The entire input config is passed in here but has its own
         # config sub-key so it has to be pulled upwards
         _actual_config = config.get('config', {})
 
         # Grab the signature fields
-        self.signature_fields = _actual_config.get('signature_fields', [])
+        self.signature_fields = _actual_config.get('signature_fields', [])  # type: ignore
 
         # Grab the source field
-        self.source_field = config.get('source_field', '_source')
+        self.source_field = config.get('source_field', '_source')  # type: ignore
 
-        self.source = config.get('name', None)
+        self.source = config.get('name', None)  # type: ignore
 
         # Get the Event base fields
-        self.base_fields = {k: _actual_config.get(k, None) for k, v in _actual_config.items()
-                            if k in ['rule_name', 'description_field',
-                                     'severity_field', 'source_reference',
-                                     'original_date_field', 'tag_fields', 'static_tags']
-                            }
+        base_fields = {k: _actual_config.get(k, None) for k, v in _actual_config.items()
+                       if k in ['rule_name', 'description_field',
+                                'severity_field', 'source_reference',
+                                'original_date_field', 'tag_fields', 'static_tags']
+                       }
+        self.base_fields = base_fields  # type: ignore
 
         # Return configs for the actual input
         self.config = {k: v for k, v in _actual_config.items()
