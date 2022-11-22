@@ -316,7 +316,7 @@ class Event(JSONSerializable):  # pylint: disable=too-many-instance-attributes
                 tags = self._index[tag_field]
                 if tags:
                     if isinstance(tags, list):
-                        _ = [self.tags.append(f"{tag_field}:{tag}") for tag in tags]  # type: ignore # noqa: B950
+                        _ = [self.tags.append(f"{tag_field}: {tag}") for tag in tags]  # type: ignore # noqa: B950
                     else:
                         self.tags += [f"{tag_field}: {tags}"]
         return tags
