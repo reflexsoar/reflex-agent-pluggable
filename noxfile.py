@@ -51,4 +51,6 @@ def typing(session):
 @nox.session
 def security(session):
     session.install("poetry")
+    session.run("poetry", "install")
+    session.run("poetry", "shell")
     session.run("bandit", "--exit-zero", "-c", "bandit.yaml", "-r", *SOURCE_FILES)

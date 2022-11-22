@@ -1,6 +1,5 @@
 import json
 import time
-from itertools import islice
 from multiprocessing import Event as mpEvent
 from multiprocessing import Process, Queue
 from typing import Any, Dict, List, Optional
@@ -29,7 +28,7 @@ class EventSpooler(Process):
         """Listens to a pub/sub channel with the API and waits for ACKs
         that a collection of events has been processed
         """
-        pass
+        raise NotImplementedError
 
     def _send_events(self, events):
         """Sends the events to the API and receives a job ID
@@ -50,16 +49,13 @@ class EventSpooler(Process):
         """
 
         while not self._event_queue.empty():
-            if self._running is False:
+            if self._running is False:  # pragma: no cover
                 break
             events = []
             while len(events) < self._bulk_size and not self._event_queue.empty():
                 events.append(self._event_queue.get())
             self._send_events(events)
         time.sleep(1)
-
-    def _take(self, size, iterable):
-        return list(islice(iterable, size))
 
     def run(self):
         try:
@@ -70,7 +66,7 @@ class EventSpooler(Process):
                     self._running = False
                     break
                 self._process_events()
-        except KeyboardInterrupt:
+        except KeyboardInterrupt:  # pragma: no cover
             logger.info("EventSpooler stopped")
             self._running = False
 

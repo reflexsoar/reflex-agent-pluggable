@@ -27,6 +27,13 @@ def mocked_conn(mock_host):
     conn._session.mount('mock://', adapter)
     return conn
 
+
+@pytest.fixture
+def dead_conn(mock_host):
+    conn = ManagementConnection(f'{mock_host}', api_key='foo', name='mock-api')
+    return conn
+
+
 @pytest.fixture
 def event_spooler(event_queue, mocked_conn):
 
@@ -63,3 +70,22 @@ def test_event_spooler_graceful_stop(event_spooler, event_queue):
     time.sleep(1)
     event_spooler.stop()
     assert event_spooler.is_alive() == False
+
+def test_event_spooler_send_failed(dead_conn, event_queue, caplog, test_event):
+    """Tests to see if the EventSpooler can handle a failed send"""
+
+    spooler = EventSpooler(conn=dead_conn, event_queue=event_queue)
+    time.sleep(2)
+    if spooler.is_alive():
+        event_queue.put(test_event)
+        while not event_queue.empty():
+            time.sleep(1)
+        assert 'Failed to send' in caplog.text
+        spooler.stop()
+
+
+def test_event_spooler_listen_for_acks(event_spooler):
+    """Tests to see if the EventSpooler can listen for ACKs from the API"""
+
+    with pytest.raises(NotImplementedError):
+        event_spooler._listen_for_acks()
