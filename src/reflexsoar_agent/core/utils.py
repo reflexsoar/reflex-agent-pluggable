@@ -65,5 +65,3 @@ class IndexedDict(dict):
         """Returns the value of the key if it exists, otherwise returns None."""
         if key in self:
             return super().__getitem__(key)
-        else:
-            raise KeyError(f"Key '{key}' does not exist.")

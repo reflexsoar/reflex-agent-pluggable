@@ -23,13 +23,13 @@ class BaseInput:
 
         self.config: Dict[Any, Any]
         self.type = input_type
-        self.parse_config(config)
         self.last_run = None
         self.organization: str
-        self.observable_mapping: List[Dict[Any, Any]] = []
-        self.signature_fields: List[str] = []
-        self.source_field: str
-        self.base_fields: Dict[Any, Any] = {}
+        # self.observable_mapping: List[Dict[Any, Any]] = []
+        # self.signature_fields: List[str] = []
+        # self.source_field: str
+        # self.base_fields: Dict[Any, Any] = {}
+        self.parse_config(config)
 
     @classmethod
     def parse_config(self, config: dict):
@@ -51,7 +51,9 @@ class BaseInput:
         self.signature_fields = _actual_config.get('signature_fields', [])
 
         # Grab the source field
-        self.source_field = _actual_config.get('source_field', '_source')
+        self.source_field = config.get('source_field', '_source')
+
+        self.source = config.get('name', None)
 
         # Get the Event base fields
         self.base_fields = {k: _actual_config.get(k, None) for k, v in _actual_config.items()

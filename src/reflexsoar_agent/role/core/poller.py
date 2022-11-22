@@ -74,7 +74,8 @@ class Poller(BaseRole):
                                                   base_fields=_input.base_fields,
                                                   signature_fields=_input.signature_fields,
                                                   observable_mapping=_input.observable_mapping,
-                                                  source_field=_input.source_field
+                                                  source_field=_input.source_field,
+                                                  source=_input.source
                                                   )
                 _input.last_run = datetime.datetime.utcnow()
                 # logger.success(_input['config']['signature_fields'])

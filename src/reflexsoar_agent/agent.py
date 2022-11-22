@@ -98,7 +98,7 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
             raise ConsoleNotPaired(
                 f"Console {url} is not paired with this agent.")
 
-    def set_value(self, key: str, value: Any) -> bool:
+    def set_value(self, key: str, value: Any) -> bool:  # noqa: C901
         """Sets a configuration value.
 
         This method sets a configuration value.
@@ -132,7 +132,9 @@ class AgentConfig:  # pylint: disable=too-many-instance-attributes
                     setattr(self, key, value)
                     return True
                 if isinstance(getattr(self, key), dict):
-                    setattr(self, key, json.loads(value))
+                    if isinstance(value, str):
+                        value = json.loads(value)
+                    setattr(self, key, value)
                     return True
             else:
                 raise KeyError(f"Key {key} does not exist in AgentConfig.")
@@ -574,7 +576,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         self._event_spooler = EventSpooler(conn=conn, event_queue=self._event_queue)
         self._event_spooler.start()
 
-    def run(self):
+    def run(self, no_start=False):
         """Runs the agent.
 
         This method runs the agent.
@@ -608,7 +610,7 @@ def cli_start(agent, console, token, groups, no_start=False):
     try:
         agent.pair(console, token, groups=groups)
         if not no_start:
-            agent.run()
+            agent.run(no_start=no_start)
     except (ConsoleAlreadyPaired, ConsoleNotPaired) as error:
         logger.error(f"Error during pairing process. {error}")
         sys.exit(1)
