@@ -21,7 +21,6 @@ class Poller(BaseRole):
 
     def configure_input(self, alias, input_module, config, credential):
         configured_input = input_module(config=config, credentials=credential)
-        print(vars(configured_input).items())
         self.configured_inputs[alias] = configured_input
 
     def fetch_inputs(self):
