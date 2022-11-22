@@ -32,13 +32,6 @@ class ElasticInput(BaseInput):
         self.plugin_type = input_type
         self.source = self.config['index']
 
-    def _get_base_fields(self):
-        return {k: v for k, v in self.config.items() if k in [
-            'rule_name', 'description_field', 'severity_field',
-            'source_reference', 'original_date_field',
-            'tag_fields', 'static_tags']
-        }
-
     def build_es_connection(self):
         '''
         Creates an Elasticsearch connection object that can
