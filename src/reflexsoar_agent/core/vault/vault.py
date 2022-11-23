@@ -1,6 +1,7 @@
 import base64
 import os
 import secrets
+from multiprocessing import Lock
 from typing import Any, Dict, Optional, Union
 from uuid import uuid4
 
@@ -21,9 +22,15 @@ class Vault:
     def __init__(self, vault_path: Optional[str] = None, **kwargs) -> None:
         """Initialize the Vault object."""
 
-        self.name = kwargs.get('name', 'reflexsoar-agent-vault.yml')
+        self.name = kwargs.get('name', 'reflexsoar-agent-vault.yml') or os.getenv(
+            'REFLEX_AGENT_VAULT_NAME', 'reflexsoar-agent-vault.yml')
         self.iterations = kwargs.get('iterations', 100_000)
-        self.secret_key = os.getenv('REFLEX_AGENT_VAULT_SECRET', '1234567890')
+
+        self.secret_key = kwargs.get('secret_key', self._generate_secret_key()) or os.getenv(
+            'REFLEX_AGENT_VAULT_SECRET', self._generate_secret_key())
+
+        self.empty_vault = kwargs.get('empty_vault', False)
+        self.lock = Lock()
 
         if vault_path is None:
             _data_dir = user_data_dir('reflexsoar-agent', 'reflexsoar')
@@ -33,6 +40,10 @@ class Vault:
 
         self.secrets: Dict[Any, Any] = {}
         self.load_vault()
+
+    def _generate_secret_key(self):
+        """Generate a secret key."""
+        return secrets.token_urlsafe(32)
 
     def _derive_key(self, secret: bytes, salt: bytes, iterations: int = 100_000) -> bytes:
         """Derive a key from a secret and salt."""
@@ -74,15 +85,28 @@ class Vault:
         """Initialize the vault."""
         if not os.path.exists(self.vault_path):
             with open(self.vault_path, 'w') as f:
-                yaml.dump(self.secrets, f)
+                if not self.empty_vault:
+                    if self.secrets == {}:
+                        f.close()
+                    else:
+                        yaml.safe_dump(self.secrets, f, )
+                else:
+                    self.secrets = {}
 
     def load_vault(self):
         """Load the vault."""
         if os.path.exists(self.vault_path):
             with open(self.vault_path, 'r') as f:
-                self.secrets = yaml.safe_load(f)
+                data = yaml.safe_load(f)
+                if data:
+                    self.secrets = data
         else:
             self.setup()
+
+    def refresh(self):
+        """Refresh the vault from the vault file."""
+        with self.lock:
+            self.load_vault()
 
     def get_secret(self, secret_uuid: str) -> Union[Dict, None]:
         """Get a secret from the vault."""
@@ -101,7 +125,7 @@ class Vault:
             "username": self._encrypt(username),
             "password": self._encrypt(password)
         }
-        self.save()
+        self.save_secret({secret_uuid: self.secrets[secret_uuid]})
         return secret_uuid
 
     def update_secret(self, secret_uuid: str, username: str, password: str):
@@ -111,15 +135,29 @@ class Vault:
             "password": self._encrypt(password)
         }
 
-    def delete_secret(self, secret_uuid: str):
+    def delete_secret(self, secret_uuid: str, skip_save=False):
         """Delete a secret from the vault."""
-        self.secrets.pop(secret_uuid)
+        with self.lock:
+            self.secrets.pop(secret_uuid)
+        if not skip_save:
+            self.save()
 
-    def save(self):
+    def save_secret(self, secret):
+        """Save a single secret to the vault file"""
+        if os.path.exists(self.vault_path):
+            with self.lock:
+                with open(self.vault_path, 'a') as f:
+                    yaml.safe_dump(secret, f)
+
+    def save(self, already_locked=True):
         """Save the vault."""
         if os.path.exists(self.vault_path):
-            with open(self.vault_path, 'w') as f:
-                yaml.dump(self.secrets, f)
+            with self.lock:
+                with open(self.vault_path, 'w') as f:
+                    if self.secrets == {}:
+                        f.close()
+                    else:
+                        yaml.safe_dump(self.secrets, f)
         else:
             self.setup()
             self.save()

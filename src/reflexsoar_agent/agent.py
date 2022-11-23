@@ -1,5 +1,6 @@
 """Defines """
 import argparse
+import getpass
 import inspect
 import json
 import os
@@ -18,6 +19,7 @@ from .core.event.manager import EventManager, EventSpooler
 from .core.logging import logger, setup_logging
 from .core.management import (ManagementConnection, connections,
                               get_management_connection)
+from .core.vault import Vault
 from .core.version import version_number
 from .role import *  # pylint: disable=wildcard-import,unused-wildcard-import # noqa: F403
 
@@ -634,6 +636,34 @@ def cli_view_config(agent):
     logger.info("Configuration Preview:")
     agent.config.json(indent=4)
 
+
+def cli_init_secrets_vault(vault_key: str, vault_path: str, vault_name: str):
+    """Initializes the secrets vault"""
+
+    vault_key = os.getenv('REFLEX_AGENT_VAULT_SECRET', vault_key)
+    if not vault_key:
+        vault_key = getpass.getpass('Enter vault key: ')
+    vault = Vault(secret_key=vault_key, vault_path=vault_path, name=vault_name)
+    vault.setup()
+    logger.info(
+        f"Vault {vault.name} initialized. Document the secret key for future use.")
+
+    # Return the key if the user didn't supply it and it wasn't in an environment variable
+    if not os.getenv('REFLEX_AGENT_VAULT_SECRET') and not vault_key:
+        logger.info(f"Vault Key: {vault.secret_key}")
+
+
+def cli_add_secret_to_vault(secret):
+    """Adds a secret to the vault"""
+    if os.getenv('REFLEX_AGENT_VAULT_SECRET', None) is None:
+        logger.error("REFLEX_AGENT_VAULT_SECRET environment variable not set.")
+        sys.exit(1)
+
+    vault = Vault()
+    parts = secret.split(':', 1)
+    secret_uuid = vault.create_secret(parts[0], parts[1])
+    logger.info(f"Secret {secret_uuid} added to vault.")
+
 # pylint disable=too-many-statements
 
 
@@ -672,6 +702,16 @@ def cli(argv=None):
                         help="Run the agent in offline mode", default=False)
     parser.add_argument('--config-path', type=str,
                         help="The path to the agent configuration file", default=None)
+    parser.add_argument('--init-secrets-vault', action="store_true",
+                        help="Initialize the secrets vault")
+    parser.add_argument('--vault-path', type=str,
+                        help="The path to the secrets vault file")
+    parser.add_argument('--vault-name', type=str,
+                        help="The file name of the secrets vault file")
+    parser.add_argument('--vault-key', type=str,
+                        help="The vault key to use for encryption/decryption")
+    parser.add_argument('--add-secret', type=str,
+                        help="Add a secret to the vault", metavar="username:password")
     args = parser.parse_args(argv)
 
     # Load the .env file if it exists
@@ -683,6 +723,12 @@ def cli(argv=None):
     args.token = args.token or os.getenv('REFLEX_AGENT_PAIR_TOKEN')
 
     agent = Agent(offline=args.offline, persistent_config_path=args.config_path)
+
+    if args.init_secrets_vault:
+        cli_init_secrets_vault(args.vault_key, args.vault_path, args.vault_name)
+
+    if args.add_secret:
+        cli_add_secret_to_vault(args.add_secret)
 
     if args.set_config_value:
         key, value = args.set_config_value.split(':', 1)
