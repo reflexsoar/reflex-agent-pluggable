@@ -653,15 +653,16 @@ def cli_init_secrets_vault(vault_key: str, vault_path: str, vault_name: str):
         logger.info(f"Vault Key: {vault.secret_key}")
 
 
-def cli_add_secret_to_vault(secret):
+def cli_add_secret_to_vault():
     """Adds a secret to the vault"""
     if os.getenv('REFLEX_AGENT_VAULT_SECRET', None) is None:
         logger.error("REFLEX_AGENT_VAULT_SECRET environment variable not set.")
         sys.exit(1)
 
     vault = Vault()
-    parts = secret.split(':', 1)
-    secret_uuid = vault.create_secret(parts[0], parts[1])
+    username = getpass.getpass("Username: ")
+    password = getpass.getpass("Password: ")
+    secret_uuid = vault.create_secret(username, password)
     logger.info(f"Secret {secret_uuid} added to vault.")
 
 # pylint disable=too-many-statements
@@ -710,8 +711,8 @@ def cli(argv=None):
                         help="The file name of the secrets vault file")
     parser.add_argument('--vault-key', type=str,
                         help="The vault key to use for encryption/decryption")
-    parser.add_argument('--add-secret', type=str,
-                        help="Add a secret to the vault", metavar="username:password")
+    parser.add_argument('--add-secret', action="store_true",
+                        help="Add a secret to the vault")
     args = parser.parse_args(argv)
 
     # Load the .env file if it exists
@@ -728,7 +729,7 @@ def cli(argv=None):
         cli_init_secrets_vault(args.vault_key, args.vault_path, args.vault_name)
 
     if args.add_secret:
-        cli_add_secret_to_vault(args.add_secret)
+        cli_add_secret_to_vault()
 
     if args.set_config_value:
         key, value = args.set_config_value.split(':', 1)
