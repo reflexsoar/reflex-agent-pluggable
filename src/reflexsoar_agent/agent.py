@@ -317,7 +317,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
                         config[key] = value
         return role_configs
 
-    def check_policy(self):
+    def check_policy(self, skip_run=False):
         """Checks the agent policy.
 
         This method checks the agent policy.
@@ -330,11 +330,8 @@ class Agent:  # pylint: disable=too-many-instance-attributes
 
         if policy:
             policy_revision = self.config.policy_revision
-            if (
-                policy['revision'] > policy_revision and policy['uuid'] == policy_revision
-            ) or (
-                policy['uuid'] != self.config.policy_uuid
-            ):
+            policy_uuid = self.config.policy_uuid
+            if policy_revision != policy['revision'] or policy_uuid != policy['uuid']:
                 self.config.from_policy(policy)
 
                 # Update the configuration of all the running roles
@@ -343,11 +340,12 @@ class Agent:  # pylint: disable=too-many-instance-attributes
                 if role_configs:
                     self.config.set_value('role_configs', role_configs)
 
-                if self.config.roles:
-                    self.stop_roles(self.config.roles)
-                    self.start_roles()
-                else:
-                    self.stop_roles()
+                if not skip_run:
+                    if self.config.roles:
+                        self.stop_roles(self.config.roles)
+                        self.start_roles()
+                    else:
+                        self.stop_roles()
                 self.save_persistent_config()
 
     def clear_event_cache(self):
@@ -458,8 +456,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
             try:
                 if conn.agent_heartbeat(self.config.uuid, data):  # type: ignore
                     logger.success(f"Heartbeat sent to {conn.config['url']}")
-                    if not skip_run:
-                        self.check_policy()
+                    self.check_policy(skip_run=skip_run)
                     return True
                 else:
                     logger.error("No management connection established.")
@@ -518,7 +515,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
         """
         for name in self.loaded_roles:
             if name in self.config.roles:
-                if name not in self.running_roles:
+                if name not in self.running_roles or self.running_roles[name] is None:
                     self.running_roles[name] = self.initialize_role(name)
                     self.running_roles[name].start()
             else:
@@ -529,7 +526,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
 
         This method starts the specified role.
         """
-        if name in self.running_roles:
+        if name in self.running_roles and self.running_roles[name] is not None:
             self.running_roles[name].start()
         else:
             role = self.initialize_role(name)
