@@ -406,7 +406,7 @@ class Agent:  # pylint: disable=too-many-instance-attributes
 
         agent_data = {
             "name": self.config.name,
-            "ip_address_address": self._ip_address,
+            "ip_address": self._ip_address,
             "groups": kwargs.get('groups', []),
         }
 
