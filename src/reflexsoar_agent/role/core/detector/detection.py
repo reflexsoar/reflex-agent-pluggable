@@ -5,12 +5,14 @@ from.  This class provides the basic functionality for all detection types.
 """
 
 import math
-from typing import List, Optional
 from dataclasses import dataclass
-from dateutil import parser as date_parser
-from datetime import timedelta, datetime
+from datetime import datetime, timedelta
+from typing import List, Optional
 
-from reflexsoar_agent.role.core.detector.rule import BaseRuleTypeConfig, RULE_TYPES
+from dateutil import parser as date_parser
+
+from reflexsoar_agent.role.core.detector.rule import (RULE_TYPES,
+                                                      BaseRuleTypeConfig)
 
 
 @dataclass
