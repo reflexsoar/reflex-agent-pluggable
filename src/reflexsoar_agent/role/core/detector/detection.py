@@ -11,8 +11,7 @@ from typing import List, Optional
 
 from dateutil import parser as date_parser
 
-from reflexsoar_agent.role.core.detector.rule import (RULE_TYPES,
-                                                      BaseRuleTypeConfig)
+from reflexsoar_agent.role.core.detector.rule import RULE_TYPES
 
 
 @dataclass
@@ -178,78 +177,3 @@ class Detection:
         else:
             raise ValueError("Detection rule missing the last_run property")
         return False
-
-
-if __name__ == "__main__":
-
-    rule = Detection(
-        name='Test Rule',
-        description="This is just a test rule",
-        uuid='1234567890',
-        query=QueryConfig(
-            query="event.code: 1",
-            language="lucene",
-            backend="elasticsearch"
-        ),
-        detection_id="1234567890",
-        from_sigma=False,
-        sigma_rule=None,
-        sigma_rule_id=None,
-        guide="Do something awesome",
-        tags=["test", "rule"],
-        tactics=[MITRETacticTechnique(
-            mitre_id="1234567890",
-            external_id="1234567890",
-            name="Test Tactic",
-            shortname="test_tactic"
-        )],
-        techniques=[MITRETacticTechnique(
-            mitre_id="1234567890",
-            external_id="1234567890",
-            name="Test Technique",
-            shortname="test_technique"
-        )],
-        references=["https://www.google.com"],
-        false_positives=["https://www.google.com"],
-        kill_chain_phase="test",
-        rule_type_str="match",
-        rule_type=RULE_TYPES.MATCH,
-        version=1,
-        active=True,
-        warnings=[],
-        source=SourceConfig(
-            language="lucene",
-            name="Test Source",
-            uuid="1234567890"
-        ),
-        case_template="1234567890",
-        risk_score=1,
-        severity=1,
-        signature_fields=["event.code"],
-        observable_fields=[ObservableField(
-            field="host.name",
-            alias="host.name",
-            data_type="host",
-            tlp=1,
-            tags=["test", "rule"]
-        )],
-        interval=30,
-        lookbehind=30,
-        catchup_period=1440,
-        skip_event_rules=False,
-        exceptions=[DetectionException(
-            description="Test Exception",
-            condition="is",
-            values=["test"],
-            field="host.name"
-        )],
-        mute_period=0,
-        rule_type_config=BaseRuleTypeConfig(),
-        assigned_agent="1234567890",
-        last_run=(datetime.utcnow() - timedelta(days=2)).isoformat(),
-    )
-
-    print(rule)
-    print(f"Last Run: {rule.last_run} | Should Run? {rule._should_run(1440)}")
-    rule.last_run = datetime.utcnow().isoformat()
-    print(f"Last Run: {rule.last_run} | Should Run? {rule._should_run(1440)}")
