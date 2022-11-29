@@ -66,8 +66,7 @@ class DetectionException:
         self.values = values
         self.condition = condition
         self.description = description
-        # type: Optional[List[str]]
-        self.value_list = kwargs.get('value_list', []) or []
+        self.value_list: Optional[List[str]] = kwargs.get('value_list', []) or []
 
 
 class Detection:
@@ -99,35 +98,35 @@ class Detection:
     def _optional_values(self, **kwargs):
         """Sets optional values for the detection rule."""
 
-        self.detection_id: str = kwargs.get('detection_id', "") or ""
-        self.from_sigma: bool = kwargs.get('from_sigma', False) or False
-        self.sigma_rule: str = kwargs.get('sigma_rule', "") or ""
-        self.sigma_rule_id: str = kwargs.get('sigma_rule_id', "") or ""
-        self.guide: str = kwargs.get('guide', "") or ""
-        self.tags: List[str] = kwargs.get('tags', []) or []
-        self.tactics: List[MITRETacticTechnique] = kwargs.get('tactics', []) or []
-        self.techniques: List[MITRETacticTechnique] = kwargs.get('techniques', []) or []
-        self.references: List[str] = kwargs.get('references', []) or []
-        self.false_positives: List[str] = kwargs.get('false_positives', []) or []
-        self.kill_chain_phase: str = kwargs.get('kill_chain_phase', 'none') or 'none'
-        self.rule_type_str: str = kwargs.get('rule_type', 'match') or 'match'
-        self.rule_type: int = getattr(RULE_TYPES, self.rule_type_str.upper())
-        self.version: int = kwargs.get('version', 1) or 1
-        self.catchup_period: int = kwargs.get('catchup_period', 0) or 0
-        self.skip_event_rules: bool = kwargs.get('skip_event_rules', False) or False
-        self.mute_period: int = kwargs.get('mute_period', 0) or 0
-        self.rule_type_config: BaseRuleTypeConfig = kwargs.get(
+        self.detection_id = kwargs.get('detection_id', "") or ""
+        self.from_sigma = kwargs.get('from_sigma', False) or False
+        self.sigma_rule = kwargs.get('sigma_rule', "") or ""
+        self.sigma_rule_id = kwargs.get('sigma_rule_id', "") or ""
+        self.guide = kwargs.get('guide', "") or ""
+        self.tags = kwargs.get('tags', []) or []
+        self.tactics = kwargs.get('tactics', []) or []
+        self.techniques = kwargs.get('techniques', []) or []
+        self.references = kwargs.get('references', []) or []
+        self.false_positives = kwargs.get('false_positives', []) or []
+        self.kill_chain_phase = kwargs.get('kill_chain_phase', 'none') or 'none'
+        self.rule_type_str = kwargs.get('rule_type', 'match') or 'match'
+        self.rule_type = getattr(RULE_TYPES, self.rule_type_str.upper())
+        self.version = kwargs.get('version', 1) or 1
+        self.catchup_period = kwargs.get('catchup_period', 0) or 0
+        self.skip_event_rules = kwargs.get('skip_event_rules', False) or False
+        self.mute_period = kwargs.get('mute_period', 0) or 0
+        self.rule_type_config = kwargs.get(
             'rule_type_config', None) or None
-        self.assigned_agent: str = kwargs.get('assigned_agent', "") or ""
-        self.warnings: List[str] = kwargs.get('warnings', []) or []
-        self.case_template: str = kwargs.get('case_template', "") or ""
-        self.risk_score: int = kwargs.get('risk_score', 0) or 0
-        self.severity: int = kwargs.get('severity', 0) or 0
-        self.total_hits: int = kwargs.get('total_hits', 0) or 0
-        self.run_start: str = kwargs.get('run_start', "") or ""
-        self.run_finished: str = kwargs.get('run_finished', "") or ""
-        self.last_run: str = kwargs.get('last_run', "") or ""
-        self.last_hit: str = kwargs.get('last_hit', "") or ""
+        self.assigned_agent = kwargs.get('assigned_agent', "") or ""
+        self.warnings = kwargs.get('warnings', []) or []
+        self.case_template = kwargs.get('case_template', "") or ""
+        self.risk_score = kwargs.get('risk_score', 0) or 0
+        self.severity = kwargs.get('severity', 0) or 0
+        self.total_hits = kwargs.get('total_hits', 0) or 0
+        self.run_start = kwargs.get('run_start', "") or ""
+        self.run_finished = kwargs.get('run_finished', "") or ""
+        self.last_run = kwargs.get('last_run', "") or ""
+        self.last_hit = kwargs.get('last_hit', "") or ""
 
     def __repr__(self) -> str:
         """Returns the string representation of the detection rule."""
