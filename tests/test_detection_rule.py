@@ -1,8 +1,12 @@
 from datetime import datetime, timedelta
+
 import pytest
 
-from reflexsoar_agent.role.core.detector.detection import Detection, DetectionException, MITRETacticTechnique, ObservableField, QueryConfig, SourceConfig
-from reflexsoar_agent.role.core.detector.rule import RULE_TYPES, BaseRuleTypeConfig
+from reflexsoar_agent.role.core.detector.detection import (
+    Detection, DetectionException, MITRETacticTechnique, ObservableField,
+    QueryConfig, SourceConfig)
+from reflexsoar_agent.role.core.detector.rule import (RULE_TYPES,
+                                                      BaseRuleTypeConfig)
 
 
 @pytest.fixture

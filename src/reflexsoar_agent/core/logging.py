@@ -10,24 +10,6 @@ HANDLERS: Dict[str, Union[int, None]] = {
 }
 
 
-def formatter(message):
-
-    print(message["process"].id)
-    message = {
-        "record_id": message["line"],
-        "timestamp": message["time"].isoformat(),
-        "level": message["level"].name,
-        "message": message["message"],
-        "module": message["module"],
-        "name": message["name"],
-        "pid": message["process"].id,
-        "process_name": message["process"].name
-    }
-
-    return "{message}"
-    # return json.dumps(message)
-
-
 def setup_logging(log_path="reflexsoar_agent.log",
                   rotation=1,
                   retention=10,
@@ -63,5 +45,3 @@ def setup_logging(log_path="reflexsoar_agent.log",
                                           )
         if handler == 'stdout':
             HANDLERS['stdout'] = logger.add(sys.stdout, enqueue=True)
-        if handler == 'json':
-            HANDLERS['json'] = logger.add(sys.stdout, format=formatter, enqueue=True)

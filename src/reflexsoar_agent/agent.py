@@ -13,136 +13,16 @@ from typing import Any, Dict, List, Optional
 from dotenv import load_dotenv
 from platformdirs import user_data_dir
 
+from .core.config import AgentConfig
 from .core.errors import (AgentHeartbeatFailed, ConsoleAlreadyPaired,
                           ConsoleNotPaired)
 from .core.event.manager import EventManager, EventSpooler
-from .core.logging import logger, setup_logging
+from .core.logging import logger
 from .core.management import (ManagementConnection, connections,
                               get_management_connection)
 from .core.vault import Vault
 from .core.version import version_number
 from .role import *  # pylint: disable=wildcard-import,unused-wildcard-import # noqa: F403
-
-
-class AgentConfig:  # pylint: disable=too-many-instance-attributes
-    """Defines an AgentConfig object that stores configuration information for
-    the Reflex Agent
-    """
-
-    def __init__(self, uuid: Optional[str] = None, roles: Optional[List[str]] = None,
-                 policy: Optional[Dict[Any, Any]] = None, **kwargs):
-        """Initializes the AgentConfig object."""
-        if roles is None:
-            roles = []
-
-        self.uuid = uuid
-        self.roles = roles if roles else []
-        self.role_configs: Dict[Any, Any] = {}
-        self.console_info: Dict[Any, Any] = {}
-        self.name = socket.gethostname()
-        setup_logging(init=True)
-
-        # If a policy is provided on initialization, load it
-        if policy:
-            self.from_policy(policy)
-        else:
-            self.from_policy(kwargs)
-
-    def json(self, indent=None):
-        """Returns the agent configuration as a JSON string."""
-        return json.dumps(self.__dict__, indent=indent)
-
-    def from_policy(self, policy):
-        """Loads the agent configuration from a policy obtained from
-        the management server.
-
-        Args:
-            policy (dict): The policy to load
-        """
-        self.policy_revision = policy.get('revision', 0)
-        self.policy_uuid = policy.get('uuid', '')
-        self.role_configs = policy.get('role_configs', {})
-        self.event_cache_key = policy.get(
-            'event_cache_key', 'signature')  # Default to signature
-        self.event_cache_ttl = policy.get(
-            'event_cache_ttl', 30)  # Default to 30 minutes
-        self.disable_event_cache_check = policy.get(
-            'disable_event_cache_check', False)
-        self.health_check_interval = policy.get(
-            'health_check_interval', 30)  # Default to 30 seconds
-        if 'console_info' in policy:
-            self.console_info = policy['console_info']
-        self.roles = policy.get('roles', self.roles)
-
-    def add_paired_console(self, url: str, api_key: str):
-        """Adds a paired console to the agent configuration.
-
-        This method adds a paired console to the agent configuration.
-        """
-
-        if self.console_info['url'] != url:
-            self.console_info = {
-                'api_key': api_key,
-                'url': url
-            }
-        else:
-            raise ConsoleAlreadyPaired(
-                f"Console {url} is already paired with this agent.")
-
-    def remove_paired_console(self, url: str):
-        """Removes a paired console from the agent configuration.
-
-        This method removes a paired console from the agent configuration.
-        """
-        if 'url' in self.console_info and self.console_info['url'] == url:
-            self.console_info = {}
-        else:
-            raise ConsoleNotPaired(
-                f"Console {url} is not paired with this agent.")
-
-    def set_value(self, key: str, value: Any) -> bool:  # noqa: C901
-        """Sets a configuration value.
-
-        This method sets a configuration value.
-
-        Args:
-            key (str): The key to set.
-            value (str): The value to set.
-        """
-        updateable_config_keys = [
-            "roles", "event_cache_key", "event_cache_ttl",
-            "health_check_interval", "role_configs", "disable_event_cache_check"
-        ]
-
-        if isinstance(value, str):
-            if value.lower in ['true', 'false']:
-                value = value.lower() == 'true'
-
-        if key in updateable_config_keys:
-            if hasattr(self, key):
-                if isinstance(getattr(self, key), list):
-                    setattr(self, key, value.split(",")
-                            if value not in [""] else [])
-                    return True
-                if isinstance(getattr(self, key), bool):
-                    setattr(self, key, bool(value) if value else False)
-                    return True
-                if isinstance(getattr(self, key), int):
-                    setattr(self, key, int(value))
-                    return True
-                if isinstance(getattr(self, key), str):
-                    setattr(self, key, value)
-                    return True
-                if isinstance(getattr(self, key), dict):
-                    if isinstance(value, str):
-                        value = json.loads(value)
-                    setattr(self, key, value)
-                    return True
-            else:
-                raise KeyError(f"Key {key} does not exist in AgentConfig.")
-        else:
-            raise KeyError(f"Key {key} is not updateable.")
-        return False
 
 
 class Agent:  # pylint: disable=too-many-instance-attributes
