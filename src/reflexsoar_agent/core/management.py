@@ -187,6 +187,14 @@ class ManagementConnection(HTTPConnection):
 
         return (username, secret)
 
+    def agent_get_detections(self, agent_uuid: str = "", active: bool = True):
+
+        response = self.call_api(
+            'GET', f'/api/v2.0/detection?agent={agent_uuid}&active={active}', None)
+        if response and response.status_code == 200:
+            response = response.json()
+        return response
+
 
 # Globally registered connections dictionary that can be imported
 # not useful across multiprocess boundaries so the agent manages an additional

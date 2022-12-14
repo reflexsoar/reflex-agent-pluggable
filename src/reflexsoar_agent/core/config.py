@@ -6,6 +6,14 @@ from .errors import ConsoleAlreadyPaired, ConsoleNotPaired
 from .logging import setup_logging
 
 
+class PolicyProperty(object):
+    """Defines a PolicyProperty object that can be used to access the policy
+    dictionary as an object."""
+
+    def __init__(self, dict_):
+        self.__dict__.update(dict_)
+
+
 class AgentPolicy:
     """Defines an AgentPolicy object that stores policy based configuration
     items provided by the management console"""
@@ -24,6 +32,16 @@ class AgentPolicy:
     def flat_policy(self):
         """Returns the flat policy dictionary"""
         return self._flat_policy
+
+    def setting(self, key: str) -> Any:
+        """Returns the value of the policy item specified by the key"""
+        return self.flat_policy[key]
+
+    def _as_attributes(self):
+        """Adds the policy items as attributes to the AgentPolicy object"""
+
+        o = json.loads(json.dumps(self._policy), object_hook=PolicyProperty)
+        self.__dict__['agent'] = o.agent
 
     def _parse_policy(self, policy: dict):
         """Parses the policy dictionary and adds each key as an
@@ -47,7 +65,7 @@ class AgentPolicy:
                 else:
                     policy_item = {part: policy_item}
             combine(policy_item, self._policy)
-        print(json.dumps(self._policy, indent=2))
+        self._as_attributes()
 
 
 class AgentConfig:  # pylint: disable=too-many-instance-attributes

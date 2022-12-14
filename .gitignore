@@ -17,6 +17,10 @@ __pycache__/
 # Powershell test scripts
 *.ps1
 
+# Logs
+
+*.log.zip
+
 # All Dev Reports
 reports/
 tests/test-db-path/
